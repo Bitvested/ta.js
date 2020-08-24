@@ -1,0 +1,25 @@
+{
+  "name": "ta.js",
+  "version": "1.0.0",
+  "description": "Financial Technical Analysis in JavaScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bitvested/ta.js.git"
+  },
+  "keywords": [
+    "financial",
+    "technical",
+    "analysis",
+    "ta"
+  ],
+  "author": "Nino Kroesen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Bitvested/ta.js/issues"
+  },
+  "homepage": "https://github.com/Bitvested/ta.js#readme"
+}
