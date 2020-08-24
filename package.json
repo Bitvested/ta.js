@@ -1,6 +1,6 @@
 {
   "name": "ta.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Financial Technical Analysis in JavaScript",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,17 @@
     "financial",
     "technical",
     "analysis",
-    "ta"
+    "ta",
+    "simple",
+    "weighted",
+    "exponential",
+    "sma",
+    "wma",
+    "ema",
+    "aroon",
+    "rsi",
+    "macd",
+    "atr"
   ],
   "author": "Nino Kroesen",
   "license": "MIT",
