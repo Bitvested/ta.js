@@ -196,6 +196,44 @@ async function aroon_osc(data, len) {
   }
   return aroon;
 }
+async function mfi(data, len) {
+  var length = (!len) ? 14 : len;
+  var mfi = [], n = [], p = [];
+  for(var i = 0; i < data.length; i++) {
+    p.push(data[i][0]);
+    n.push(data[i][1]);
+    if(p.length >= length) {
+      var positive = 0, negative = 0;
+      for(q in p) positive += p[q];
+      for(q in n) negative += n[q];
+      mfi.push((100 - 100 / (1 + positive / negative)));
+      p.splice(0, 1);
+      n.splice(0, 1);
+    }
+  }
+  return mfi;
+}
+async function roc(data, len) {
+  var length = (!len) ? 14 : len;
+  var pl = [], roc = [];
+  for(var i = 0; i < data.length; i++) {
+    pl.push(data[i]);
+    if(pl.length >= length) {
+      roc.push((pl[length - 1] - pl[0]) / pl[0]);
+      pl.splice(0, 1);
+    }
+  }
+  return roc;
+}
+async function obv(data) {
+  var obv = [0];
+  for(var i = 1; i < data.length; i++) {
+    if(data[i][1] > data[i - 1][1]) obv.push(obv[obv.length - 1] + data[i][0])
+    if(data[i][1] < data[i - 1][1]) obv.push(obv[obv.length - 1] - data[i][0])
+    if(data[i][1] == data[i - 1][1]) obv.push(obv[obv.length - 1])
+  }
+  return obv;
+}
 
 module.exports = {
   rsi: rsi,
@@ -211,5 +249,8 @@ module.exports = {
     up: aroon_up,
     down: aroon_down,
     osc: aroon_osc,
-  }
+  },
+  mfi: mfi,
+  roc: roc,
+  obv: obv
 }
