@@ -14,7 +14,17 @@
     "financial",
     "technical",
     "analysis",
-    "ta"
+    "ta",
+    "simple",
+    "weighted",
+    "exponential",
+    "sma",
+    "wma",
+    "ema",
+    "aroon",
+    "rsi",
+    "macd",
+    "atr"
   ],
   "author": "Nino Kroesen",
   "license": "MIT",
