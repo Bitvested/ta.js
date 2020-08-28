@@ -1,5 +1,5 @@
 async function rsi(data, len) {
-  var length = (!len) ? 14 : len;
+  var length = (!len) ? 13 : len - 1;
   var pl = [], arrsi = [];
   for(var i = 1; i < data.length; i++) {
     var diff = (data[i] - data[i - 1]) / data[i] * 100;

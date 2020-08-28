@@ -74,7 +74,7 @@ var data = [1, 2, 3, 4, 5, 6, 7, 5];
 var length = 6; // default = 14
 ta.rsi(data, length);
 // Output (Array)
-// [100, 75.55]
+// [100, 100, 72.77]
 ```
 #### <a name="std"></a>Standard Deviation
 ```javascript
