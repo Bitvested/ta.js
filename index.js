@@ -20,6 +20,24 @@ async function rsi(data, len) {
   }
   return arrsi;
 }
+async function stoch(data, len, sd) {
+  var length = (!len) ? 14 : len;
+  var smoothd = (!sd) ? 3 : sd;
+  if(length < smoothd) [length, smoothd] = [smoothd, length];
+  var stoch = [], pl = [];
+  for(var i = 0; i < data.length; i++) {
+    pl.push(data[i]);
+    if(pl.length >= length) {
+      var high = await Math.max.apply(null, pl), low = await Math.min.apply(null, pl),
+      highd = await Math.max.apply(null, pl.slice(-smoothd)), lowd = await Math.min.apply(null, pl.slice(-smoothd)),
+      k = 100 * (data[i] - low) / (high - low),
+      d = 100 / (highd / lowd);
+      stoch.push([k, d]);
+      pl.splice(0, 1);
+    }
+  }
+  return stoch;
+}
 async function atr(data, len) {
   var length = (!len) ? 14 : len;
   var atr = [];
@@ -237,6 +255,7 @@ async function obv(data) {
 
 module.exports = {
   rsi: rsi,
+  stoch: stoch,
   atr: atr,
   sma: sma,
   wma: wma,

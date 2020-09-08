@@ -21,6 +21,7 @@ const ta = require('ta.js');
 - [Exponential Moving Average](#ema)
 - [Moving Average Convergence / Divergence](#macd)
 - [Relative Strength Index](#rsi)
+- [Stochastics](#stoch)
 - [Standard Deviation](#std)
 - [Bollinger Bands](#bands)
 - [Bollinger Bandwidth](#bandwidth)
@@ -75,6 +76,16 @@ var length = 6; // default = 14
 ta.rsi(data, length);
 // Output (Array)
 // [100, 100, 72.77]
+```
+#### <a name="stoch"></a>Stochastics
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 7]
+var lengthk = 7; // default = 14
+var lengthd = 4; // default = 3
+ta.stoch(data, lengthk, lengthd);
+// Output (Array)
+// [[100, 57.143]]
+// [kline, dline]
 ```
 #### <a name="std"></a>Standard Deviation
 ```javascript
