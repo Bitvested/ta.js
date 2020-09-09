@@ -20,20 +20,30 @@ async function rsi(data, len) {
   }
   return arrsi;
 }
-async function stoch(data, len, sd) {
+async function stoch(data, len, sd, sk) {
   var length = (!len) ? 14 : len;
   var smoothd = (!sd) ? 3 : sd;
+  var smoothk = (!sk) ? 3 : sk;
   if(length < smoothd) [length, smoothd] = [smoothd, length];
-  var stoch = [], pl = [];
+  if(smoothk > smoothd) [smoothk, smoothd] = [smoothd, smoothk];
+  var stoch = [], high = [], low = [], ka = [];
   for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var high = await Math.max.apply(null, pl), low = await Math.min.apply(null, pl),
-      highd = await Math.max.apply(null, pl.slice(-smoothd)), lowd = await Math.min.apply(null, pl.slice(-smoothd)),
-      k = 100 * (data[i] - low) / (high - low),
-      d = 100 / (highd / lowd);
-      stoch.push([k, d]);
-      pl.splice(0, 1);
+    high.push(data[i][0]), low.push(data[i][2]);
+    if(high.length >= length) {
+      var highd = await Math.max.apply(null, high), lowd = await Math.min.apply(null, low),
+      k = 100 * (data[i][1] - lowd) / (highd - lowd);
+      ka.push(k)
+    }
+    if(smoothk > 0 && ka.length > smoothk) {
+      var smoothedk = await module.exports.sma(ka, smoothk);
+      ka.push(smoothedk[smoothedk.length - 1]);
+    }
+    if(ka.length - smoothk >= smoothd) {
+      var d = await module.exports.sma(ka.slice(smoothk), smoothd);
+      stoch.push([k, d[d.length - 1]]);
+      high.splice(0, 1);
+      low.splice(0, 1);
+      ka.splice(0, 1);
     }
   }
   return stoch;

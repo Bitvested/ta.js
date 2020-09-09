@@ -79,12 +79,13 @@ ta.rsi(data, length);
 ```
 #### <a name="stoch"></a>Stochastics
 ```javascript
-var data = [1, 2, 3, 4, 5, 6, 7]
-var lengthk = 7; // default = 14
-var lengthd = 4; // default = 3
-ta.stoch(data, lengthk, lengthd);
+var data = [[3,2,1], [2,2,1], [4,3,1], [2,2,1]]; // [high, close, low]
+var length = 2; // default = 14
+var smoothd = 1; // default = 3
+var smoothk = 1; // default = 3
+ta.stoch(data, length, smoothd, smoothk);
 // Output (Array)
-// [[100, 57.143]]
+// [[66.667, 66.667], [33.336, 33.336]]
 // [kline, dline]
 ```
 #### <a name="std"></a>Standard Deviation
