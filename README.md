@@ -4,12 +4,16 @@ ta.js is a JavaScript module for dealing with financial technical analysis.
 
 ## Installation
 
+#### NPM
 Use the package manager npm to install ta.js.
 
 ```bash
 npm install ta.js
 ```
-
+#### CDN
+```html
+<script src="https://unpkg.com/ta.min.js"></script>
+```
 ## Usage
 ```javascript
 const ta = require('ta.js');
