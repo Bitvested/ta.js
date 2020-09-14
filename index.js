@@ -278,6 +278,13 @@ async function vwap(data, len) {
   }
   return vwap;
 }
+async function mom(data, len, p) {
+  var length = (!len) ? 10 : len, mom = [];
+  for(var i = length - 1; i < data.length; i++) {
+    (p) ? mom.push(data[i] / data[i - (length - 1)] * 100) : mom.push(data[i] - data[i - (length - 1)])
+  }
+  return mom;
+}
 module.exports = {
   rsi: rsi,
   stoch: stoch,
@@ -297,5 +304,6 @@ module.exports = {
   mfi: mfi,
   roc: roc,
   obv: obv,
-  vwap: vwap
+  vwap: vwap,
+  mom: mom
 }

@@ -33,6 +33,7 @@ const ta = require('ta.js');
 - [Rate Of Change](#roc)
 - [On-Balance Volume](#obv)
 - [Volume-Weighted Average Price](#vwap)
+- [Momentum](#mom)
 
 #### <a name="sma"></a>Simple Moving Average (SMA)
 
@@ -177,6 +178,15 @@ var length = 2; // default = data.length
 ta.vwap(data, length);
 // Output (Array)
 // [127.204, 127.164]
+```
+#### <a name="mom"></a>Momentum
+```javascript
+var data = [1, 1.1, 1.2, 1.24, 1.34];
+var length = 4; // default = 10
+var percentage = false; // default = false (true returns percentage)
+ta.mom(data, length);
+// Output (Array)
+// [0.24, 0.24]
 ```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
