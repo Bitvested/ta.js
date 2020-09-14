@@ -1,6 +1,6 @@
 {
   "name": "ta.js",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "Financial Technical Analysis in JavaScript",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,8 @@
     "rsi",
     "stochastics",
     "macd",
-    "atr"
+    "atr",
+    "vwap"
   ],
   "author": "Nino Kroesen",
   "license": "MIT",
