@@ -12,7 +12,7 @@ npm install ta.js
 ```
 #### CDN
 ```html
-<script src="https://unpkg.com/ta.min.js"></script>
+<script src="https://unpkg.com/ta.js/ta.min.js"></script>
 ```
 ## Usage
 ```javascript
