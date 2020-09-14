@@ -32,7 +32,7 @@ const ta = require('ta.js');
 - [Money Flow Index](#mfi)
 - [Rate Of Change](#roc)
 - [On-Balance Volume](#obv)
-
+- [Volume-Weighted Average Price](#vwap)
 
 #### <a name="sma"></a>Simple Moving Average (SMA)
 
@@ -169,6 +169,14 @@ var data = [[25200, 10], [30000, 10.15], [25600, 10.17], [32000, 10.13]]; // [As
 ta.obv(data);
 // Output (Array)
 // [0, 30000, 55600, 23600]
+```
+#### <a name="vwap"></a>Volume-Weighted Average Price
+```javascript
+var data = [[127.21, 89329], [127.17, 16137], [127.16, 23945]]; // [Average Price, Volume (Quantity)]
+var length = 2; // default = data.length
+ta.vwap(data, length);
+// Output (Array)
+// [127.204, 127.164]
 ```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

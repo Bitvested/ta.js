@@ -262,7 +262,22 @@ async function obv(data) {
   }
   return obv;
 }
-
+async function vwap(data, len) {
+  var length = (!len || len > data.length) ? data.length : len, pl = [], vwap = [];
+  for(var i = 0; i < data.length; i++) {
+    pl.push([(data[i][0] * data[i][1]), data[i][1]]);
+    if(pl.length >= length) {
+      var totalv = 0, totalp = 0;
+      for(var o = 0; o < pl.length; o++) {
+        totalv += pl[o][1];
+        totalp += pl[o][0];
+      }
+      vwap.push(totalp / totalv);
+      pl.splice(0, 1);
+    }
+  }
+  return vwap;
+}
 module.exports = {
   rsi: rsi,
   stoch: stoch,
@@ -281,5 +296,6 @@ module.exports = {
   },
   mfi: mfi,
   roc: roc,
-  obv: obv
+  obv: obv,
+  vwap: vwap
 }
