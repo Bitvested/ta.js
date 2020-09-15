@@ -22,9 +22,11 @@ const ta = require('ta.js');
 ## Examples
 - [Simple Moving Average](#sma)
 - [Weighted Moving Average](#wma)
+- [Volume Weighted Moving Average](#vwma)
 - [Exponential Moving Average](#ema)
 - [Moving Average Convergence / Divergence](#macd)
 - [Relative Strength Index](#rsi)
+- [True Strength Index](#tsi)
 - [Stochastics](#stoch)
 - [Standard Deviation](#std)
 - [Bollinger Bands](#bands)
@@ -45,7 +47,7 @@ const ta = require('ta.js');
 var data = [1, 2, 3, 4, 5, 6, 10];
 var length = 6; // default = 14
 ta.sma(data, length);
-// Output (Array)
+// output (array)
 // [3.5, 5]
 ```
 
@@ -54,15 +56,25 @@ ta.sma(data, length);
 var data = [69, 68, 66, 70, 68];
 var length = 4; // default = 14
 ta.wma(data, length);
-// Output (Array)
+// output (array)
 // [68.3, 68.2]
 ```
+
+#### <a name="vwma"></a>Volume Weighted Moving Average (VWMA)
+```javascript
+var data = [[1, 59], [1.1, 82], [1.21, 27], [1.42, 73], [1.32, 42]]; // [price, volume (quantity)]
+var length = 4; // default = 20
+ta.vwma(data, length);
+// output (array)
+// [1.185, 1.259]
+```
+
 #### <a name="ema"></a>Exponential Moving Average (EMA)
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 10];
 var length = 6; // default = 12
 ta.ema(data, length);
-// Output (Array)
+// output (array)
 // [3.5, 5.357]
 ```
 #### <a name="macd"></a>Moving Average Convergence / Divergence (MACD)
@@ -71,7 +83,7 @@ var data = [1, 2, 3, 4, 5, 6, 14];
 var length1 = 3; // default = 12
 var length2 = 6; // default = 26
 ta.macd(data, length1, length2);
-// Output (Array)
+// output (array)
 // [1.5, 3]
 ```
 #### <a name="rsi"></a>Relative Strength Index (RSI)
@@ -79,8 +91,19 @@ ta.macd(data, length1, length2);
 var data = [1, 2, 3, 4, 5, 6, 7, 5];
 var length = 6; // default = 14
 ta.rsi(data, length);
-// Output (Array)
+// output (array)
 // [100, 100, 72.77]
+```
+#### <a name="tsi"></a>True Strength Index (TSI)
+```javascript
+var data = [1.32, 1.27, 1.42, 1.47, 1.42, 1.45, 1.59];
+var longlength = 3; // default = 25
+var shortlength = 2; // default = 13
+var signallength = 2; // default = 13
+ta.tsi(data, longlength, shortlength, signallength);
+// output (array)
+// [[0.327, 0.320], [0.579, 0.706]]
+// [strength line, signal line]
 ```
 #### <a name="stoch"></a>Stochastics
 ```javascript
@@ -89,7 +112,7 @@ var length = 2; // default = 14
 var smoothd = 1; // default = 3
 var smoothk = 1; // default = 3
 ta.stoch(data, length, smoothd, smoothk);
-// Output (Array)
+// output (array)
 // [[66.667, 66.667], [33.336, 33.336]]
 // [kline, dline]
 ```
@@ -98,7 +121,7 @@ ta.stoch(data, length, smoothd, smoothk);
 var data = [1, 2, 3];
 var length = 3; // default = data.length
 ta.std(data, length);
-// Output (Float)
+// output (float)
 // 0.81649658092773
 ```
 #### <a name="bands"></a>Bollinger Bands
@@ -107,7 +130,7 @@ var data = [1, 2, 3, 4, 5, 6];
 var length = 5; // default = 14
 var deviations = 2; // default = 1
 ta.bands(data, length, deviations);
-// Output (Array)
+// output (array)
 // [[5.828, 3, 0.172], [6.828, 4, 1.172]]
 // [upper band, middle band, lower band]
 ```
@@ -117,7 +140,7 @@ var data = [1, 2, 3, 4, 5, 6];
 var length = 5; // default = 14
 var deviations = 2; // default = 1
 ta.bandwidth(data, length, deviations);
-// Output (Array)
+// output (array)
 // [1.886, 1.344]
 ```
 #### <a name="atr"></a>Average True Range (ATR)
@@ -125,7 +148,7 @@ ta.bandwidth(data, length, deviations);
 var data = [[3,2,1], [2,2,1], [4,3,1], [2,2,1]]; // [high, close, low]
 var length = 3; // default = 14
 ta.atr(data, length);
-// Output (Array)
+// output (array)
 // [2, 1.667, 2.111, 1.741]
 ```
 #### <a name="aroon-up"></a>Aroon Up
@@ -133,7 +156,7 @@ ta.atr(data, length);
 var data = [5, 4, 5, 2];
 var length = 3; // default = 10
 ta.aroon.up(data, length);
-// Output (Array)
+// output (array)
 // [66.67, 33.36]
 ```
 #### <a name="aroon-down"></a>Aroon Down
@@ -141,7 +164,7 @@ ta.aroon.up(data, length);
 var data = [2, 5, 4, 5];
 var length = 3; // default = 10
 ta.aroon.down(data, length);
-// Output (Array)
+// output (array)
 // [66.67, 33.36]
 ```
 #### <a name="aroon-osc"></a>Aroon Oscillator
@@ -149,15 +172,15 @@ ta.aroon.down(data, length);
 var data = [2, 5, 4, 5];
 var length = 3; // default = 25
 ta.aroon.osc(data, length);
-// Output (Array)
+// output (array)
 // [-33.36, 33.36]
 ```
 #### <a name="mfi"></a>Money Flow Index
 ```javascript
-var data = [[19, 13], [14, 38], [21, 25], [32, 17]]; // [Buy Volume, Sell Volume]
+var data = [[19, 13], [14, 38], [21, 25], [32, 17]]; // [buy volume, sell volume]
 var length = 3; // default = 14
 ta.mfi(data, length);
-// Output (Array)
+// output (array)
 // [41.54, 45.58]
 ```
 #### <a name="roc"></a>Rate Of Change
@@ -165,22 +188,22 @@ ta.mfi(data, length);
 var data = [1, 2, 3, 4];
 var length = 3; // default = 14
 ta.roc(data, length);
-// Output (Array)
+// output (array)
 // [2, 1]
 ```
 #### <a name="obv"></a>On-Balance Volume
 ```javascript
-var data = [[25200, 10], [30000, 10.15], [25600, 10.17], [32000, 10.13]]; // [Asset Volume, Close Price]
+var data = [[25200, 10], [30000, 10.15], [25600, 10.17], [32000, 10.13]]; // [asset volume, close price]
 ta.obv(data);
-// Output (Array)
+// output (array)
 // [0, 30000, 55600, 23600]
 ```
 #### <a name="vwap"></a>Volume-Weighted Average Price
 ```javascript
-var data = [[127.21, 89329], [127.17, 16137], [127.16, 23945]]; // [Average Price, Volume (Quantity)]
+var data = [[127.21, 89329], [127.17, 16137], [127.16, 23945]]; // [average price, volume (quantity)]
 var length = 2; // default = data.length
 ta.vwap(data, length);
-// Output (Array)
+// output (array)
 // [127.204, 127.164]
 ```
 #### <a name="mom"></a>Momentum
@@ -189,7 +212,7 @@ var data = [1, 1.1, 1.2, 1.24, 1.34];
 var length = 4; // default = 10
 var percentage = false; // default = false (true returns percentage)
 ta.mom(data, length);
-// Output (Array)
+// output (array)
 // [0.24, 0.24]
 ```
 ## Contributing

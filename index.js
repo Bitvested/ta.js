@@ -20,6 +20,27 @@ async function rsi(data, len) {
   }
   return arrsi;
 }
+async function tsi(data, llen, slen, sig) {
+  var long = (!llen) ? 25 : llen, short = (!slen) ? 13 : slen,
+  signal = (!sig) ? 13 : sig, mom = [], abs = [], ts = [], tsi = [];
+  for(var i = 1; i < data.length; i++) {
+    mom.push(data[i] - data[i - 1]);
+    abs.push(Math.abs(data[i] - data[i - 1]));
+  }
+  var sma1 = await module.exports.ema(mom ,long);
+  var sma2 = await module.exports.ema(abs ,long);
+  var ema1 = await module.exports.ema(sma1, short);
+  var ema2 = await module.exports.ema(sma2, short);
+  for(var i = 0; i < ema1.length; i++) {
+    ts.push(ema1[i] / ema2[i]);
+  }
+  var tma = await module.exports.ema(ts, signal);
+  ts.splice(0, ts.length - tma.length)
+  for(var i = 0; i < tma.length; i++) {
+    tsi.push([tma[i], ts[i]]);
+  }
+  return tsi;
+}
 async function stoch(data, len, sd, sk) {
   var length = (!len) ? 14 : len;
   var smoothd = (!sd) ? 3 : sd;
@@ -96,6 +117,22 @@ async function wma(data, len) {
     }
   }
   return wma;
+}
+async function vwma(data, len) {
+    var length = (!len) ? 20 : len, pl = [], vwma = [];
+    for(var i = 0; i < data.length; i++) {
+      pl.push([(data[i][0] * data[i][1]), data[i][1]]);
+      if(pl.length >= length) {
+        var totalv = 0, totalp = 0;
+        for(var o = 0; o < pl.length; o++) {
+          totalv += pl[o][1];
+          totalp += pl[o][0];
+        }
+        vwma.push(totalp / totalv);
+        pl.splice(0, 1);
+      }
+    }
+    return vwma;
 }
 async function ema(data, len) {
   var length = (!len) ? 12 : len;
@@ -287,10 +324,12 @@ async function mom(data, len, p) {
 }
 module.exports = {
   rsi: rsi,
+  tsi: tsi,
   stoch: stoch,
   atr: atr,
   sma: sma,
   wma: wma,
+  vwma: vwma,
   ema: ema,
   macd: macd,
   bands: bands,
