@@ -27,10 +27,13 @@ const ta = require('ta.js');
 - [Moving Average Convergence / Divergence](#macd)
 - [Relative Strength Index](#rsi)
 - [True Strength Index](#tsi)
+- [Williams %R](#pr)
 - [Stochastics](#stoch)
 - [Standard Deviation](#std)
+- [Percentage Difference](#dif)
 - [Bollinger Bands](#bands)
 - [Bollinger Bandwidth](#bandwidth)
+- [Keltner Channels](#kelt)
 - [Average True Range](#atr)
 - [Aroon Up](#aroon-up)
 - [Aroon Down](#aroon-down)
@@ -105,6 +108,14 @@ ta.tsi(data, longlength, shortlength, signallength);
 // [[0.327, 0.320], [0.579, 0.706]]
 // [strength line, signal line]
 ```
+#### <a name="pr"></a>Williams %R
+```javascript
+var data = [2, 1, 3, 1, 2];
+var length = 3; // default = 14
+ta.pr(data, length);
+// output (array)
+// [-100, -50]
+```
 #### <a name="stoch"></a>Stochastics
 ```javascript
 var data = [[3,2,1], [2,2,1], [4,3,1], [2,2,1]]; // [high, close, low]
@@ -124,6 +135,14 @@ ta.std(data, length);
 // output (float)
 // 0.81649658092773
 ```
+#### <a name="dif"></a>Standard Deviation
+```javascript
+var newval = 0.75;
+var oldval = 0.5;
+ta.dif(newval, oldval);
+// output (float)
+// 0.5
+```
 #### <a name="bands"></a>Bollinger Bands
 ```javascript
 var data = [1, 2, 3, 4, 5, 6];
@@ -142,6 +161,16 @@ var deviations = 2; // default = 1
 ta.bandwidth(data, length, deviations);
 // output (array)
 // [1.886, 1.344]
+```
+#### <a name="kelt"></a>Keltner Channels
+```javascript
+var data = [[3,2,1], [2,2,1], [4,3,1], [2,2,1], [3,3,1]]; // [high, close, low]
+var length = 5; // default = 14
+var deviations = 1; // default = 1
+ta.keltner(data, length, deviations);
+// output (array)
+// [[3.79, 2, 0.2], [3.93, 2.08, 0.23]]
+// [upper band, middle band, lower band]
 ```
 #### <a name="atr"></a>Average True Range (ATR)
 ```javascript

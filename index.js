@@ -41,6 +41,19 @@ async function tsi(data, llen, slen, sig) {
   }
   return tsi;
 }
+async function pr(data, len) {
+  var length = (!len) ? 14 : len;
+  var n = [], pl = [];
+  for(var i = 0; i < data.length; i++) {
+    pl.push(data[i]);
+    if(pl.length >= length - 1) {
+      var highd = await Math.max.apply(null, pl), lowd = await Math.min.apply(null, pl);
+      n.push((highd - data[i]) / (highd - lowd) * -100);
+      pl.splice(0, 1);
+    }
+  }
+  return n;
+}
 async function stoch(data, len, sd, sk) {
   var length = (!len) ? 14 : len;
   var smoothd = (!sd) ? 3 : sd;
@@ -207,6 +220,18 @@ async function bandwidth(data, len, dev) {
   }
   return boll;
 }
+async function keltner(data, len, dev) {
+  var length = (!len) ? 14 : len;
+  var devi = (!dev) ? 1 : dev;
+  var closing = [], atr = await module.exports.atr(data, length), kma, kelt = [];
+  for(var i in data) closing.push((data[i][0] + data[i][1] + data[i][2]) / 3);
+  kma = await ta.sma(closing, length);
+  atr.splice(0, length - 1);
+  for(var i = 0; i < kma.length; i++) {
+    kelt.push([kma[i] + atr[i] * devi, kma[i], kma[i] - atr[i] * devi]);
+  }
+  return kelt
+}
 async function std(data, len) {
   var length = (!len) ? data.length : len;
   var mean = data.reduce((a, b) => {
@@ -216,6 +241,9 @@ async function std(data, len) {
     return sq + Math.pow(n - mean, 2);
   }, 0) / (length));
   return std;
+}
+async function dif(n, o) {
+  return (n - o) / o;
 }
 async function aroon_up(data, len) {
   var length = (!len) ? 10 : len;
@@ -325,6 +353,7 @@ async function mom(data, len, p) {
 module.exports = {
   rsi: rsi,
   tsi: tsi,
+  pr: pr,
   stoch: stoch,
   atr: atr,
   sma: sma,
@@ -334,7 +363,9 @@ module.exports = {
   macd: macd,
   bands: bands,
   bandwidth: bandwidth,
+  keltner: keltner,
   std: std,
+  dif: dif,
   aroon: {
     up: aroon_up,
     down: aroon_down,
