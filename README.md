@@ -21,6 +21,7 @@ const ta = require('ta.js');
 
 ## Examples
 - [Simple Moving Average](#sma)
+- [Smoothed Moving Average](#smma)
 - [Weighted Moving Average](#wma)
 - [Volume Weighted Moving Average](#vwma)
 - [Exponential Moving Average](#ema)
@@ -45,7 +46,6 @@ const ta = require('ta.js');
 - [Momentum](#mom)
 
 #### <a name="sma"></a>Simple Moving Average (SMA)
-
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 10];
 var length = 6; // default = 14
@@ -53,7 +53,14 @@ ta.sma(data, length);
 // output (array)
 // [3.5, 5]
 ```
-
+#### <a name="smma"></a>Smoothed Moving Average (SMMA)
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 10];
+var length = 5; // default = 14
+ta.smma(data, length);
+// output (array)
+// [4, 5.6]
+```
 #### <a name="wma"></a>Weighted Moving Average (WMA)
 ```javascript
 var data = [69, 68, 66, 70, 68];

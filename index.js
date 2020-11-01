@@ -103,14 +103,31 @@ async function sma(data, len) {
     pl.push(data[i]);
     if(pl.length >= length) {
       var average = 0;
-      for(q in pl) {
-        average += pl[q];
-      }
+      for(q in pl) average += pl[q];
       sma.push(average / length);
       pl.splice(0, 1);
     }
   }
   return sma;
+}
+async function smma(data, len) {
+  var length = (!len) ? 14 : len;
+  var pl = [], smma = [];
+  for(var i = 0; i < data.length; i++) {
+    pl.push(data[i]);
+    if(pl.length >= length) {
+      var average = 0;
+      for(q in pl) average += pl[q];
+      if(smma) {
+        smma.push(average / length);
+      } else {
+        smma.push((average - sma1 + data[i]) / length);
+      }
+      pl.splice(0, 1);
+    }
+  }
+  smma.splice(0, 1);
+  return smma;
 }
 async function wma(data, len) {
   var length = (!len) ? 14 : len;
@@ -155,9 +172,7 @@ async function ema(data, len) {
     pl.push(data[i]);
     var average = 0;
     if(prevema == 0 && pl.length >= length) {
-      for(q in pl) {
-        average += pl[q];
-      }
+      for(q in pl) average += pl[q];
       average /= length;
       ema.push(average);
       prevema = average;
@@ -357,6 +372,7 @@ module.exports = {
   stoch: stoch,
   atr: atr,
   sma: sma,
+  smma: smma,
   wma: wma,
   vwma: vwma,
   ema: ema,
