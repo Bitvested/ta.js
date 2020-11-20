@@ -240,7 +240,7 @@ async function keltner(data, len, dev) {
   var devi = (!dev) ? 1 : dev;
   var closing = [], atr = await module.exports.atr(data, length), kma, kelt = [];
   for(var i in data) closing.push((data[i][0] + data[i][1] + data[i][2]) / 3);
-  kma = await ta.sma(closing, length);
+  kma = await module.exports.sma(closing, length);
   atr.splice(0, length - 1);
   for(var i = 0; i < kma.length; i++) {
     kelt.push([kma[i] + atr[i] * devi, kma[i], kma[i] - atr[i] * devi]);
