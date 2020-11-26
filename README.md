@@ -142,7 +142,7 @@ ta.std(data, length);
 // output (float)
 // 0.81649658092773
 ```
-#### <a name="dif"></a>Standard Deviation
+#### <a name="dif"></a>Percentage Difference
 ```javascript
 var newval = 0.75;
 var oldval = 0.5;
