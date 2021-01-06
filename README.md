@@ -247,7 +247,7 @@ ta.vwap(data, length);
 var data = [1, 1.1, 1.2, 1.24, 1.34];
 var length = 4; // default = 10
 var percentage = false; // default = false (true returns percentage)
-ta.mom(data, length);
+ta.mom(data, length, percentage);
 // output (array)
 // [0.24, 0.24]
 ```
