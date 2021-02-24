@@ -186,8 +186,8 @@ async function ema(data, len) {
 }
 async function hull(data, len) {
   var length = (!len) ? 14 : len;
-  var pl = [], hma = [], ewma = await module.exports.wma(transform.slice(), length), sqn = Math.round(Math.sqrt(length)),
-  first = await wma(transform.slice(), Math.round(length / 2));
+  var pl = [], hma = [], ewma = await module.exports.wma(data.slice(), length), sqn = Math.round(Math.sqrt(length)),
+  first = await wma(data.slice(), Math.round(length / 2));
   first.splice(0, first.length - ewma.length);
   for(let i in ewma) {
     pl.push((first[i] * 2) - ewma[i]);
