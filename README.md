@@ -23,6 +23,7 @@ const ta = require('ta.js');
 - [Simple Moving Average](#sma)
 - [Smoothed Moving Average](#smma)
 - [Weighted Moving Average](#wma)
+- [Hull Moving Average](#hull)
 - [Volume Weighted Moving Average](#vwma)
 - [Exponential Moving Average](#ema)
 - [Moving Average Convergence / Divergence](#macd)
@@ -69,7 +70,14 @@ ta.wma(data, length);
 // output (array)
 // [68.3, 68.2]
 ```
-
+#### <a name="hull"></a>Hull Moving Average
+```javascript
+var data = [6, 7, 5, 6, 7, 4, 5, 7];
+var length = 6; // default = 14
+ta.hull(data, length);
+// output (array)
+// [4.76, 5.48]
+```
 #### <a name="vwma"></a>Volume Weighted Moving Average (VWMA)
 ```javascript
 var data = [[1, 59], [1.1, 82], [1.21, 27], [1.42, 73], [1.32, 42]]; // [price, volume (quantity)]

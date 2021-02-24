@@ -184,6 +184,20 @@ async function ema(data, len) {
   }
   return ema;
 }
+async function hull(data, len) {
+  var length = (!len) ? 14 : len;
+  var pl = [], hma = [], ewma = await module.exports.wma(transform.slice(), length), sqn = Math.round(Math.sqrt(length)),
+  first = await wma(transform.slice(), Math.round(length / 2));
+  first.splice(0, first.length - ewma.length);
+  for(let i in ewma) {
+    pl.push((first[i] * 2) - ewma[i]);
+    if(pl.length >= sqn) {
+      var h = await wma(pl, sqn);
+      hma.push(h[h.length - 1]);
+    }
+  }
+  return hma;
+}
 async function macd(data, len1, len2) {
   var length1 = (!len1) ? 12 : len1;
   var length2 = (!len2) ? 26 : len2;
@@ -382,6 +396,7 @@ module.exports = {
   keltner: keltner,
   std: std,
   dif: dif,
+  hull: hull,
   aroon: {
     up: aroon_up,
     down: aroon_down,
