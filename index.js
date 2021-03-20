@@ -1,8 +1,25 @@
+async function median(data, len) {
+  var length = (!len) ? data.length : len, pl = [], med = [];
+  for(var i = 0; i < data.length; i++) {
+    pl.push(data[i]);
+    if(pl.length >= length) {
+      var ll = pl.slice();
+      ll.sort((a, b) => {
+        if(a > b) return -1;
+        if(a < b) return 1;
+        return 0;
+      });
+      med.push(ll[Math.round(ll.length / 2)]);
+      pl.splice(0, 1);
+    }
+  }
+  return med;
+}
 async function rsi(data, len) {
-  var length = (!len) ? 13 : len - 1;
+  var length = (!len) ? 14 : len;
   var pl = [], arrsi = [];
   for(var i = 1; i < data.length; i++) {
-    var diff = (data[i] - data[i - 1]) / data[i] * 100;
+    var diff = (data[i] - data[i - 1]);
     pl.push(diff);
     if(pl.length >= length) {
       var gain = 0, loss = 0;
@@ -13,8 +30,6 @@ async function rsi(data, len) {
       gain /= length; loss = (Math.abs(loss)) / length;
       rsi = Number(100 - 100 / (1 + (gain / loss)));
       arrsi.push(rsi);
-      var diff = (data[i] - data[i - 1]) / data[i] * 100;
-      pl.push(diff);
       pl.splice(0, 1);
     }
   }
@@ -53,6 +68,58 @@ async function pr(data, len) {
     }
   }
   return n;
+}
+async function lsma(data, len) {
+  var length = (!len) ? 25 : len;
+  var pl = [], lr = [];
+  for(var i = 0; i < data.length; i++) {
+    pl.push(data[i]);
+    if(pl.length >= length) {
+      var sum_x = 0, sum_y = 0, sum_xy = 0, sum_xx = 0, sum_yy = 0, m, b;
+      for(var q = 1; q <= length; q++) sum_x += q, sum_y += pl[q - 1], sum_xy += (pl[q - 1] * q), sum_xx += (q * q), sum_yy += (pl[q - 1] * pl[q - 1]);
+      m = ((sum_xy - sum_x * sum_y / length) / (sum_xx - sum_x * sum_x / length));
+      b = sum_y / length - m * sum_x / length;
+      lr.push(m * length + b);
+      pl.splice(0, 1);
+    }
+  }
+  return lr;
+}
+async function don(d, len) {
+  var pl = [], channel = [], length = (!len) ? 20 : len;
+  for(var i = 0; i < d.length; i++) {
+    pl.push(d[i]); // data = [high, low]
+    if(pl.length >= length) {
+      var highs = [], lows = [];
+      for(let h in pl) highs.push(pl[h][0]), lows.push(pl[h][1]);
+      var max = Math.max.apply(null, highs.slice()), min = Math.min.apply(null, lows.slice());
+      channel.push([max, (max + min) / 2, min]);
+      pl.splice(0, 1);
+    }
+  }
+  return channel;
+}
+async function ichimoku(d, len1, len2, len3, len4) { // data = [high, close, low]
+  var pl = [], length1 = (!len1) ? 9, length2 = (!len2) ? 26 : len2,
+  length3 = (!len3) ? 52 : len3, length4 = (!len4) ? 26 : len4, cloud = [], place = [];
+  for(var i = 0; i < d.length; i++) {
+    pl.push(d[i]);
+    if(pl.length >= length3) {
+      var highs = [], lows = [];
+      for(let a in pl) highs.push(d[i][0]), lows.push(d[i][2]);
+      var tsen = (Math.max.apply(null, highs.slice((highs.length - 1 - length1), highs.length - 1)) + Math.min.apply(null, lows.slice((lows.length - 1 - length1), lows.length - 1))) / 2,
+          ksen = (Math.max.apply(null, highs.slice((highs.length - 1 - length2), highs.length - 1)) + Math.min.apply(null, lows.slice((lows.length - 1 - length2), lows.length - 1))) / 2,
+          senka = d[i][1] + ksen,
+          senkb = (Math.max.apply(null, highs.slice((highs.length - 1 - length3), highs.length - 1)) + Math.min.apply(null, lows.slice((lows.length - 1 - length2), lows.length - 1))) / 2;
+          chik = d[i][1];
+          place.push([tsen, ksen, senka, senkb, chik]);
+      pl.splice(0, 1);
+    }
+  }
+  for(var i = length4; i < place.length - length4; i++) {
+    cloud.push([tsen[i][0], ksen[i][1], senka[i + (length4 - 1)][2], senkb[i + (length4 - 1)][3], chik[i + length4 - 1][4]]);
+  }
+  return cloud; // tsen, ksen, senka, senkb, chik
 }
 async function stoch(data, len, sd, sk) {
   var length = (!len) ? 14 : len;
@@ -380,31 +447,35 @@ async function mom(data, len, p) {
   return mom;
 }
 module.exports = {
-  rsi: rsi,
-  tsi: tsi,
-  pr: pr,
-  stoch: stoch,
-  atr: atr,
-  sma: sma,
-  smma: smma,
-  wma: wma,
-  vwma: vwma,
-  ema: ema,
-  macd: macd,
-  bands: bands,
-  bandwidth: bandwidth,
-  keltner: keltner,
-  std: std,
-  dif: dif,
-  hull: hull,
   aroon: {
     up: aroon_up,
     down: aroon_down,
     osc: aroon_osc,
   },
-  mfi: mfi,
-  roc: roc,
-  obv: obv,
-  vwap: vwap,
-  mom: mom
+  rsi,
+  tsi,
+  pr,
+  stoch,
+  atr,
+  sma,
+  smma,
+  wma,
+  vwma,
+  ema,
+  macd,
+  lsma,
+  don,
+  ichimoku,
+  bands,
+  bandwidth,
+  median,
+  keltner,
+  std,
+  dif,
+  hull,
+  mfi,
+  roc,
+  obv,
+  vwap,
+  mom
 }

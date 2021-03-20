@@ -26,6 +26,7 @@ const ta = require('ta.js');
 - [Hull Moving Average](#hull)
 - [Volume Weighted Moving Average](#vwma)
 - [Exponential Moving Average](#ema)
+- [Least Squares Moving Average](#lsma)
 - [Moving Average Convergence / Divergence](#macd)
 - [Relative Strength Index](#rsi)
 - [True Strength Index](#tsi)
@@ -33,9 +34,12 @@ const ta = require('ta.js');
 - [Stochastics](#stoch)
 - [Standard Deviation](#std)
 - [Percentage Difference](#dif)
+- [Median](#median)
 - [Bollinger Bands](#bands)
 - [Bollinger Bandwidth](#bandwidth)
 - [Keltner Channels](#kelt)
+- [Donchian Channels](#don)
+- [Ichimoku Cloud](#ichi)
 - [Average True Range](#atr)
 - [Aroon Up](#aroon-up)
 - [Aroon Down](#aroon-down)
@@ -86,7 +90,6 @@ ta.vwma(data, length);
 // output (array)
 // [1.185, 1.259]
 ```
-
 #### <a name="ema"></a>Exponential Moving Average (EMA)
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 10];
@@ -94,6 +97,14 @@ var length = 6; // default = 12
 ta.ema(data, length);
 // output (array)
 // [3.5, 5.357]
+```
+#### <a name="lsma"></a>Least Squares Moving Average (LSMA)
+```javascript
+var data = [5, 6, 6, 3, 4, 6, 7];
+var length = 6; // default = 25
+ta.lsma(data, length);
+// output (array)
+// [4.714, 5.761]
 ```
 #### <a name="macd"></a>Moving Average Convergence / Divergence (MACD)
 ```javascript
@@ -158,6 +169,14 @@ ta.dif(newval, oldval);
 // output (float)
 // 0.5
 ```
+#### <a name="median"></a>Median
+```javascript
+var data = [4, 6, 3, 1, 2, 5];
+var length = 4; // default = data.length
+ta.median(data, length);
+// output (array)
+// [3, 2, 2]
+```
 #### <a name="bands"></a>Bollinger Bands
 ```javascript
 var data = [1, 2, 3, 4, 5, 6];
@@ -186,6 +205,26 @@ ta.keltner(data, length, deviations);
 // output (array)
 // [[3.79, 2, 0.2], [3.93, 2.08, 0.23]]
 // [upper band, middle band, lower band]
+```
+#### <a name="don"></a>Donchian Channels
+```javascript
+var data = [[6, 2], [5, 2], [5, 3], [6, 3], [7, 4], [6, 3]]; // [high, low]
+var length = 5; // default = 20
+ta.don(data, length);
+// output (array)
+// [[7, 4.5, 2], [7, 4.5, 2]]
+// [upper band, base line, lower band]
+```
+#### <a name="ichi"></a>Ichimoku Cloud
+```javascript
+var data = [[6, 3, 2], [5, 4, 2], [5, 4, 3], [6, 4, 3], [7, 6, 4], [6, 5, 3]]; // [high, close, low]
+var length1 = 9; // default = 9
+var length2 = 26; // default = 26
+var length3 = 52; // default = 52
+var displacement = 26; // default = 26
+ta.ichimoku(data, length1, length2, length3, displacement);
+// output (array)
+// [conversion line, base line, leading span A, leading span B, lagging span]
 ```
 #### <a name="atr"></a>Average True Range (ATR)
 ```javascript
