@@ -85,10 +85,13 @@ async function lsma(data, len) {
   }
   return lr;
 }
+async function lr_trend() {
+  
+}
 async function don(d, len) {
   var pl = [], channel = [], length = (!len) ? 20 : len;
   for(var i = 0; i < d.length; i++) {
-    pl.push(d[i]); // data = [high, low]
+    pl.push(d[i]);
     if(pl.length >= length) {
       var highs = [], lows = [];
       for(let h in pl) highs.push(pl[h][0]), lows.push(pl[h][1]);
@@ -99,7 +102,7 @@ async function don(d, len) {
   }
   return channel;
 }
-async function ichimoku(d, len1, len2, len3, len4) { // data = [high, close, low]
+async function ichimoku(d, len1, len2, len3, len4) {
   var pl = [], length1 = (!len1) ? 9, length2 = (!len2) ? 26 : len2,
   length3 = (!len3) ? 52 : len3, length4 = (!len4) ? 26 : len4, cloud = [], place = [];
   for(var i = 0; i < d.length; i++) {
@@ -119,7 +122,7 @@ async function ichimoku(d, len1, len2, len3, len4) { // data = [high, close, low
   for(var i = length4; i < place.length - length4; i++) {
     cloud.push([tsen[i][0], ksen[i][1], senka[i + (length4 - 1)][2], senkb[i + (length4 - 1)][3], chik[i + length4 - 1][4]]);
   }
-  return cloud; // tsen, ksen, senka, senkb, chik
+  return cloud;
 }
 async function stoch(data, len, sd, sk) {
   var length = (!len) ? 14 : len;
