@@ -100,7 +100,7 @@ async function don(data, len) {
   return channel;
 }
 async function ichimoku(data, len1, len2, len3, len4) {
-  var pl = [], length1 = (!len1) ? 9, length2 = (!len2) ? 26 : len2,
+  var pl = [], length1 = (!len1) ? 9 : len1, length2 = (!len2) ? 26 : len2,
   length3 = (!len3) ? 52 : len3, length4 = (!len4) ? 26 : len4, cloud = [], place = [];
   for(var i = 0; i < data.length; i++) {
     pl.push(data[i]);
