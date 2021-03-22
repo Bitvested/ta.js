@@ -30,7 +30,8 @@
     "lsma",
     "least",
     "squares",
-    "average"
+    "average",
+    "correlation"
   ],
   "author": "Nino Kroesen",
   "license": "MIT",

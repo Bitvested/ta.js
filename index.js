@@ -85,13 +85,10 @@ async function lsma(data, len) {
   }
   return lr;
 }
-async function lr_trend() {
-  
-}
-async function don(d, len) {
+async function don(data, len) {
   var pl = [], channel = [], length = (!len) ? 20 : len;
-  for(var i = 0; i < d.length; i++) {
-    pl.push(d[i]);
+  for(var i = 0; i < data.length; i++) {
+    pl.push(data[i]);
     if(pl.length >= length) {
       var highs = [], lows = [];
       for(let h in pl) highs.push(pl[h][0]), lows.push(pl[h][1]);
@@ -102,19 +99,19 @@ async function don(d, len) {
   }
   return channel;
 }
-async function ichimoku(d, len1, len2, len3, len4) {
+async function ichimoku(data, len1, len2, len3, len4) {
   var pl = [], length1 = (!len1) ? 9, length2 = (!len2) ? 26 : len2,
   length3 = (!len3) ? 52 : len3, length4 = (!len4) ? 26 : len4, cloud = [], place = [];
-  for(var i = 0; i < d.length; i++) {
-    pl.push(d[i]);
+  for(var i = 0; i < data.length; i++) {
+    pl.push(data[i]);
     if(pl.length >= length3) {
       var highs = [], lows = [];
-      for(let a in pl) highs.push(d[i][0]), lows.push(d[i][2]);
+      for(let a in pl) highs.push(data[i][0]), lows.push(data[i][2]);
       var tsen = (Math.max.apply(null, highs.slice((highs.length - 1 - length1), highs.length - 1)) + Math.min.apply(null, lows.slice((lows.length - 1 - length1), lows.length - 1))) / 2,
           ksen = (Math.max.apply(null, highs.slice((highs.length - 1 - length2), highs.length - 1)) + Math.min.apply(null, lows.slice((lows.length - 1 - length2), lows.length - 1))) / 2,
-          senka = d[i][1] + ksen,
+          senka = data[i][1] + ksen,
           senkb = (Math.max.apply(null, highs.slice((highs.length - 1 - length3), highs.length - 1)) + Math.min.apply(null, lows.slice((lows.length - 1 - length2), lows.length - 1))) / 2;
-          chik = d[i][1];
+          chik = data[i][1];
           place.push([tsen, ksen, senka, senkb, chik]);
       pl.splice(0, 1);
     }
@@ -341,6 +338,18 @@ async function std(data, len) {
   }, 0) / (length));
   return std;
 }
+async function cor(data1, data2) {
+  var d1avg = await module.exports.sma(data1.slice(), d1.length),
+      d2avg = await module.exports.sma(data2.slice(), d2.length),
+      sumavg = 0, sx = 0, sy = 0;
+  for(var i = 0; i < data1.length; i++) {
+    var x = d1[i] - d1avg, y = d2[i] - d2avg;
+    sumavg += (x * y), sx += Math.pow(x, 2), sy += Math.pow(y, 2);
+  }
+  var n = d1.length - 1;
+  sx /= n, sy /= n, sx = Math.sqrt(sx), sy = Math.sqrt(sy);
+  return (sumavg / (n * sx * sy));
+}
 async function dif(n, o) {
   return (n - o) / o;
 }
@@ -474,6 +483,7 @@ module.exports = {
   median,
   keltner,
   std,
+  cor,
   dif,
   hull,
   mfi,

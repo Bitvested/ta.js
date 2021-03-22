@@ -33,6 +33,7 @@ const ta = require('ta.js');
 - [Williams %R](#pr)
 - [Stochastics](#stoch)
 - [Standard Deviation](#std)
+- [Correlation](#cor)
 - [Percentage Difference](#dif)
 - [Median](#median)
 - [Bollinger Bands](#bands)
@@ -160,6 +161,14 @@ var length = 3; // default = data.length
 ta.std(data, length);
 // output (float)
 // 0.81649658092773
+```
+#### <a name="cor"></a>Correlation
+```javascript
+var data1 = [1, 2, 3, 4, 5, 2];
+var data2 = [1, 3, 2, 4, 6, 3];
+ta.cor(data1, data2);
+// output (float)
+// 0.8808929232684737
 ```
 #### <a name="dif"></a>Percentage Difference
 ```javascript
