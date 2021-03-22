@@ -339,14 +339,14 @@ async function std(data, len) {
   return std;
 }
 async function cor(data1, data2) {
-  var d1avg = await module.exports.sma(data1.slice(), d1.length),
-      d2avg = await module.exports.sma(data2.slice(), d2.length),
+  var d1avg = await module.exports.sma(data1.slice(), data1.length),
+      d2avg = await module.exports.sma(data2.slice(), data2.length),
       sumavg = 0, sx = 0, sy = 0;
   for(var i = 0; i < data1.length; i++) {
-    var x = d1[i] - d1avg, y = d2[i] - d2avg;
+    var x = data1[i] - d1avg, y = data2[i] - d2avg;
     sumavg += (x * y), sx += Math.pow(x, 2), sy += Math.pow(y, 2);
   }
-  var n = d1.length - 1;
+  var n = data1.length - 1;
   sx /= n, sy /= n, sx = Math.sqrt(sx), sy = Math.sqrt(sy);
   return (sumavg / (n * sx * sy));
 }
