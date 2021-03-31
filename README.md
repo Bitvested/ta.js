@@ -297,14 +297,19 @@ ta.roc(data, length);
 #### <a name="kst"></a>Know Sure Thing
 ```javascript
 var data = [8, 6, 7, 6, 8, 9, 7, 5, 6, 7, 6, 8, 6, 7, 6, 8, 9, 9, 8, 6, 4, 6, 5, 6, 7, 8, 9];
+// roc sma #1
 var r1 = 5; // default = 10
 var s1 = 5; // default = 10
+// roc sma #2
 var r2 = 7; // default = 15
 var s2 = 5; // default = 10
+// roc sma #3
 var r3 = 10; // default = 20
 var s3 = 5; // default = 10
+// roc sma #4
 var r4 = 15; // default = 30
 var s4 = 7; // default = 15
+// signal line
 var sig = 4; // default = 9
 ta.kst(data, r1, r2, r3, r4, s1, s2, s3, s4, sig);
 // output (array)
