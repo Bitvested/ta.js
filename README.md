@@ -30,6 +30,7 @@ const ta = require('ta.js');
 - [Moving Average Convergence / Divergence](#macd)
 - [Relative Strength Index](#rsi)
 - [True Strength Index](#tsi)
+- [Force Index](#fi)
 - [Williams %R](#pr)
 - [Stochastics](#stoch)
 - [Standard Deviation](#std)
@@ -47,6 +48,7 @@ const ta = require('ta.js');
 - [Aroon Oscillator](#aroon-osc)
 - [Money Flow Index](#mfi)
 - [Rate Of Change](#roc)
+- [Know Sure Thing](#kst)
 - [On-Balance Volume](#obv)
 - [Volume-Weighted Average Price](#vwap)
 - [Chande Momentum Oscillator](#mom_osc)
@@ -135,6 +137,14 @@ ta.tsi(data, longlength, shortlength, signallength);
 // output (array)
 // [[0.327, 0.320], [0.579, 0.706]]
 // [strength line, signal line]
+```
+#### <a name="fi"></a>Force Index
+```javascript
+var data = [[1.4, 200], [1.5, 240], [1.1, 300], [1.2, 240], [1.5, 400]]; // [close, volume]
+var length = 4; // default = 13
+ta.fi(data, length);
+// output (array)
+// [0.0075, 0.0025]
 ```
 #### <a name="pr"></a>Williams %R
 ```javascript
@@ -283,6 +293,23 @@ var length = 3; // default = 14
 ta.roc(data, length);
 // output (array)
 // [2, 1]
+```
+#### <a name="kst"></a>Know Sure Thing
+```javascript
+var data = [8, 6, 7, 6, 8, 9, 7, 5, 6, 7, 6, 8, 6, 7, 6, 8, 9, 9, 8, 6, 4, 6, 5, 6, 7, 8, 9];
+var r1 = 5; // default = 10
+var s1 = 5; // default = 10
+var r2 = 7; // default = 15
+var s2 = 5; // default = 10
+var r3 = 10; // default = 20
+var s3 = 5; // default = 10
+var r4 = 15; // default = 30
+var s4 = 7; // default = 15
+var sig = 4; // default = 9
+ta.kst(data, r1, r2, r3, r4, s1, s2, s3, s4, sig);
+// output (array)
+// [[-0.68, -0.52], [-0.29, -0.58]]
+// [kst line, signal line]
 ```
 #### <a name="obv"></a>On-Balance Volume
 ```javascript

@@ -56,6 +56,18 @@ async function tsi(data, llen, slen, sig) {
   }
   return tsi;
 }
+async function fi(data, len) {
+  var length = (!len) ? 13 : len, pl = [], ff = [];
+  for(var i = 1; i < data.length; i++) {
+    pl.push(data[i][0] - data[i - 1][0]);
+    if(pl.length > length) {
+      var vfi = await module.exports.ema(pl.slice(), length);
+      ff.push((data[i][0] - data[i - 1][0]) * vfi[0]);
+      pl.splice(0, 1);
+    }
+  }
+  return ffi;
+}
 async function pr(data, len) {
   var length = (!len) ? 14 : len;
   var n = [], pl = [];
@@ -426,6 +438,25 @@ async function roc(data, len) {
   }
   return roc;
 }
+async function kst(data, r1, r2, r3, r4, s1, s2, s3, s4, sig) {
+  r1 = (!r1) ? 10 : r1, r2 = (!r2) ? 15 : r2, r3 = (!r3) ? 20 : r3, r4 = (!r4) ? 30 : r4, s1 = (!s1) ? 10 : s1, s2 = (!s2) ? 10 : s2, s3 = (!s3) ? 10 : s3, s4 = (!s4) ? 15 : s4, sig = (!sig) ? 9 : sig;
+  var ks = [], fs = [], ms = (Math.max(r1, r2, r3, r4) + Math.max(s1, s2, s3, s4));
+  for(var i = ms; i < data.length; i++) {
+    var rcma1 = await module.exports.roc(data.slice(i - ms, i), r1),
+        rcma2 = await module.exports.roc(data.slice(i - ms, i), r2),
+        rcma3 = await module.exports.roc(data.slice(i - ms, i), r3),
+        rcma4 = await module.exports.roc(data.slice(i - ms, i), r4);
+        rcma1 = await module.exports.sma(rcma1, s1);
+        rcma2 = await module.exports.sma(rcma2, s2);
+        rcma3 = await module.exports.sma(rcma3, s3);
+        rcma4 = await module.exports.sma(rcma4, s4);
+      ks.push(rcma1[rcma1.length - 1] + rcma2[rcma2.length - 1] + rcma3[rcma3.length - 1] + rcma4[rcma4.length - 1]);
+  }
+  var sl = await module.exports.sma(ks.slice(), sig);
+  ks.splice(0, ks.length - sl.length);
+  for(var i in sl) fs.push([ks[i], sl[i]]);
+  return fs;
+}
 async function obv(data) {
   var obv = [0];
   for(var i = 1; i < data.length; i++) {
@@ -476,7 +507,7 @@ module.exports = {
     up: aroon_up,
     down: aroon_down,
     osc: aroon_osc,
-  }, rsi, tsi, pr, stoch, atr, sma, smma, wma, vwma, ema,
-  macd, lsma, don, ichimoku, bands, bandwidth, median, keltner, std,
-  cor, dif, hull, mfi, roc, obv, vwap, mom, mom_osc
+  }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma,
+  ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
+  std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc
 }
