@@ -49,6 +49,7 @@ const ta = require('ta.js');
 - [Rate Of Change](#roc)
 - [On-Balance Volume](#obv)
 - [Volume-Weighted Average Price](#vwap)
+- [Chande Momentum Oscillator](#mom_osc)
 - [Momentum](#mom)
 
 #### <a name="sma"></a>Simple Moving Average (SMA)
@@ -297,6 +298,14 @@ var length = 2; // default = data.length
 ta.vwap(data, length);
 // output (array)
 // [127.204, 127.164]
+```
+#### <a name="mom_osc"></a>Chande Momentum Oscillator
+```javascript
+var data = [1, 1.2, 1.3, 1.3, 1.2, 1.4];
+var length = 4; // default = 9
+ta.mom_osc(data, length);
+// output (array)
+// [31.6, -31.6]
 ```
 #### <a name="mom"></a>Momentum
 ```javascript

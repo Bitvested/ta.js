@@ -458,37 +458,25 @@ async function mom(data, len, p) {
   }
   return mom;
 }
+async function mom_osc(data, len) {
+  var length = (!len) ? 9 : len, pl = [], osc = [];
+  for(var i = 0; i < data.length; i++) {
+    pl.push(data[i]);
+    if(pl.length > length) {
+      var sumh = 0, suml = 0;
+      for(var a = 1; a < length; a++) (pl[a - 1] < pl[a]) ? sumh += pl[a] : suml += pl[a];
+      osc.push((sumh - suml) / (sumh + suml) * 100);
+      pl.splice(0, 1);
+    }
+  }
+  return osc;
+}
 module.exports = {
   aroon: {
     up: aroon_up,
     down: aroon_down,
     osc: aroon_osc,
-  },
-  rsi,
-  tsi,
-  pr,
-  stoch,
-  atr,
-  sma,
-  smma,
-  wma,
-  vwma,
-  ema,
-  macd,
-  lsma,
-  don,
-  ichimoku,
-  bands,
-  bandwidth,
-  median,
-  keltner,
-  std,
-  cor,
-  dif,
-  hull,
-  mfi,
-  roc,
-  obv,
-  vwap,
-  mom
+  }, rsi, tsi, pr, stoch, atr, sma, smma, wma, vwma, ema,
+  macd, lsma, don, ichimoku, bands, bandwidth, median, keltner, std,
+  cor, dif, hull, mfi, roc, obv, vwap, mom, mom_osc
 }
