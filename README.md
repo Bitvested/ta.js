@@ -31,6 +31,7 @@ const ta = require('ta.js');
 - [Relative Strength Index](#rsi)
 - [True Strength Index](#tsi)
 - [Force Index](#fi)
+- [Accumulative Swing Index](#asi)
 - [Awesome Oscillator](#ao)
 - [Williams %R](#pr)
 - [Stochastics](#stoch)
@@ -146,6 +147,13 @@ var length = 4; // default = 13
 ta.fi(data, length);
 // output (array)
 // [0.0075, 0.0025]
+```
+#### <a name="asi"></a>Accumulative Swing Index
+```javascript
+var data = [[7, 6, 4], [9, 7, 5], [9, 8, 6]]; // [high, close, low]
+ta.asi(data);
+// output (array)
+// [0, -12.5]
 ```
 #### <a name="ao"></a>Awesome Oscillator
 ```javascript
