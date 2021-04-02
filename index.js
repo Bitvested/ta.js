@@ -82,9 +82,9 @@ async function asi(data) {
   return a;
 }
 async function ao(data, len1, len2) {
-  var length1 = (!len1) ? 5 : len1, length2 = (!len2) ? 35, pl = [], a = [];
+  var length1 = (!len1) ? 5 : len1, length2 = (!len2) ? 35 : len2, pl = [], a = [];
   for(var i = 0; i < data.length; i++) {
-    pl.push((data[i][0] + data[i][1]) / 2); // [low, high]
+    pl.push((data[i][0] + data[i][1]) / 2);
     if(pl.length >= length2) {
       var f = await module.exports.sma(pl.slice(), length1),
           s = await module.exports.sma(pl.slice(), length2);
@@ -533,7 +533,7 @@ module.exports = {
     up: aroon_up,
     down: aroon_down,
     osc: aroon_osc,
-  }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma,
+  }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc
 }
