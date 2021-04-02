@@ -68,6 +68,19 @@ async function fi(data, len) {
   }
   return ffi;
 }
+async function ao(data, len1, len2) { // awesome osc
+  var length1 = (!len1) ? 5 : len1, length2 = (!len2) ? 35, pl = [], a = [];
+  for(var i = 0; i < data.length; i++) {
+    pl.push((data[i][0] + data[i][1]) / 2); // [low, high]
+    if(pl.length >= length2) {
+      var f = await module.exports.sma(pl.slice(), length1),
+          s = await module.exports.sma(pl.slice(), length2);
+      a.push(f[f.length - 1] - s[s.length - 1]);
+      pl.splice(0, 1);
+    }
+  }
+  return a;
+}
 async function pr(data, len) {
   var length = (!len) ? 14 : len;
   var n = [], pl = [];

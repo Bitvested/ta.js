@@ -31,6 +31,7 @@ const ta = require('ta.js');
 - [Relative Strength Index](#rsi)
 - [True Strength Index](#tsi)
 - [Force Index](#fi)
+- [Awesome Oscillator](#ao)
 - [Williams %R](#pr)
 - [Stochastics](#stoch)
 - [Standard Deviation](#std)
@@ -145,6 +146,15 @@ var length = 4; // default = 13
 ta.fi(data, length);
 // output (array)
 // [0.0075, 0.0025]
+```
+#### <a name="ao"></a>Awesome Oscillator
+```javascript
+var data = [[6, 5], [8, 6], [7, 4], [6, 5], [7, 6], [9, 8]]; // [high, low]
+var shortlength = 2;
+var longlength = 5;
+ta.ao(data, shortlength, longlength);
+// output (array)
+// [0, 0.9]
 ```
 #### <a name="pr"></a>Williams %R
 ```javascript
