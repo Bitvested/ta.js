@@ -528,6 +528,13 @@ async function mom_osc(data, len) {
   }
   return osc;
 }
+async function ha(data) { // heikin ashi // [open, high, low, close]
+  var ha = [(Number(data[0][1]) + Number(data[0][4])) / 2, Number(data[0][2]), Number(data[0][3]), (Number(data[0][1]) + Number(data[0][2]) + Number(data[0][3]) + Number(data[0][4])) / 4];
+  for(var i = 1; i < data.length; i++) {
+    ha.push((ha[ha.length - 1][0] + ha[ha.length - 1][3]) / 2, Math.max(open, close, Number(data[i][2])), Math.min(open, close, Number(data[i][3])), (Number(data[i][1]) + Number(data[i][2]) + Number(data[i][3]) + Number(data[i][4])) / 4);
+  }
+  return ha;
+}
 module.exports = {
   aroon: {
     up: aroon_up,
