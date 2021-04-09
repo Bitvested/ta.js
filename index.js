@@ -548,7 +548,7 @@ async function ren(data, bs) {
       bl+=bs;
     }
     if(data[i][1] < bl - bs) {
-      re.push([bh-bs,bh-bs,bl,bl]);
+      re.push([bh-bs,bh-bs,bl+bs,bl+bs]);
       bh-=bs;
       bl-=bs;
     }
