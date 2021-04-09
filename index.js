@@ -535,7 +535,11 @@ async function ha(data) {
   }
   return ha;
 }
+<<<<<<< HEAD
 async function ren(data, bs) {
+=======
+async function ren(data, bs) { // renko chart // [high, low] // brick size in currency
+>>>>>>> b69540f957170a6f29702affa6413b02ca7943af
   var re = [], bs = (!bs) ? 1 : bs, decimals = (function(){
     if(Math.floor(bs) == bs) return 0;
     return bs.toString().split(".")[1].length || 0;
@@ -548,12 +552,20 @@ async function ren(data, bs) {
       bl+=bs;
     }
     if(data[i][1] < bl - bs) {
+<<<<<<< HEAD
       re.push([bh-bs,bh-bs,bl+bs,bl+bs]);
+=======
+      re.push([bh-bs,bh-bs,bl,bl]);
+>>>>>>> b69540f957170a6f29702affa6413b02ca7943af
       bh-=bs;
       bl-=bs;
     }
   }
+<<<<<<< HEAD
   return re;
+=======
+  return re; // [open, high, low, close]
+>>>>>>> b69540f957170a6f29702affa6413b02ca7943af
 }
 module.exports = {
   aroon: {
