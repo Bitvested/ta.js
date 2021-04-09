@@ -528,12 +528,32 @@ async function mom_osc(data, len) {
   }
   return osc;
 }
-async function ha(data) { // heikin ashi // [open, high, low, close]
+async function ha(data) {
   var ha = [(Number(data[0][1]) + Number(data[0][4])) / 2, Number(data[0][2]), Number(data[0][3]), (Number(data[0][1]) + Number(data[0][2]) + Number(data[0][3]) + Number(data[0][4])) / 4];
   for(var i = 1; i < data.length; i++) {
     ha.push((ha[ha.length - 1][0] + ha[ha.length - 1][3]) / 2, Math.max(open, close, Number(data[i][2])), Math.min(open, close, Number(data[i][3])), (Number(data[i][1]) + Number(data[i][2]) + Number(data[i][3]) + Number(data[i][4])) / 4);
   }
   return ha;
+}
+async function ren(data, bs) { // renko chart // [high, low] // brick size in currency
+  var re = [], bs = (!bs) ? 1 : bs, decimals = (function(){
+    if(Math.floor(bs) == bs) return 0;
+    return bs.toString().split(".")[1].length || 0;
+  })(), bl = Math.floor(data[0][1] / bs * (10 ** decimals)) / (10 ** decimals) * bs,
+  bh = Math.ceil(data[0][0] / bs * (10 ** decimals)) / (10 ** decimals) * bs;
+  for(var i = 1; i < data.length; i++) {
+    if(data[i][0] > bh + bs) {
+      re.push([bh,bh+bs,bh,bh+bh+bs]);
+      bh+=bs;
+      bl+=bs;
+    }
+    if(data[i][1] < bl - bs) {
+      re.push([bh-bs,bh-bs,bl,bl]);
+      bh-=bs;
+      bl-=bs;
+    }
+  }
+  return re; // [open, high, low, close]
 }
 module.exports = {
   aroon: {
@@ -542,5 +562,5 @@ module.exports = {
     osc: aroon_osc,
   }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
-  std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc
+  std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren
 }
