@@ -539,8 +539,7 @@ async function ren(data, bs) {
   var re = [], bs = (!bs) ? 1 : bs, decimals = (function(){
     if(Math.floor(bs) == bs) return 0;
     return bs.toString().split(".")[1].length || 0;
-  })(), bl = Math.floor(data[0][1] / bs * (10 ** decimals)) / (10 ** decimals) * bs,
-  bh = Math.ceil(data[0][0] / bs * (10 ** decimals)) / (10 ** decimals) * bs;
+  })(), bh = Math.ceil(data[0][0] / bs * (10 ** decimals)) / (10 ** decimals) * bs, bl = bh - bs;
   for(var i = 1; i < data.length; i++) {
     if(data[i][0] > bh + bs) {
       re.push([bh,bh+bs,bh,bh+bh+bs]);
