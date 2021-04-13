@@ -483,6 +483,17 @@ async function roc(data, len) {
   }
   return roc;
 }
+async function cop(data, len1, len2, len3) {
+  len1 = (!len1) ? 11 : len1, len2 = (!len2) ? 14 : len2, len3 = (!len3) ? 10 : len3, max = Math.max(len1, len2), co = [];
+  for(var i = max + len3; i < data.length; i++) {
+    var r1 = data.slice(i - (max + len3), i), r2 = data.slice(i - (max + len3), i), tmp = [];
+    r1 = await module.exports.roc(r1, len1), r2 = await module.exports.roc(r2, len2);
+    for(var a = 0; a < Math.max(r1, r2); a++) tmp.push(r1[a] + r2[a]);
+    tmp = await module.exports.wma(tmp.slice(), len3);
+    co.push(tmp[tmp.length - 1]);
+  }
+  return co;
+}
 async function kst(data, r1, r2, r3, r4, s1, s2, s3, s4, sig) {
   r1 = (!r1) ? 10 : r1, r2 = (!r2) ? 15 : r2, r3 = (!r3) ? 20 : r3, r4 = (!r4) ? 30 : r4, s1 = (!s1) ? 10 : s1, s2 = (!s2) ? 10 : s2, s3 = (!s3) ? 10 : s3, s4 = (!s4) ? 15 : s4, sig = (!sig) ? 9 : sig;
   var ks = [], fs = [], ms = (Math.max(r1, r2, r3, r4) + Math.max(s1, s2, s3, s4));
