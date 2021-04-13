@@ -57,7 +57,7 @@ async function tsi(data, llen, slen, sig) {
   return tsi;
 }
 async function bop(data, len) {
-  var bo = [], (!len) ? len = 14 : len;
+  var bo = [], len = (!len) ? 14 : len;
   for(var i = 0; i < data.length; i++) {
     bo.push((data[i][3] - data[i][0]) / (data[i][1] - data[i][2]));
   }
@@ -312,7 +312,7 @@ async function hull(data, len) {
   return hma;
 }
 async function kama(data, len1, len2, len3) {
-  (!len1) ? 10 : len1, (!len2) ? 2 : len2, (!len3) ? 30 : len3;
+  len1 = (!len1) ? 10 : len1, len2 = (!len2) ? 2 : len2, len3 = (!len3) ? 30 : len3;
   var ka = await module.exports.sma(data.slice(), len1);
   for(var i = len1 + 1; i < data.length; i++) {
     var vola = 0, change = Math.abs(data[i] - data[i - len1]);
