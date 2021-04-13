@@ -56,6 +56,14 @@ async function tsi(data, llen, slen, sig) {
   }
   return tsi;
 }
+async function bop(data, len) {
+  var bo = [], (!len) ? len = 14 : len;
+  for(var i = 0; i < data.length; i++) {
+    bo.push((data[i][3] - data[i][0]) / (data[i][1] - data[i][2]));
+  }
+  bo = await module.exports.sma(bo, len);
+  return bo;
+}
 async function fi(data, len) {
   var length = (!len) ? 13 : len, pl = [], ff = [];
   for(var i = 1; i < data.length; i++) {
