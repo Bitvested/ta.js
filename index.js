@@ -487,8 +487,8 @@ async function cop(data, len1, len2, len3) {
   len1 = (!len1) ? 11 : len1, len2 = (!len2) ? 14 : len2, len3 = (!len3) ? 10 : len3, max = Math.max(len1, len2), co = [];
   for(var i = max + len3; i < data.length; i++) {
     var r1 = data.slice(i - (max + len3), i), r2 = data.slice(i - (max + len3), i), tmp = [];
-    r1 = await module.exports.roc(r1, len1), r2 = await module.exports.roc(r2, len2);
-    for(var a = 0; a < Math.max(r1, r2); a++) tmp.push(r1[a] + r2[a]);
+    r1 = await module.exports.roc(r1, len1), r2 = await module.exports.roc(r2, len2), r1.splice(0, r1.length - r2.length), r2.splice(0, r2.length - r1.length);
+    for(var a = 0; a < r1.length; a++) tmp.push(r1[a] + r2[a]);
     tmp = await module.exports.wma(tmp.slice(), len3);
     co.push(tmp[tmp.length - 1]);
   }
