@@ -24,12 +24,14 @@ const ta = require('ta.js');
 - [Smoothed Moving Average](#smma)
 - [Weighted Moving Average](#wma)
 - [Hull Moving Average](#hull)
+- [Kaufman Adaptive Moving Average](#kama)
 - [Volume Weighted Moving Average](#vwma)
 - [Exponential Moving Average](#ema)
 - [Least Squares Moving Average](#lsma)
 - [Moving Average Convergence / Divergence](#macd)
 - [Relative Strength Index](#rsi)
 - [True Strength Index](#tsi)
+- [Balance Of Power](#bop)
 - [Force Index](#fi)
 - [Accumulative Swing Index](#asi)
 - [Awesome Oscillator](#ao)
@@ -50,12 +52,14 @@ const ta = require('ta.js');
 - [Aroon Oscillator](#aroon-osc)
 - [Money Flow Index](#mfi)
 - [Rate Of Change](#roc)
+- [Coppock Curve](#cop)
 - [Know Sure Thing](#kst)
 - [On-Balance Volume](#obv)
 - [Volume-Weighted Average Price](#vwap)
 - [Chande Momentum Oscillator](#mom_osc)
 - [Momentum](#mom)
-
+- [Heikin Ashi](#ha)
+- [Renko](#ren)
 #### <a name="sma"></a>Simple Moving Average (SMA)
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 10];
@@ -87,6 +91,16 @@ var length = 6; // default = 14
 ta.hull(data, length);
 // output (array)
 // [4.76, 5.48]
+```
+#### <a name="kama"></a>Kaufman Adaptive Moving Average (KAMA)
+```javascript
+var data = [8, 7, 8, 9, 7, 9];
+var length1 = 2; // default = 10
+var length2 = 4; // default = 2
+var length3 = 8; // default = 30
+ta.kama(data, length1, length2, length3);
+// output (array)
+// [8, 8.64, 8.57, 8.57]
 ```
 #### <a name="vwma"></a>Volume Weighted Moving Average (VWMA)
 ```javascript
@@ -139,6 +153,14 @@ ta.tsi(data, longlength, shortlength, signallength);
 // output (array)
 // [[0.327, 0.320], [0.579, 0.706]]
 // [strength line, signal line]
+```
+#### <a name="bop"></a>Balance Of Power
+```javascript
+var data = [[4, 5, 4, 5], [5, 6, 5, 6], [6, 8, 5, 6]]; // [open, high, low, close]
+var length = 2; // default = 14
+ta.bop(data, length);
+// output (array)
+// [1, 0.5]
 ```
 #### <a name="fi"></a>Force Index
 ```javascript
@@ -312,6 +334,16 @@ ta.roc(data, length);
 // output (array)
 // [2, 1]
 ```
+#### <a name="cop"></a>Coppock Curve
+```javascript
+var data = [3, 4, 5, 3, 4, 5, 6, 4];
+var length1 = 4; // (ROC period 1) default = 11
+var length2 = 6; // (ROC period 2) default = 14
+var length3 = 5; // (WMA smoothing period) default = 10
+ta.cop(data, length1, length2, length3);
+// output (array)
+// [0.377, 1.223]
+```
 #### <a name="kst"></a>Know Sure Thing
 ```javascript
 var data = [8, 6, 7, 6, 8, 9, 7, 5, 6, 7, 6, 8, 6, 7, 6, 8, 9, 9, 8, 6, 4, 6, 5, 6, 7, 8, 9];
@@ -365,6 +397,22 @@ var percentage = false; // default = false (true returns percentage)
 ta.mom(data, length, percentage);
 // output (array)
 // [0.24, 0.24]
+```
+#### <a name="ha"></a>Heikin Ashi
+```javascript
+var data = [[3, 4, 2, 3], [3, 6, 3, 5], [5, 5, 2, 3]]; // [open, high, low, close]
+ta.ha(data);
+// output (array)
+// [open, high, low, close]
+// first 7-10 candles are unreliable
+```
+#### <a name="ren"></a>Renko
+```javascript
+var data = [[8, 6], [9, 7], [9, 8]]; // [high, low]
+var bricksize = 3;
+ta.ren(data, bricksize);
+// output (array)
+// [open, high, low, close]
 ```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

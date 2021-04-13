@@ -595,5 +595,6 @@ module.exports = {
     osc: aroon_osc,
   }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
-  std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren
+  std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
+  bop, cop, kama
 }
