@@ -311,6 +311,17 @@ async function hull(data, len) {
   }
   return hma;
 }
+async function kama(data, len1, len2, len3) {
+  (!len1) ? 10 : len1, (!len2) ? 2 : len2, (!len3) ? 30 : len3;
+  var ka = await module.exports.sma(data.slice(), len1);
+  for(var i = len1 + 1; i < data.length; i++) {
+    var vola = 0, change = Math.abs(data[i] - data[i - len1]);
+    for(var a = 1; a < len1; a++) vola += Math.abs(data[i] - data[i - 1]);
+    var sc = (change/vola * (2/(len2+1) - 2/(len3+1) + 2/(len3+1))) ** 2;
+    ka.push(ka[ka.length - 1] + sc * (data[i] - ka[ka.length - 1]));
+  }
+  return ka;
+}
 async function macd(data, len1, len2) {
   var length1 = (!len1) ? 12 : len1;
   var length2 = (!len2) ? 26 : len2;
