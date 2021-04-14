@@ -100,7 +100,7 @@ var length2 = 4; // default = 2
 var length3 = 8; // default = 30
 ta.kama(data, length1, length2, length3);
 // output (array)
-// [8, 8.64, 8.57, 8.57]
+// [8, 8.64, 8.37, 8.37]
 ```
 #### <a name="vwma"></a>Volume Weighted Moving Average (VWMA)
 ```javascript
