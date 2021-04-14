@@ -19,16 +19,14 @@ async function rsi(data, len) {
   var length = (!len) ? 14 : len;
   var pl = [], arrsi = [];
   for(var i = 1; i < data.length; i++) {
-    var diff = (data[i] - data[i - 1]);
-    pl.push(diff);
+    pl.push((data[i] - data[i - 1]));
     if(pl.length >= length) {
       var gain = 0, loss = 0;
       for(q in pl) {
-        if(pl[q] < 0) loss += pl[q];
+        if(pl[q] < 0) loss += Math.abs(pl[q]);
         if(pl[q] >= 0) gain += pl[q];
       }
-      gain /= length; loss = (Math.abs(loss)) / length;
-      rsi = Number(100 - 100 / (1 + (gain / loss)));
+      rsi = Number(100 - 100 / (1 + ((gain / length) / (loss / length))));
       arrsi.push(rsi);
       pl.splice(0, 1);
     }
