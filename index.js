@@ -279,16 +279,14 @@ async function ema(data, len) {
   weight = 2 / (length + 1);
   for(var i = 0; i < data.length; i++) {
     pl.push(data[i]);
-    var average = 0;
-    if(prevema == 0 && pl.length >= length) {
+    if(pl.length >= length) {
+      if(ema.length > 0) {
+        ema.push((data[i] - ema[ema.length - 1]) * weight + ema[ema.length - 1]);
+        continue;
+      }
+      var average = 0;
       for(q in pl) average += pl[q];
-      average /= length;
-      ema.push(average);
-      prevema = average;
-    } else if(prevema != 0 && pl.length >= length) {
-      average = (data[i] - prevema) * weight + prevema;
-      ema.push(average);
-      prevema = average;
+      ema.push(average / length);
     }
   }
   return ema;
