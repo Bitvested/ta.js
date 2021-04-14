@@ -231,11 +231,7 @@ async function smma(data, len) {
     if(pl.length >= length) {
       var average = 0;
       for(q in pl) average += pl[q];
-      if(smma) {
-        smma.push(average / length);
-      } else {
-        smma.push((average - sma1 + data[i]) / length);
-      }
+      if(smma.length <= 0) { smma.push(average / length); } else { smma.push((average - smma[smma.length - 1]) / length); }
       pl.splice(0, 1);
     }
   }

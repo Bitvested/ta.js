@@ -74,7 +74,7 @@ var data = [1, 2, 3, 4, 5, 6, 10];
 var length = 5; // default = 14
 ta.smma(data, length);
 // output (array)
-// [4, 5.6]
+// [3.4, 4.92]
 ```
 #### <a name="wma"></a>Weighted Moving Average (WMA)
 ```javascript
