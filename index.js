@@ -237,18 +237,13 @@ async function smma(data, len) {
   return smma;
 }
 async function wma(data, len) {
-  var length = (!len) ? 14 : len;
-  var weight = 0;
+  var length = (!len) ? 14 : len, weight = 0, pl = [], wma = [];;
   for(var i = 1; i <= length; i++) weight += i;
-  var pl = [], wma = [];
   for(var i = 0; i < data.length; i++) {
     pl.push(data[i]);
     if(pl.length >= length) {
-      var average = 0, index = 1;
-      for(q in pl) {
-        average += pl[q] * index / weight;
-        index++;
-      }
+      var average = 0;
+      for(q in pl) average += pl[q] * (Number(q)+1) / weight;
       wma.push(average);
       pl.splice(0, 1);
     }
