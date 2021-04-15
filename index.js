@@ -184,7 +184,7 @@ async function stoch(data, len, sd, sk) {
       ka.push(smoothedk[smoothedk.length - 1]);
     }
     if(ka.length - smoothk >= smoothd) {
-      var d = await module.exports.sma(ka.slice(smoothk), smoothd);
+      var d = await module.exports.sma(ka.slice(), smoothd);
       stoch.push([k, d[d.length - 1]]);
       high.splice(0, 1);
       low.splice(0, 1);
