@@ -336,13 +336,13 @@ ta.roc(data, length);
 ```
 #### <a name="cop"></a>Coppock Curve
 ```javascript
-var data = [3, 4, 5, 3, 4, 5, 6, 4];
+var data = [3, 4, 5, 3, 4, 5, 6, 4, 7, 5, 3, 5, 4];
 var length1 = 4; // (ROC period 1) default = 11
 var length2 = 6; // (ROC period 2) default = 14
 var length3 = 5; // (WMA smoothing period) default = 10
 ta.cop(data, length1, length2, length3);
 // output (array)
-// [0.377, 1.223]
+// [0.225, -0.089]
 ```
 #### <a name="kst"></a>Know Sure Thing
 ```javascript
