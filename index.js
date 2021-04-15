@@ -194,16 +194,10 @@ async function stoch(data, len, sd, sk) {
   return stoch;
 }
 async function atr(data, len) {
-  var length = (!len) ? 14 : len;
-  var atr = [];
-  for(var i = 0; i < data.length; i++) {
-    if(atr.length < 1) {
-      atr.push(data[i][0] - data[i][2]);
-    } else {
-      var t0 = await Math.max((data[i][0] - data[i - 1][1]), (data[i][2] - data[i - 1][1]), (data[i][0] - data[i][2]));
-      var at =(atr[atr.length - 1] * (length - 1) + t0) / length;
-      atr.push(at);
-    }
+  var length = (!len) ? 14 : len, atr = [data[0][0] - data[0][2]];
+  for(var i = 1; i < data.length; i++) {
+    var t0 = await Math.max((data[i][0] - data[i - 1][1]), (data[i][2] - data[i - 1][1]), (data[i][0] - data[i][2]));
+    atr.push((atr[atr.length - 1] * (length - 1) + t0) / length);
   }
   return atr;
 }
