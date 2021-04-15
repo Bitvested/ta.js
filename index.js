@@ -318,7 +318,7 @@ async function macd(data, len1, len2) {
   ema.splice(0, length2 - length1);
   var macd = [];
   for(var i = 0; i < emb.length; i++) {
-    macd.push([ema[i] - emb[i]]);
+    macd.push(ema[i] - emb[i]);
   }
   return macd;
 }
