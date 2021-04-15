@@ -263,7 +263,7 @@ var length = 5; // default = 14
 var deviations = 1; // default = 1
 ta.keltner(data, length, deviations);
 // output (array)
-// [[3.79, 2, 0.2], [3.93, 2.08, 0.23]]
+// [[3.93, 2.06, 0.20]]
 // [upper band, middle band, lower band]
 ```
 #### <a name="don"></a>Donchian Channels
