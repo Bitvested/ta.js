@@ -341,23 +341,9 @@ async function bands(data, len, dev) {
   return boll;
 }
 async function bandwidth(data, len, dev) {
-  var length = (!len) ? 14 : len;
-  var deviations = (!dev) ? 1 : dev;
-  var pl = [], deviation = [], boll = [];
-  var sma = await module.exports.sma(data, length);
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var devi = await module.exports.std(pl);
-      deviation.push(devi);
-      pl.push(data[i]);
-      pl.splice(0, 1);
-    }
-  }
-  for(var i = 0; i < deviation.length; i++) {
-    var bandwidth = (((sma[i] + deviation[i] * deviations) - (sma[i] - deviation[i] * deviations)) / sma[i]);
-    boll.push(bandwidth);
-  }
+  var length = (!len) ? 14 : len, deviations = (!dev) ? 1 : dev, boll = [],
+  band = await module.exports.bands(data.slice(), length, deviations);
+  for(var i = 0; i < band.length; i++) boll.push((band[i][0] - band[i][2]) / band[i][1]);
   return boll;
 }
 async function keltner(data, len, dev) {
