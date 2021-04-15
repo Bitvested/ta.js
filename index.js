@@ -540,14 +540,14 @@ async function ren(data, bs) {
   for(var i = 1; i < data.length; i++) {
     if(data[i][0] > bh + bs) {
       do {
-        re.push([bh,bh+bs,bh,bh+bh+bs]);
+        re.push([bh,bh+bs,bh,bh+bs]);
         bh+=bs;
         bl+=bs;
       } while(data[i][0] > bh + bs);
     }
     if(data[i][1] < bl - bs) {
       do {
-        re.push([bh-bs,bh-bs,bl+bs,bl+bs]);
+        re.push([bl,bl,bl-bs,bl-bs]);
         bh-=bs;
         bl-=bs;
       } while(data[i][1] < bl - bs);
