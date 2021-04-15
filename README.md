@@ -254,7 +254,7 @@ var length = 5; // default = 14
 var deviations = 2; // default = 1
 ta.bandwidth(data, length, deviations);
 // output (array)
-// [1.886, 1.344]
+// [1.885, 1.414]
 ```
 #### <a name="kelt"></a>Keltner Channels
 ```javascript
