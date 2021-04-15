@@ -168,7 +168,7 @@ var data = [[1.4, 200], [1.5, 240], [1.1, 300], [1.2, 240], [1.5, 400]]; // [clo
 var length = 4; // default = 13
 ta.fi(data, length);
 // output (array)
-// [0.0075, 0.0025]
+// [0.0075]
 ```
 #### <a name="asi"></a>Accumulative Swing Index
 ```javascript
