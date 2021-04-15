@@ -105,7 +105,7 @@ async function pr(data, len) {
   var n = [], pl = [];
   for(var i = 0; i < data.length; i++) {
     pl.push(data[i]);
-    if(pl.length >= length - 1) {
+    if(pl.length >= length) {
       var highd = await Math.max.apply(null, pl), lowd = await Math.min.apply(null, pl);
       n.push((highd - data[i]) / (highd - lowd) * -100);
       pl.splice(0, 1);

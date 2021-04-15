@@ -189,7 +189,7 @@ ta.ao(data, shortlength, longlength);
 #### <a name="pr"></a>Williams %R
 ```javascript
 var data = [2, 1, 3, 1, 2];
-var length = 3; // default = 14
+var length = 4; // default = 14
 ta.pr(data, length);
 // output (array)
 // [-100, -50]
