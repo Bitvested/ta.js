@@ -100,7 +100,7 @@ var length2 = 4; // default = 2
 var length3 = 8; // default = 30
 ta.kama(data, length1, length2, length3);
 // output (array)
-// [8, 8.64, 8.37, 8.37]
+// [8, 8.64, 8.57, 8.57]
 ```
 #### <a name="vwma"></a>Volume Weighted Moving Average (VWMA)
 ```javascript
@@ -141,7 +141,7 @@ var data = [1, 2, 3, 4, 5, 6, 7, 5];
 var length = 6; // default = 14
 ta.rsi(data, length);
 // output (array)
-// [100, 71.43]
+// [100, 100, 72.77]
 ```
 #### <a name="tsi"></a>True Strength Index (TSI)
 ```javascript
@@ -192,7 +192,7 @@ var data = [2, 1, 3, 1, 2];
 var length = 4; // default = 14
 ta.pr(data, length);
 // output (array)
-// [-100, -50]
+// [-0, -100, -50]
 ```
 #### <a name="stoch"></a>Stochastics
 ```javascript
@@ -254,7 +254,7 @@ var length = 5; // default = 14
 var deviations = 2; // default = 1
 ta.bandwidth(data, length, deviations);
 // output (array)
-// [1.885, 1.414]
+// [1.886, 1.344]
 ```
 #### <a name="kelt"></a>Keltner Channels
 ```javascript
@@ -342,7 +342,7 @@ var length2 = 6; // (ROC period 2) default = 14
 var length3 = 5; // (WMA smoothing period) default = 10
 ta.cop(data, length1, length2, length3);
 // output (array)
-// [0.225, -0.089]
+// [0.376, 0.237]
 ```
 #### <a name="kst"></a>Know Sure Thing
 ```javascript
