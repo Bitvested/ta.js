@@ -17,7 +17,7 @@ async function median(data, len) {
 }
 async function mad(data, len) {
   var length = (!len) ? data.length : len, med = [];
-  for(var i = (length); i <= data.length; i++) {
+  for(var i = length; i <= data.length; i++) {
     var tmp = data.slice(i - length, i),
         m = await module.exports.median(tmp.slice()),
         adev = tmp.map(val => Math.abs(val - m));
