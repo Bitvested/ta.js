@@ -15,6 +15,17 @@ async function median(data, len) {
   }
   return med;
 }
+async function mad(data, len) {
+  var length = (!len) ? data.length : len, med = [];
+  for(var i = (length); i <= data.length; i++) {
+    var tmp = data.slice(i - length, i),
+        m = await module.exports.median(tmp.slice()),
+        adev = tmp.map(val => Math.abs(val - m));
+        adev = await module.exports.median(adev);
+    med.push(adev[0]);
+  }
+  return med;
+}
 async function rsi(data, len) {
   var length = (!len) ? 14 : len;
   var pl = [], arrsi = [];
@@ -352,6 +363,15 @@ async function keltner(data, len, dev) {
   }
   return kelt
 }
+async function variance(data, len) {
+  var length = (!len) ? data.length : len, va = [];
+  for(var i = length; i <= data.length; i++) {
+    var tmp = data.slice(i - length, i), mean = await module.exports.sma(tmp.slice()), sum = 0;
+    for(x in tmp) sum += ((tmp[x] - mean[mean.length-1]) ** 2);
+    va.push(sum/length);
+  }
+  return va;
+}
 async function std(data, len) {
   var length = (!len) ? data.length : len;
   var mean = data.reduce((a, b) => {
@@ -563,5 +583,5 @@ module.exports = {
   }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
-  bop, cop, kama
+  bop, cop, kama, mad, variance
 }
