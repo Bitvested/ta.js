@@ -26,6 +26,16 @@ async function mad(data, len) {
   }
   return med;
 }
+async function aad(data, len) {
+  var length = (!len) ? data.length : len, med = [];
+  for(var i = 0; i < data.length; i++) {
+    var tmp = data.slice(i - length, i), sum = 0,
+        m = await ta.sma(tmp.slice(), length);
+    for(q in tmp) sum += Math.abs(tmp[q] - m[m.length-1]);
+    med.push(sum/length);
+  }
+  return med;
+}
 async function rsi(data, len) {
   var length = (!len) ? 14 : len;
   var pl = [], arrsi = [];
