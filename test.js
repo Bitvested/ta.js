@@ -23,6 +23,7 @@ ta.std([1, 2, 3], 3).then((std) => { try { assert.deepEqual(std, 0.8164965809277
 ta.cor([1, 2, 3, 4, 5, 2], [1, 3, 2, 4, 6, 3]).then((cor) => { try { assert.deepEqual(cor, 0.8808929232684737); } catch(e) { console.error('Test failed @ cor \n'); }});
 ta.dif(0.75, 0.5).then((dif) => { try {assert.deepEqual(dif, 0.5); } catch(e) { console.error('Test failed @ dif \n'); }});
 ta.median([4, 6, 3, 1, 2, 5], 4).then((median) => { try { assert.deepEqual(median, [3, 2, 2]); } catch(e) { console.error('Test failed @ median \n'); }});
+ta.kmeans([2, 3, 4, 5, 3, 5, 7, 8, 6, 8, 6, 4, 2, 6], 4).then((kmeans) => { try { assert.deepEqual(kmeans, [[ 4, 5, 5, 4 ], [ 7, 6, 6, 6 ], [ 8, 8 ], [ 2, 3, 3, 2 ]]); } catch(e) { console.error('Test failed @ kmeans \n'); }});
 ta.mad([3, 7, 5, 4, 3, 8, 9], 6).then((mad) => { try { assert.deepEqual(mad, [1, 2]); } catch(e) { console.error('Test failed @ mad \n'); }});
 ta.aad([4, 6, 8, 6, 8, 9, 10, 11], 7).then((aad) => { try { assert.deepEqual(aad, [1.6734693877551021, 1.469387755102041]); } catch(e) { console.error('Test failed @aad \n'); }});
 ta.ssd([7, 6, 5, 7, 9, 8, 3, 5, 4], 7).then((ssd) => { try { assert.deepEqual(ssd, [4.869731585445518, 4.9856938190329]); } catch(e) { console.error('Test failed @ ssd \n'); }});
