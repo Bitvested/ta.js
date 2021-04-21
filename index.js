@@ -28,9 +28,9 @@ async function mad(data, len) {
 }
 async function aad(data, len) {
   var length = (!len) ? data.length : len, med = [];
-  for(var i = 0; i < data.length; i++) {
-    var tmp = data.slice(i - length, i), sum = 0,
-        m = await ta.sma(tmp.slice(), length);
+  for(var i = length; i <= data.length; i++) {
+    var tmp = data.slice(i-length, i), sum = 0,
+        m = await module.exports.sma(tmp.slice(), length);
     for(q in tmp) sum += Math.abs(tmp[q] - m[m.length-1]);
     med.push(sum/length);
   }
@@ -38,8 +38,8 @@ async function aad(data, len) {
 }
 async function ssd(data, len) {
   var length = (!len) ? data.length : len, sd = [];
-  for(var i = len; i < data.length; i++) {
-    var mean = await module.exports.sma(data.slice(i-len, i)), tmp = data.slice(i-len,i),
+  for(var i = length; i < data.length; i++) {
+    var mean = await module.exports.sma(data.slice(i-length, i), length), tmp = data.slice(i-length,i),
         miv = tmp.map(x => x - mean[mean.length-1]), sqr = miv.map(x => x**2), sum = 0;
         for(let a in sqr) sum += sqr[a];
         sd.push(Math.sqrt(sum));
@@ -275,10 +275,6 @@ async function wma(data, len) {
   }
   return wma;
 }
-async function pwma(data, len) {
-
-}
-async function hwma(data, len)
 async function vwma(data, len) {
     var length = (!len) ? 20 : len, pl = [], vwma = [];
     for(var i = 0; i < data.length; i++) {
@@ -607,5 +603,5 @@ module.exports = {
   }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
-  bop, cop, kama, mad, aad, variance
+  bop, cop, kama, mad, aad, variance, ssd
 }
