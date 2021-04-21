@@ -36,6 +36,16 @@ async function aad(data, len) {
   }
   return med;
 }
+async function ssd(data, len) {
+  var length = (!len) ? data.length : len, sd = [];
+  for(var i = len; i < data.length; i++) {
+    var mean = await module.exports.sma(data.slice(i-len, i)), tmp = data.slice(i-len,i),
+        miv = tmp.map(x => x - mean[mean.length-1]), sqr = miv.map(x => x**2), sum = 0;
+        for(let a in sqr) sum += sqr[a];
+        sd.push(Math.sqrt(sum));
+  }
+  return sd;
+}
 async function rsi(data, len) {
   var length = (!len) ? 14 : len;
   var pl = [], arrsi = [];
@@ -265,6 +275,10 @@ async function wma(data, len) {
   }
   return wma;
 }
+async function pwma(data, len) {
+
+}
+async function hwma(data, len)
 async function vwma(data, len) {
     var length = (!len) ? 20 : len, pl = [], vwma = [];
     for(var i = 0; i < data.length; i++) {
