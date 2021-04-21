@@ -275,6 +275,46 @@ async function wma(data, len) {
   }
   return wma;
 }
+async function pwma(data, len) {
+  var weight = 0, wmaa = [], weights = [], length = (!len) ? 14 : len;
+  for(var i = length / 2, b = len; i >= 1; i--, b--) {
+    if(i % 1 != 0) {
+      i = Math.round(i);
+      weight += (i * b)
+    } else {
+      weights.push(i * b);
+      weight += (i * b);
+      weight += (i * b);
+    }
+    weights.unshift(i * b);
+  }
+  for(var i = length; i <= data.length; i++) {
+    var average = 0, pl = data.slice(i-length,i);
+    for(var a = length - 1; a >= 0; a--) average += pl[a] * weights[a] / weight;
+    wmaa.push(average);
+  }
+  return wmaa;
+}
+async function hwma(data, len) {
+  var weight = 0, wmaa = [], weights = [], length = (!len) ? 14 : len;
+  for(var i = 1, b = length; i <= length / 2; i++, b--) {
+    if(i % 1 != 0) {
+      i = Math.round(i);
+      weight += (i * b)
+    } else {
+      weights.push(i * b);
+      weight += (i * b);
+      weight += (i * b);
+    }
+    weights.unshift(i * b);
+  }
+  for(var i = length; i <= data.length; i++) {
+    var average = 0, pl = data.slice(i-length, i);
+    for(var a = length - 1; a >= 0; a--) average += pl[a] * weights[a] / weight;
+    wmaa.push(average);
+  }
+  return wmaa;
+}
 async function vwma(data, len) {
     var length = (!len) ? 20 : len, pl = [], vwma = [];
     for(var i = 0; i < data.length; i++) {
@@ -603,5 +643,5 @@ module.exports = {
   }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
-  bop, cop, kama, mad, aad, variance, ssd
+  bop, cop, kama, mad, aad, variance, ssd, pwma, hwma
 }

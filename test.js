@@ -2,6 +2,8 @@ const ta = require('./index.js'), assert = require('assert');
 ta.sma([1, 2, 3, 4, 5, 6, 10], 6).then((sma) => { try { assert.deepEqual(sma, [3.5, 5]); } catch(e) { console.error('Test failed @ sma \n'); }});
 ta.smma([1, 2, 3, 4, 5, 6, 10], 5).then((smma) => { try { assert.deepEqual(smma, [3.4, 4.92]); } catch(e) { console.error('Test failed @ smma \n'); }});
 ta.wma([69, 68, 66, 70, 68], 4).then((wma) => { try { assert.deepEqual(wma, [68.3, 68.2]); } catch(e) { console.error('Test failed @ wma \n'); }});
+ta.pwma([17, 26, 23, 29, 20], 4).then((pwma) => { try { assert.deepEqual(pwma, [24.090909090909093, 25.18181818181818]); } catch(e) { console.error('Test failed @ pwma \n'); }});
+ta.hwma([54, 51, 86, 42, 47], 4).then((hwma) => { try { assert.deepEqual(hwma, [56.2, 55]); } catch(e) { console.error('Test failed @ hwma \n'); }});
 ta.hull([6, 7, 5, 6, 7, 4, 5, 7], 6).then((hull) => { try { assert.deepEqual(hull, [4.761904761904762, 5.476190476190476]); } catch(e) { console.error('Test failed @ hull \n'); }});
 ta.kama([8, 7, 8, 9, 7, 9], 2, 4, 8).then((kama) => { try { assert.deepEqual(kama, [8, 8.64, 8.377600000000001, 8.377600000000001]); } catch(e) { console.error('Test failed @ kama \n'); }});
 ta.vwma([[1, 59], [1.1, 82], [1.21, 27], [1.42, 73], [1.32, 42]], 4).then((vwma) => { try { assert.deepEqual(vwma, [1.184771784232365, 1.258794642857143]); } catch(e) { console.error('Test failed @ vwma \n'); }});
