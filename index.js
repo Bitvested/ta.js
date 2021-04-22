@@ -332,8 +332,7 @@ async function hwma(data, len) {
       weight += (i * b)
     } else {
       weights.push(i * b);
-      weight += (i * b);
-      weight += (i * b);
+      weight += (i*b*2);
     }
     weights.unshift(i * b);
   }
