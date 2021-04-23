@@ -8,7 +8,7 @@ ta.js is a JavaScript module for dealing with financial technical analysis.
 Use the package manager npm to install ta.js.
 
 ```bash
-npm install ta.js
+npm install ta.js --save
 ```
 #### CDN
 ```html
@@ -23,6 +23,8 @@ const ta = require('ta.js');
 - [Simple Moving Average](#sma)
 - [Smoothed Moving Average](#smma)
 - [Weighted Moving Average](#wma)
+- [Parabolic Weighted Moving Average](#pwma)
+- [Hyperbolic Weighted Moving Average](#hwma)
 - [Hull Moving Average](#hull)
 - [Kaufman Adaptive Moving Average](#kama)
 - [Volume Weighted Moving Average](#vwma)
@@ -37,10 +39,15 @@ const ta = require('ta.js');
 - [Awesome Oscillator](#ao)
 - [Williams %R](#pr)
 - [Stochastics](#stoch)
+- [Variance](#variance)
 - [Standard Deviation](#std)
 - [Correlation](#cor)
 - [Percentage Difference](#dif)
 - [Median](#median)
+- [K-means Clustering](#kmeans)
+- [Median Absolute Deviation](#mad)
+- [Average Absolute Deviation](#aad)
+- [Sum Squared Differences](#ssd)
 - [Bollinger Bands](#bands)
 - [Bollinger Bandwidth](#bandwidth)
 - [Keltner Channels](#kelt)
@@ -83,6 +90,22 @@ var length = 4; // default = 14
 ta.wma(data, length);
 // output (array)
 // [68.3, 68.2]
+```
+#### <a name ="pwma"></a>Parabolic Weighted Moving Average
+```javascript
+var data = [17, 26, 23, 29, 20];
+var length = 4; // default = 14
+ta.pwma(data, length);
+// output (array)
+// [24.09, 25.18]
+```
+#### <a name="hwma"></a>Hyperbolic Weighted Moving Average
+```javascript
+var data = [54, 51, 86, 42, 47];
+var length = 4; // default = 14
+ta.hwma(data, length);
+// output (array)
+// [56.2, 55.0]
 ```
 #### <a name="hull"></a>Hull Moving Average
 ```javascript
@@ -205,6 +228,14 @@ ta.stoch(data, length, smoothd, smoothk);
 // [[66.667, 66.667], [33.336, 33.336]]
 // [kline, dline]
 ```
+#### <a name="variance"></a>Variance
+```javascript
+var data = [6, 7, 2, 3, 5, 8, 6, 2];
+var length = 7;
+ta.variance(data, length);
+// output (array)
+// [3.918, 5.061]
+```
 #### <a name="std"></a>Standard Deviation
 ```javascript
 var data = [1, 2, 3];
@@ -236,6 +267,38 @@ var length = 4; // default = data.length
 ta.median(data, length);
 // output (array)
 // [3, 2, 2]
+```
+#### <a name="kmeans"></a>K-means Clustering
+```javascript
+var data = [2, 3, 4, 5, 3, 5, 7, 8, 6, 8, 6, 4, 2, 6];
+var length = 4;
+ta.kmeans(data, length);
+// output (array)
+// [[ 4, 5, 5, 4 ], [ 7, 6, 6, 6 ], [ 8, 8 ], [ 2, 3, 3, 2 ]]
+```
+#### <a name="mad"></a>Median Absolute Deviation
+```javascript
+var data = [3, 7, 5, 4, 3, 8, 9];
+var length = 6;
+ta.mad(data, length);
+// output (array)
+// [1, 2]
+```
+#### <a name="aad"></a>Average Absolute Deviation
+```javascript
+var data = [4, 6, 8, 6, 8, 9, 10, 11];
+var length = 7;
+ta.aad(data, length);
+// output (array)
+// [1.673, 1.468]
+```
+#### <a name="ssd"></a>Sum Squared Differences
+```javascript
+var data = [7, 6, 5, 7, 9, 8, 3, 5, 4];
+var length = 7;
+ta.ssd(data, length);
+// output (array)
+// [4.869, 4.986]
 ```
 #### <a name="bands"></a>Bollinger Bands
 ```javascript
