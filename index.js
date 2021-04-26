@@ -1,17 +1,13 @@
 async function median(data, len) {
   var length = (!len) ? data.length : len, pl = [], med = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var ll = pl.slice();
-      ll.sort((a, b) => {
-        if(a > b) return -1;
-        if(a < b) return 1;
-        return 0;
-      });
-      med.push(ll[Math.round(ll.length / 2)]);
-      pl.splice(0, 1);
-    }
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-len,i);
+    pl.sort((a, b) => {
+      if(a > b) return -1;
+      if(a < b) return 1;
+      return 0;
+    });
+    med.push(pl[Math.round(pl.length / 2)]);
   }
   return med;
 }
@@ -25,7 +21,7 @@ async function kmeans(data, clusters) {
       var range = -1, oldrange = -1;
       for(y = 0; y < clusters; y++) {
         var r = Math.abs(centers[y]-data[x]);
-        if(oldrange == -1) {
+        if(oldrange === -1) {
           oldrange = r;
           n = y;
         } else if(r <= oldrange) {
@@ -42,7 +38,7 @@ async function kmeans(data, clusters) {
       var m = sum / means[n].length;
       centers[x] = m;
     }
-    for(x = 0; x < clusters; x++) if(centers[x] != old[x]) changed = true;
+    for(x = 0; x < clusters; x++) if(centers[x] !== old[x]) changed = true;
   } while(changed);
   return means;
 }
@@ -51,7 +47,7 @@ async function mad(data, len) {
   for(var i = length; i <= data.length; i++) {
     var tmp = data.slice(i - length, i),
         m = await module.exports.median(tmp.slice()),
-        adev = tmp.map(val => Math.abs(val - m[m.length-1]));
+        adev = tmp.map(x => Math.abs(x - m[m.length-1]));
         adev = await module.exports.median(adev);
     med.push(adev[adev.length-1]);
   }
@@ -72,21 +68,17 @@ async function ssd(data, len) {
   for(var i = length; i < data.length; i++) {
     var mean = await module.exports.sma(data.slice(i-length, i), length), tmp = data.slice(i-length,i), sum = 0;
     for(let x in tmp) sum += (tmp[x] - mean[mean.length-1]) ** 2;
-        sd.push(Math.sqrt(sum));
+    sd.push(Math.sqrt(sum));
   }
   return sd;
 }
 async function rsi(data, len) {
-  var length = (!len) ? 14 : len;
-  var pl = [], arrsi = [];
+  var length = (!len) ? 14 : len, pl = [], arrsi = [];
   for(var i = 1; i < data.length; i++) {
     pl.push((data[i] - data[i - 1]));
     if(pl.length >= length) {
       var gain = 0, loss = 0;
-      for(q in pl) {
-        if(pl[q] < 0) loss += Math.abs(pl[q]);
-        if(pl[q] >= 0) gain += pl[q];
-      }
+      for(q in pl) if(pl[q] < 0) { loss += Math.abs(pl[q]); } else { gain += pl[q]; }
       rsi = Number(100 - 100 / (1 + ((gain / length) / (loss / length))));
       arrsi.push(rsi);
       pl.splice(0, 1);
@@ -116,10 +108,7 @@ async function tsi(data, llen, slen, sig) {
   return tsi;
 }
 async function bop(data, len) {
-  var bo = [], len = (!len) ? 14 : len;
-  for(var i = 0; i < data.length; i++) {
-    bo.push((data[i][3] - data[i][0]) / (data[i][1] - data[i][2]));
-  }
+  var bo = data.map(x => (x[3]-x[0])/(x[1]-x[2])), len = (!len) ? 14 : len;
   bo = await module.exports.sma(bo, len);
   return bo;
 }
@@ -136,7 +125,7 @@ async function fi(data, len) {
   return ff;
 }
 async function asi(data) {
-  var pl = [], a = [];
+  var a = [];
   for(var i = 1; i < data.length; i++) {
     var c = data[i][1], cy = data[i - 1][1], h = data[i][0], hy = data[i - 1][0],
     l = data[i][2], ly = data[i - 1][2], k = (hy - c > ly - c) ? hy - c : ly - c,
@@ -150,57 +139,41 @@ async function asi(data) {
 }
 async function ao(data, len1, len2) {
   var length1 = (!len1) ? 5 : len1, length2 = (!len2) ? 35 : len2, pl = [], a = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push((data[i][0] + data[i][1]) / 2);
-    if(pl.length >= length2) {
-      var f = await module.exports.sma(pl.slice(), length1),
-          s = await module.exports.sma(pl.slice(), length2);
-      a.push(f[f.length - 1] - s[s.length - 1]);
-      pl.splice(0, 1);
-    }
+  data = data.map(x => (x[0]+x[1])/2);
+  for(var i = len2; i <= data.length; i++) {
+    var pl = data.slice(i-len2,i);
+    var f = await module.exports.sma(pl.slice(), length1),
+        s = await module.exports.sma(pl.slice(), length2);
+    a.push(f[f.length - 1] - s[s.length - 1]);
   }
   return a;
 }
 async function pr(data, len) {
-  var length = (!len) ? 14 : len;
-  var n = [], pl = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var highd = await Math.max.apply(null, pl), lowd = await Math.min.apply(null, pl);
-      n.push((highd - data[i]) / (highd - lowd) * -100);
-      pl.splice(0, 1);
-    }
+  var length = (!len) ? 14 : len, n = [];
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length,i), highd = await Math.max.apply(null, pl), lowd = await Math.min.apply(null, pl);
+    n.push((highd - data[i-1]) / (highd - lowd) * -100);
   }
   return n;
 }
 async function lsma(data, len) {
-  var length = (!len) ? 25 : len;
-  var pl = [], lr = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var sum_x = 0, sum_y = 0, sum_xy = 0, sum_xx = 0, sum_yy = 0, m, b;
-      for(var q = 1; q <= length; q++) sum_x += q, sum_y += pl[q - 1], sum_xy += (pl[q - 1] * q), sum_xx += (q * q), sum_yy += (pl[q - 1] * pl[q - 1]);
-      m = ((sum_xy - sum_x * sum_y / length) / (sum_xx - sum_x * sum_x / length));
-      b = sum_y / length - m * sum_x / length;
-      lr.push(m * length + b);
-      pl.splice(0, 1);
-    }
+  var length = (!len) ? 25 : len, lr = [];
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length,i), sum_x = 0, sum_y = 0, sum_xy = 0, sum_xx = 0, sum_yy = 0, m, b;
+    for(var q = 1; q <= length; q++) sum_x += q, sum_y += pl[q - 1], sum_xy += (pl[q - 1] * q), sum_xx += (q * q), sum_yy += (pl[q - 1] * pl[q - 1]);
+    m = ((sum_xy - sum_x * sum_y / length) / (sum_xx - sum_x * sum_x / length));
+    b = sum_y / length - m * sum_x / length;
+    lr.push(m * length + b);
   }
   return lr;
 }
 async function don(data, len) {
-  var pl = [], channel = [], length = (!len) ? 20 : len;
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var highs = [], lows = [];
-      for(let h in pl) highs.push(pl[h][0]), lows.push(pl[h][1]);
-      var max = Math.max.apply(null, highs.slice()), min = Math.min.apply(null, lows.slice());
-      channel.push([max, (max + min) / 2, min]);
-      pl.splice(0, 1);
-    }
+  var channel = [], length = (!len) ? 20 : len;
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length,i), highs = [], lows = [];
+    for(let h in pl) highs.push(pl[h][0]), lows.push(pl[h][1]);
+    var max = Math.max.apply(null, highs.slice()), min = Math.min.apply(null, lows.slice());
+    channel.push([max, (max + min) / 2, min]);
   }
   return channel;
 }
@@ -227,12 +200,9 @@ async function ichimoku(data, len1, len2, len3, len4) {
   return cloud;
 }
 async function stoch(data, len, sd, sk) {
-  var length = (!len) ? 14 : len;
-  var smoothd = (!sd) ? 3 : sd;
-  var smoothk = (!sk) ? 3 : sk;
+  var length = (!len) ? 14 : len, smoothd = (!sd) ? 3 : sd, smoothk = (!sk) ? 3 : sk, stoch = [], high = [], low = [], ka = [];
   if(length < smoothd) [length, smoothd] = [smoothd, length];
   if(smoothk > smoothd) [smoothk, smoothd] = [smoothd, smoothk];
-  var stoch = [], high = [], low = [], ka = [];
   for(var i = 0; i < data.length; i++) {
     high.push(data[i][0]), low.push(data[i][2]);
     if(high.length >= length) {
@@ -263,52 +233,38 @@ async function atr(data, len) {
   return atr;
 }
 async function sma(data, len) {
-  var length = (!len) ? 14 : len;
-  var pl = [], sma = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var average = 0;
-      for(q in pl) average += pl[q];
-      sma.push(average / length);
-      pl.splice(0, 1);
-    }
+  var length = (!len) ? 14 : len, sma = [];
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length, i), average = 0;
+    for(q in pl) average += pl[q];
+    sma.push(average / length);
   }
   return sma;
 }
 async function smma(data, len) {
-  var length = (!len) ? 14 : len;
-  var pl = [], smma = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var average = 0;
-      for(q in pl) average += pl[q];
-      if(smma.length <= 0) { smma.push(average / length); } else { smma.push((average - smma[smma.length - 1]) / length); }
-      pl.splice(0, 1);
-    }
+  var length = (!len) ? 14 : len, smma = [];
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length,i), average = 0;
+    for(q in pl) average += pl[q];
+    if(smma.length <= 0) { smma.push(average / length); } else { smma.push((average - smma[smma.length - 1]) / length); }
   }
   smma.splice(0, 1);
   return smma;
 }
 async function wma(data, len) {
-  var length = (!len) ? 14 : len, weight = 0, pl = [], wma = [];;
+  var length = (!len) ? 14 : len, weight = 0, wma = [];;
   for(var i = 1; i <= length; i++) weight += i;
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var average = 0;
-      for(q in pl) average += pl[q] * (Number(q)+1) / weight;
-      wma.push(average);
-      pl.splice(0, 1);
-    }
+  for(var i = len; i <= data.length; i++) {
+    var pl = data.slice(i-len,i), average = 0;
+    for(q in pl) average += pl[q] * (Number(q)+1) / weight;
+    wma.push(average);
   }
   return wma;
 }
 async function pwma(data, len) {
   var weight = 0, wmaa = [], weights = [], length = (!len) ? 14 : len;
   for(var i = length / 2, b = len; i >= 1; i--, b--) {
-    if(i % 1 != 0) {
+    if(i % 1 !== 0) {
       i = Math.round(i);
       weight += (i * b)
     } else {
@@ -327,7 +283,7 @@ async function pwma(data, len) {
 async function hwma(data, len) {
   var weight = 0, wmaa = [], weights = [], length = (!len) ? 14 : len;
   for(var i = 1, b = length; i <= length / 2; i++, b--) {
-    if(i % 1 != 0) {
+    if(i % 1 !== 0) {
       i = Math.round(i);
       weight += (i * b)
     } else {
@@ -344,42 +300,34 @@ async function hwma(data, len) {
   return wmaa;
 }
 async function vwma(data, len) {
-    var length = (!len) ? 20 : len, pl = [], vwma = [];
-    for(var i = 0; i < data.length; i++) {
-      pl.push([(data[i][0] * data[i][1]), data[i][1]]);
-      if(pl.length >= length) {
-        var totalv = 0, totalp = 0;
-        for(var o = 0; o < pl.length; o++) {
-          totalv += pl[o][1];
-          totalp += pl[o][0];
-        }
-        vwma.push(totalp / totalv);
-        pl.splice(0, 1);
-      }
+  var length = (!len) ? 20 : len, vwma = [];
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length,i);
+    pl = pl.map(x => [x[0] * x[1], x[1]]);
+    var totalv = 0, totalp = 0;
+    for(var o = 0; o < pl.length; o++) {
+      totalv += pl[o][1];
+      totalp += pl[o][0];
     }
-    return vwma;
+    vwma.push(totalp/totalv);
+  }
+  return vwma;
 }
 async function ema(data, len) {
-  var length = (!len) ? 12 : len;
-  var pl = [], ema = [], prevema = 0,
-  weight = 2 / (length + 1);
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      if(ema.length > 0) {
-        ema.push((data[i] - ema[ema.length - 1]) * weight + ema[ema.length - 1]);
-        continue;
-      }
-      var average = 0;
-      for(q in pl) average += pl[q];
-      ema.push(average / length);
+  var length = (!len) ? 12 : len, ema = [], weight = 2 / (length + 1);
+  for(var i = length; i <= data.length; i++) {
+    if(ema.length > 0) {
+      ema.push((data[i-1] - ema[ema.length - 1]) * weight + ema[ema.length - 1]);
+      continue;
     }
+    var pl = data.slice(i-length,i), average = 0;
+    for(q in pl) average += pl[q];
+    ema.push(average / length);
   }
   return ema;
 }
 async function hull(data, len) {
-  var length = (!len) ? 14 : len;
-  var pl = [], hma = [], ewma = await module.exports.wma(data.slice(), length), sqn = Math.round(Math.sqrt(length)),
+  var length = (!len) ? 14 : len, pl = [], hma = [], ewma = await module.exports.wma(data.slice(), length), sqn = Math.round(Math.sqrt(length)),
   first = await wma(data.slice(), Math.round(length / 2));
   first.splice(0, first.length - ewma.length);
   for(let i in ewma) {
@@ -403,23 +351,16 @@ async function kama(data, len1, len2, len3) {
   return ka;
 }
 async function macd(data, len1, len2) {
-  var length1 = (!len1) ? 12 : len1;
-  var length2 = (!len2) ? 26 : len2;
+  var length1 = (!len1) ? 12 : len1, length2 = (!len2) ? 26 : len2;
   if(length1 > length2) [length1, length2] = [length2, length1];
-  var ema = await module.exports.ema(data, length1);
-  var emb = await module.exports.ema(data, length2);
+  var ema = await module.exports.ema(data, length1), emb = await module.exports.ema(data, length2), macd = [];
   ema.splice(0, length2 - length1);
-  var macd = [];
-  for(var i = 0; i < emb.length; i++) {
-    macd.push(ema[i] - emb[i]);
-  }
+  for(var i = 0; i < emb.length; i++) macd.push(ema[i] - emb[i]);
   return macd;
 }
 async function bands(data, len, dev) {
-  var length = (!len) ? 14 : len;
-  var deviations = (!dev) ? 1 : dev;
-  var pl = [], deviation = [], boll = [];
-  var sma = await module.exports.sma(data, length);
+  var length = (!len) ? 14 : len, deviations = (!dev) ? 1 : dev, pl = [], deviation = [], boll = [],
+      sma = await module.exports.sma(data, length);
   for(var i = 0; i < data.length; i++) {
     pl.push(data[i]);
     if(pl.length >= length) {
@@ -440,15 +381,12 @@ async function bandwidth(data, len, dev) {
   return boll;
 }
 async function keltner(data, len, dev) {
-  var length = (!len) ? 14 : len;
-  var devi = (!dev) ? 1 : dev;
-  var closing = [], atr = await module.exports.atr(data, length), kma, kelt = [];
+  var length = (!len) ? 14 : len, devi = (!dev) ? 1 : dev,
+      closing = [], atr = await module.exports.atr(data, length), kma, kelt = [];
   for(var i in data) closing.push((data[i][0] + data[i][1] + data[i][2]) / 3);
   kma = await module.exports.sma(closing, length);
   atr.splice(0, length - 1);
-  for(var i = 0; i < kma.length; i++) {
-    kelt.push([kma[i] + atr[i] * devi, kma[i], kma[i] - atr[i] * devi]);
-  }
+  for(var i = 0; i < kma.length; i++) kelt.push([kma[i] + atr[i] * devi, kma[i], kma[i] - atr[i] * devi]);
   return kelt
 }
 async function variance(data, len) {
@@ -461,11 +399,11 @@ async function variance(data, len) {
   return va;
 }
 async function std(data, len) {
-  var length = (!len) ? data.length : len;
-  var mean = data.reduce((a, b) => {
+  var length = (!len) ? data.length : len,
+      mean = data.reduce((a, b) => {
     return Number(a) + Number(b);
-  }) / length;
-  var std = Math.sqrt(data.reduce((sq, n) => {
+  }) / length,
+  std = Math.sqrt(data.reduce((sq, n) => {
     return sq + Math.pow(n - mean, 2);
   }, 0) / (length));
   return std;
@@ -482,80 +420,46 @@ async function cor(data1, data2) {
   sx /= n, sy /= n, sx = Math.sqrt(sx), sy = Math.sqrt(sy);
   return (sumavg / (n * sx * sy));
 }
-async function dif(n, o) {
-  return (n - o) / o;
-}
+async function dif(n, o) { return (n - o) / o; }
 async function aroon_up(data, len) {
-  var length = (!len) ? 10 : len;
-  var pl = [], aroon = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var hl = pl.slice(0);
-      hl.sort((a, b) => {
-        return a - b;
-      });
-      var h = hl[length - 1];
-      aroon.push((100 * (length - (pl.findIndex(x => x == h) + 1)) / length));
-      pl.splice(0, 1);
-    }
+  var length = (!len) ? 10 : len, aroon = [];
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length,i), hl = pl.slice();
+    hl.sort((a, b) => { return a - b; });
+    aroon.push((100 * (length - (pl.findIndex(x => x === hl[length - 1]) + 1)) / length));
   }
   return aroon;
 }
 async function aroon_down(data, len) {
-  var length = (!len) ? 10 : len;
-  var pl = [], aroon = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var hl = pl.slice(0);
-      hl.sort((a, b) => {
-        return a - b;
-      });
-      var l = hl[0];
-      aroon.push((100 * (length - (pl.findIndex(x => x == l) + 1)) / length));
-      pl.splice(0, 1);
-    }
+  var length = (!len) ? 10 : len, aroon = [];
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length,i)
+    var hl = pl.slice(0);
+    hl.sort((a, b) => { return a - b; });
+    aroon.push((100 * (length - (pl.findIndex(x => x === hl[0]) + 1)) / length));
+    pl.splice(0, 1);
   }
   return aroon;
 }
 async function aroon_osc(data, len) {
-  var length = (!len) ? 25 : len;
-  var aroon = [];
-  var u = await module.exports.aroon.up(data, length);
-  var d = await module.exports.aroon.down(data, length);
-  for(var i = 0; i < u.length; i++) {
-    aroon.push(u[i] - d[i]);
-  }
+  var length = (!len) ? 25 : len, aroon = [],
+  u = await module.exports.aroon.up(data, length),
+  d = await module.exports.aroon.down(data, length);
+  for(var i = 0; i < u.length; i++) aroon.push(u[i] - d[i]);
   return aroon;
 }
 async function mfi(data, len) {
-  var length = (!len) ? 14 : len;
-  var mfi = [], n = [], p = [];
-  for(var i = 0; i < data.length; i++) {
-    p.push(data[i][0]);
-    n.push(data[i][1]);
-    if(p.length >= length) {
-      var positive = 0, negative = 0;
-      for(q in p) positive += p[q];
-      for(q in n) negative += n[q];
-      mfi.push((100 - 100 / (1 + positive / negative)));
-      p.splice(0, 1);
-      n.splice(0, 1);
-    }
+  var length = (!len) ? 14 : len, mfi = [], n = data.map(x => x[1]), p = data.map(x => x[0]);
+  for(var i = length; i <= data.length; i++) {
+    var pos = 0, neg = 0;
+    for(q = i-length; q < i; q++) pos += p[q], neg += n[q];
+    mfi.push((100 - 100 / (1 + pos / neg)));
   }
   return mfi;
 }
 async function roc(data, len) {
-  var length = (!len) ? 14 : len;
-  var pl = [], roc = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      roc.push((pl[length - 1] - pl[0]) / pl[0]);
-      pl.splice(0, 1);
-    }
-  }
+  var length = (!len) ? 14 : len, roc = [];
+  for(var i = length; i <= data.length; i++) roc.push((data[i-1] - data[i-length]) / data[i-length]);
   return roc;
 }
 async function cop(data, len1, len2, len3) {
@@ -593,7 +497,7 @@ async function obv(data) {
   for(var i = 1; i < data.length; i++) {
     if(data[i][1] > data[i - 1][1]) obv.push(obv[obv.length - 1] + data[i][0])
     if(data[i][1] < data[i - 1][1]) obv.push(obv[obv.length - 1] - data[i][0])
-    if(data[i][1] == data[i - 1][1]) obv.push(obv[obv.length - 1])
+    if(data[i][1] === data[i - 1][1]) obv.push(obv[obv.length - 1])
   }
   return obv;
 }
@@ -621,15 +525,11 @@ async function mom(data, len, p) {
   return mom;
 }
 async function mom_osc(data, len) {
-  var length = (!len) ? 9 : len, pl = [], osc = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length > length) {
-      var sumh = 0, suml = 0;
-      for(var a = 1; a < length; a++) (pl[a - 1] < pl[a]) ? sumh += pl[a] : suml += pl[a];
-      osc.push((sumh - suml) / (sumh + suml) * 100);
-      pl.splice(0, 1);
-    }
+  var length = (!len) ? 9 : len, osc = [];
+  for(var i = length; i < data.length; i++) {
+    var sumh = 0, suml = 0;
+    for(var a = 1; a < length; a++) (data[i-length+(a-1)] < data[i-length+a]) ? sumh += data[i-length+a] : suml += data[i-length+a];
+    osc.push((sumh - suml) / (sumh + suml) * 100);
   }
   return osc;
 }
@@ -642,7 +542,7 @@ async function ha(data) {
 }
 async function ren(data, bs) {
   var re = [], bs = (!bs) ? 1 : bs, decimals = (function(){
-    if(Math.floor(bs) == bs) return 0;
+    if(Math.floor(bs) === bs) return 0;
     return bs.toString().split(".")[1].length || 0;
   })(), bh = Math.ceil(data[0][0] / bs * (10 ** decimals)) / (10 ** decimals) * bs, bl = bh - bs;
   for(var i = 1; i < data.length; i++) {
