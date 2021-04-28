@@ -16,7 +16,6 @@ async function kmeans(data, clusters) {
   for(i = 0; i < clusters; i++) centers[i] = data[init*(i+1)];
   do {
     for(i = 0; i < clusters; i++) means[i] = [];
-    changed = false;
     for(x = 0; x < data.length; x++) {
       var range = -1, oldrange = -1;
       for(y = 0; y < clusters; y++) {
@@ -41,6 +40,18 @@ async function kmeans(data, clusters) {
     for(x = 0; x < clusters; x++) if(centers[x] !== old[x]) changed = true;
   } while(changed);
   return means;
+}
+async function normalize(data, marg) {
+  marg = (!marg) ? 0 : marg;
+  var max = await Math.max.apply(null, data.slice())*(1+marg), min = await Math.min.apply(null, data.slice())*(1-marg), norm = [];
+  for(var i = 0; i < data.length; i++) norm.push((max-data[i])/(max-min));
+  return norm;
+}
+async function denormalize(data, norm, marg) {
+  marg = (!marg) ? 0 : marg;
+  var max = await Math.max.apply(null, data.slice())*(1+marg), min = await Math.min.apply(null, data.slice())*(1-marg), dnorm = [];
+  for(var i = 0; i < data.length; i++) dnorm.push(norm[i]*(max-min)+max);
+  return dnorm;
 }
 async function mad(data, len) {
   var length = (!len) ? data.length : len, med = [];
@@ -571,5 +582,6 @@ module.exports = {
   }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
-  bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans
+  bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans,
+  normalize, denormalize
 }
