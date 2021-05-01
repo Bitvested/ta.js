@@ -84,16 +84,12 @@ async function ssd(data, len) {
   return sd;
 }
 async function rsi(data, len) {
-  var length = (!len) ? 14 : len, pl = [], arrsi = [];
-  for(var i = 1; i < data.length; i++) {
-    pl.push((data[i] - data[i - 1]));
-    if(pl.length >= length) {
-      var gain = 0, loss = 0;
-      for(q in pl) if(pl[q] < 0) { loss += Math.abs(pl[q]); } else { gain += pl[q]; }
-      rsi = Number(100 - 100 / (1 + ((gain / length) / (loss / length))));
-      arrsi.push(rsi);
-      pl.splice(0, 1);
-    }
+  var length = (!len) ? 14 : len, arrsi = [];
+  for(var i = len+1; i <= data.length; i++) {
+    var pl = data.slice(i-(len+1), i), gain = 0, loss = 0;
+    for(var q = 1; q < pl.length; q++) if(pl[q]-pl[q-1] < 0) {loss+=Math.abs(pl[q]-pl[q-1]);}else{gain+=pl[q]-pl[q-1];}
+    rsi = Number(100 - 100 / (1 + ((gain / length) / (loss / length))));
+    arrsi.push(rsi);
   }
   return arrsi;
 }
