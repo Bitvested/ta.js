@@ -44,13 +44,13 @@ async function kmeans(data, clusters) {
 async function normalize(data, marg) {
   marg = (!marg) ? 0 : marg;
   var max = await Math.max.apply(null, data.slice())*(1+marg), min = await Math.min.apply(null, data.slice())*(1-marg), norm = [];
-  for(var i = 0; i < data.length; i++) norm.push((max-data[i])/(max-min));
+  for(var i = 0; i < data.length; i++) norm.push(1-(max-data[i])/(max-min));
   return norm;
 }
 async function denormalize(data, norm, marg) {
   marg = (!marg) ? 0 : marg;
   var max = await Math.max.apply(null, data.slice())*(1+marg), min = await Math.min.apply(null, data.slice())*(1-marg), dnorm = [];
-  for(var i = 0; i < data.length; i++) dnorm.push(norm[i]*(max-min)+max);
+  for(var i = 0; i < norm.length; i++) dnorm.push(min+norm[i]*(max-min));
   return dnorm;
 }
 async function mad(data, len) {
