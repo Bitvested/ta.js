@@ -1,5 +1,5 @@
 async function median(data, len) {
-  var length = (!len) ? data.length : len, pl = [], med = [];
+  var length = (!len) ? data.length : len, med = [];
   for(var i = length; i <= data.length; i++) {
     var pl = data.slice(i-len,i);
     pl.sort((a, b) => {
@@ -85,10 +85,10 @@ async function ssd(data, len) {
 }
 async function rsi(data, len) {
   var length = (!len) ? 14 : len, arrsi = [];
-  for(var i = len+1; i <= data.length; i++) {
-    var pl = data.slice(i-(len+1), i), gain = 0, loss = 0;
+  for(var i = length+1; i <= data.length; i++) {
+    var pl = data.slice(i-(length+1), i), gain = 0, loss = 0;
     for(var q = 1; q < pl.length; q++) if(pl[q]-pl[q-1] < 0) {loss+=Math.abs(pl[q]-pl[q-1]);}else{gain+=pl[q]-pl[q-1];}
-    rsi = Number(100 - 100 / (1 + ((gain / length) / (loss / length))));
+    var rsi = Number(100 - 100 / (1 + ((gain / length) / (loss / length))));
     arrsi.push(rsi);
   }
   return arrsi;
@@ -145,7 +145,7 @@ async function asi(data) {
   return a;
 }
 async function ao(data, len1, len2) {
-  var length1 = (!len1) ? 5 : len1, length2 = (!len2) ? 35 : len2, pl = [], a = [];
+  var length1 = (!len1) ? 5 : len1, length2 = (!len2) ? 35 : len2, a = [];
   data = data.map(x => (x[0]+x[1])/2);
   for(var i = len2; i <= data.length; i++) {
     var pl = data.slice(i-len2,i);
