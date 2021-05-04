@@ -45,6 +45,8 @@ const ta = require('ta.js');
 - [Percentage Difference](#dif)
 - [Median](#median)
 - [K-means Clustering](#kmeans)
+- [Normalize](#norm)
+- [Denormalize](#dnorm)
 - [Median Absolute Deviation](#mad)
 - [Average Absolute Deviation](#aad)
 - [Sum Squared Differences](#ssd)
@@ -275,6 +277,23 @@ var length = 4;
 ta.kmeans(data, length);
 // output (array)
 // [[ 4, 5, 5, 4 ], [ 7, 6, 6, 6 ], [ 8, 8 ], [ 2, 3, 3, 2 ]]
+```
+#### <a name="norm"></a>Normalize
+```javascript
+var data = [5,4,9,4];
+var margin = 0.1; // margin %
+ta.normalize(data, margin);
+// output (array)
+// [0.22, 0.06, 0.86, 0.06]
+```
+#### <a name="dnorm"></a>Denormalize
+```javascript
+var data = [5,4,9,4]; // original data || [highest, lowest]
+var norm = [0.22, 0.06, 0.86, 0.06, 0.44]; // normalized data
+var margin = 0.1; // margin %
+ta.denormalize(data, norm, margin);
+// output (array)
+// [5 ,4, 9, 4, 6.4]
 ```
 #### <a name="mad"></a>Median Absolute Deviation
 ```javascript
