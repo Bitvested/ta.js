@@ -23,6 +23,7 @@ const ta = require('ta.js');
 - [Simple Moving Average](#sma)
 - [Smoothed Moving Average](#smma)
 - [Weighted Moving Average](#wma)
+- [Wilder's Smoothing Moving Average](#wsma)
 - [Parabolic Weighted Moving Average](#pwma)
 - [Hyperbolic Weighted Moving Average](#hwma)
 - [Hull Moving Average](#hull)
@@ -32,6 +33,7 @@ const ta = require('ta.js');
 - [Least Squares Moving Average](#lsma)
 - [Moving Average Convergence / Divergence](#macd)
 - [Relative Strength Index](#rsi)
+- [Wilder's Relative Strength Index](#wrsi)
 - [True Strength Index](#tsi)
 - [Balance Of Power](#bop)
 - [Force Index](#fi)
@@ -93,7 +95,15 @@ ta.wma(data, length);
 // output (array)
 // [68.3, 68.2]
 ```
-#### <a name ="pwma"></a>Parabolic Weighted Moving Average
+#### <a name="wsma"></a>Wilder's Smoothing Moving Average
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 10];
+var length = 6;
+ta.wsma(data, length);
+// output (array)
+// [3.5, 4.58]
+```
+#### <a name="pwma"></a>Parabolic Weighted Moving Average
 ```javascript
 var data = [17, 26, 23, 29, 20];
 var length = 4; // default = 14
@@ -166,7 +176,15 @@ var data = [1, 2, 3, 4, 5, 6, 7, 5];
 var length = 6; // default = 14
 ta.rsi(data, length);
 // output (array)
-// [100, 100, 72.77]
+// [100.0, 71.43]
+```
+#### <a name="wrsi"></a>Wilder's Relative Strength Index
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 7, 5, 6];
+var length = 6;
+ta.wrsi(data, length);
+// output (array)
+// [100, 71.43, 75.61]
 ```
 #### <a name="tsi"></a>True Strength Index (TSI)
 ```javascript
