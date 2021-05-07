@@ -57,7 +57,7 @@ async function mad(data, len) {
   var length = (!len) ? data.length : len, med = [];
   for(var i = length; i <= data.length; i++) {
     var tmp = data.slice(i - length, i),
-        m = await module.exports.median(tmp.slice()),
+        m = await module.exports.median(tmp),
         adev = tmp.map(x => Math.abs(x - m[m.length-1]));
         adev = await module.exports.median(adev);
     med.push(adev[adev.length-1]);
@@ -68,7 +68,7 @@ async function aad(data, len) {
   var length = (!len) ? data.length : len, med = [];
   for(var i = length; i <= data.length; i++) {
     var tmp = data.slice(i-length, i), sum = 0,
-        m = await module.exports.sma(tmp.slice(), length);
+        m = await module.exports.sma(tmp, length);
     for(q in tmp) sum += Math.abs(tmp[q] - m[m.length-1]);
     med.push(sum/length);
   }
@@ -77,19 +77,20 @@ async function aad(data, len) {
 async function ssd(data, len) {
   var length = (!len) ? data.length : len, sd = [];
   for(var i = length; i < data.length; i++) {
-    var mean = await module.exports.sma(data.slice(i-length, i), length), tmp = data.slice(i-length,i), sum = 0;
+    var tmp = data.slice(i-length,i), mean = await module.exports.sma(tmp, length), sum = 0;
     for(let x in tmp) sum += (tmp[x] - mean[mean.length-1]) ** 2;
     sd.push(Math.sqrt(sum));
   }
   return sd;
 }
 async function rsi(data, len) {
-  var length = (!len) ? 14 : len, arrsi = [];
-  for(var i = length+1; i <= data.length; i++) {
-    var pl = data.slice(i-(length+1), i), gain = 0, loss = 0;
+  var length = (!len) ? 14 : len, arrsi = [], pl = data.slice(0,length-1);
+  for(var i = length,gain=0,loss=0; i < data.length; i++,gain=0,loss=0) {
+    pl.push(data[i]);
     for(var q = 1; q < pl.length; q++) if(pl[q]-pl[q-1] < 0) {loss+=Math.abs(pl[q]-pl[q-1]);}else{gain+=pl[q]-pl[q-1];}
     var rsi = Number(100 - 100 / (1 + ((gain / length) / (loss / length))));
     arrsi.push(rsi);
+    pl.splice(0,1);
   }
   return arrsi;
 }
@@ -124,7 +125,7 @@ async function fi(data, len) {
   for(var i = 1; i < data.length; i++) {
     pl.push(data[i][0] - data[i - 1][0]);
     if(pl.length >= length) {
-      var vfi = await module.exports.ema(pl.slice(), length);
+      var vfi = await module.exports.ema(pl, length);
       ff.push((data[i][0] - data[i - 1][0]) * vfi[0]);
       pl.splice(0, 1);
     }
@@ -146,12 +147,13 @@ async function asi(data) {
 }
 async function ao(data, len1, len2) {
   var length1 = (!len1) ? 5 : len1, length2 = (!len2) ? 35 : len2, a = [];
-  data = data.map(x => (x[0]+x[1])/2);
-  for(var i = len2; i <= data.length; i++) {
-    var pl = data.slice(i-len2,i);
-    var f = await module.exports.sma(pl.slice(), length1),
-        s = await module.exports.sma(pl.slice(), length2);
+      data = data.map(x => (x[0]+x[1])/2), pl = data.slice(0,length2-1);
+  for(var i = length2-1; i < data.length; i++) {
+    pl.push(data[i]);
+    var f = await module.exports.sma(pl, length1),
+        s = await module.exports.sma(pl, length2);
     a.push(f[f.length - 1] - s[s.length - 1]);
+    pl.splice(0,1);
   }
   return a;
 }
@@ -222,7 +224,7 @@ async function stoch(data, len, sd, sk) {
       ka.push(smoothedk[smoothedk.length - 1]);
     }
     if(ka.length - smoothk >= smoothd) {
-      var d = await module.exports.sma(ka.slice(), smoothd);
+      var d = await module.exports.sma(ka, smoothd);
       stoch.push([k, d[d.length - 1]]);
       high.splice(0, 1);
       low.splice(0, 1);
@@ -241,10 +243,10 @@ async function atr(data, len) {
 }
 async function sma(data, len) {
   var length = (!len) ? 14 : len, sma = [];
-  for(var i = length; i <= data.length; i++) {
-    var pl = data.slice(i-length, i), average = 0;
-    for(q in pl) average += pl[q];
-    sma.push(average / length);
+  for(var i = length, avg = 0; i <= data.length; i++, avg=0) {
+    var pl = data.slice(i-length, i);
+    for(q in pl) avg += pl[q];
+    sma.push(avg / length);
   }
   return sma;
 }
@@ -259,10 +261,10 @@ async function smma(data, len) {
   return smma;
 }
 async function wma(data, len) {
-  var length = (!len) ? 14 : len, weight = 0, wma = [];;
+  var length = (!len) ? 14 : len, weight = 0, wma = [];
   for(var i = 1; i <= length; i++) weight += i;
-  for(var i = len; i <= data.length; i++) {
-    var pl = data.slice(i-len,i), average = 0;
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length,i), average = 0;
     for(q in pl) average += pl[q] * (Number(q)+1) / weight;
     wma.push(average);
   }
@@ -307,10 +309,9 @@ async function hwma(data, len) {
   return wmaa;
 }
 async function vwma(data, len) {
-  var length = (!len) ? 20 : len, vwma = [];
+  var length = (!len) ? 20 : len, vwma = [], data = data.map(x=>[x[0]*x[1],x[1]]);
   for(var i = length; i <= data.length; i++) {
     var pl = data.slice(i-length,i);
-    pl = pl.map(x => [x[0] * x[1], x[1]]);
     var totalv = 0, totalp = 0;
     for(var o = 0; o < pl.length; o++) {
       totalv += pl[o][1];
@@ -334,8 +335,8 @@ async function ema(data, len) {
   return ema;
 }
 async function hull(data, len) {
-  var length = (!len) ? 14 : len, pl = [], hma = [], ewma = await module.exports.wma(data.slice(), length), sqn = Math.round(Math.sqrt(length)),
-  first = await wma(data.slice(), Math.round(length / 2));
+  var length = (!len) ? 14 : len, pl = [], hma = [], ewma = await module.exports.wma(data, length), sqn = Math.round(Math.sqrt(length)),
+  first = await wma(data, Math.round(length / 2));
   first.splice(0, first.length - ewma.length);
   for(let i in ewma) {
     pl.push((first[i] * 2) - ewma[i]);
@@ -348,7 +349,7 @@ async function hull(data, len) {
 }
 async function kama(data, len1, len2, len3) {
   len1 = (!len1) ? 10 : len1, len2 = (!len2) ? 2 : len2, len3 = (!len3) ? 30 : len3;
-  var ka = await module.exports.sma(data.slice(), len1), ka = [ka[ka.length - 1]];
+  var ka = await module.exports.sma(data, len1), ka = [ka[ka.length - 1]];
   for(var i = len1 + 1; i < data.length; i++) {
     var vola = 0, change = Math.abs(data[i] - data[i - len1]);
     for(var a = 1; a < len1; a++) vola += Math.abs(data[(i-a)] - data[(i-a)-1]);
@@ -383,7 +384,7 @@ async function bands(data, len, dev) {
 }
 async function bandwidth(data, len, dev) {
   var length = (!len) ? 14 : len, deviations = (!dev) ? 1 : dev, boll = [],
-  band = await module.exports.bands(data.slice(), length, deviations);
+  band = await module.exports.bands(data, length, deviations);
   for(var i = 0; i < band.length; i++) boll.push((band[i][0] - band[i][2]) / band[i][1]);
   return boll;
 }
@@ -399,7 +400,7 @@ async function keltner(data, len, dev) {
 async function variance(data, len) {
   var length = (!len) ? data.length : len, va = [];
   for(var i = length; i <= data.length; i++) {
-    var tmp = data.slice(i - length, i), mean = await module.exports.sma(tmp.slice(), length), sum = 0;
+    var tmp = data.slice(i - length, i), mean = await module.exports.sma(tmp, length), sum = 0;
     for(x in tmp) sum += ((tmp[x] - mean[mean.length-1]) ** 2);
     va.push(sum/length);
   }
@@ -416,8 +417,8 @@ async function std(data, len) {
   return std;
 }
 async function cor(data1, data2) {
-  var d1avg = await module.exports.sma(data1.slice(), data1.length),
-      d2avg = await module.exports.sma(data2.slice(), data2.length),
+  var d1avg = await module.exports.sma(data1, data1.length),
+      d2avg = await module.exports.sma(data2, data2.length),
       sumavg = 0, sx = 0, sy = 0;
   for(var i = 0; i < data1.length; i++) {
     var x = data1[i] - d1avg, y = data2[i] - d2avg;
@@ -444,7 +445,6 @@ async function aroon_down(data, len) {
     var hl = pl.slice(0);
     hl.sort((a, b) => { return a - b; });
     aroon.push((100 * (length - (pl.findIndex(x => x === hl[0]) + 1)) / length));
-    pl.splice(0, 1);
   }
   return aroon;
 }
@@ -472,10 +472,10 @@ async function roc(data, len) {
 async function cop(data, len1, len2, len3) {
   len1 = (!len1) ? 11 : len1, len2 = (!len2) ? 14 : len2, len3 = (!len3) ? 10 : len3, max = Math.max(len1, len2), co = [];
   for(var i = max + len3; i < data.length; i++) {
-    var r1 = data.slice(i - (max + len3), i), r2 = data.slice(i - (max + len3), i), tmp = [];
+    var r1 = data.slice(i - (max + len3), i), r2 = r1.slice(), tmp = [];
     r1 = await module.exports.roc(r1, len1), r2 = await module.exports.roc(r2, len2), r1.splice(0, r1.length - r2.length), r2.splice(0, r2.length - r1.length);
     for(var a = 0; a < r1.length; a++) tmp.push(r1[a] + r2[a]);
-    tmp = await module.exports.wma(tmp.slice(), len3);
+    tmp = await module.exports.wma(tmp, len3);
     co.push(tmp[tmp.length - 1]);
   }
   return co;
@@ -484,17 +484,18 @@ async function kst(data, r1, r2, r3, r4, s1, s2, s3, s4, sig) {
   r1 = (!r1) ? 10 : r1, r2 = (!r2) ? 15 : r2, r3 = (!r3) ? 20 : r3, r4 = (!r4) ? 30 : r4, s1 = (!s1) ? 10 : s1, s2 = (!s2) ? 10 : s2, s3 = (!s3) ? 10 : s3, s4 = (!s4) ? 15 : s4, sig = (!sig) ? 9 : sig;
   var ks = [], fs = [], ms = (Math.max(r1, r2, r3, r4) + Math.max(s1, s2, s3, s4));
   for(var i = ms; i < data.length; i++) {
-    var rcma1 = await module.exports.roc(data.slice(i - ms, i), r1),
-        rcma2 = await module.exports.roc(data.slice(i - ms, i), r2),
-        rcma3 = await module.exports.roc(data.slice(i - ms, i), r3),
-        rcma4 = await module.exports.roc(data.slice(i - ms, i), r4);
+    var pl = data.slice(i-ms,i),
+        rcma1 = await module.exports.roc(pl, r1),
+        rcma2 = await module.exports.roc(pl, r2),
+        rcma3 = await module.exports.roc(pl, r3),
+        rcma4 = await module.exports.roc(pl, r4);
         rcma1 = await module.exports.sma(rcma1, s1);
         rcma2 = await module.exports.sma(rcma2, s2);
         rcma3 = await module.exports.sma(rcma3, s3);
         rcma4 = await module.exports.sma(rcma4, s4);
       ks.push(rcma1[rcma1.length - 1] + rcma2[rcma2.length - 1] + rcma3[rcma3.length - 1] + rcma4[rcma4.length - 1]);
   }
-  var sl = await module.exports.sma(ks.slice(), sig);
+  var sl = await module.exports.sma(ks, sig);
   ks.splice(0, ks.length - sl.length);
   for(var i in sl) fs.push([ks[i], sl[i]]);
   return fs;
@@ -509,18 +510,12 @@ async function obv(data) {
   return obv;
 }
 async function vwap(data, len) {
-  var length = (!len || len > data.length) ? data.length : len, pl = [], vwap = [];
-  for(var i = 0; i < data.length; i++) {
-    pl.push([(data[i][0] * data[i][1]), data[i][1]]);
-    if(pl.length >= length) {
-      var totalv = 0, totalp = 0;
-      for(var o = 0; o < pl.length; o++) {
-        totalv += pl[o][1];
-        totalp += pl[o][0];
-      }
-      vwap.push(totalp / totalv);
-      pl.splice(0, 1);
-    }
+  var length = (!len || len > data.length) ? data.length : len, data = data.map(x=>[x[0]*x[1],x[1]]), vwap = [];
+  for(var i = length; i <= data.length; i++) {
+    var pl = data.slice(i-length,i),
+        totalv = 0, totalp = 0;
+    for(var o = 0; o < pl.length; o++) totalv+=pl[o][1], totalp+=pl[o][0];
+    vwap.push(totalp/totalv);
   }
   return vwap;
 }
