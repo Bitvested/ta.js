@@ -94,6 +94,13 @@ async function rsi(data, len) {
   }
   return arrsi;
 }
+async function wrsi(data, len) {
+  var length = (!len) ? 14 : len, arrsi = [], u = [], d = [];
+  for(var i = 1; i < data.length; i++) if(data[i]-data[i-1]<0) {d.push(Math.abs(data[i]-data[i-1])),u.push(0);}else{d.push(0),u.push(data[i]-data[i-1]);}
+  d = await module.exports.wsma(d, length), u = await module.exports.wsma(u, length);
+  for(let i in d) arrsi.push(100-100/(1+(u[i]/d[i])));
+  return arrsi;
+}
 async function tsi(data, llen, slen, sig) {
   var long = (!llen) ? 25 : llen, short = (!slen) ? 13 : slen,
   signal = (!sig) ? 13 : sig, mom = [], abs = [], ts = [], tsi = [];
@@ -269,6 +276,19 @@ async function wma(data, len) {
     wma.push(average);
   }
   return wma;
+}
+async function wsma(data, len) {
+  var length = (!len) ? 14 : len, wsm = [], weight = 1/length;
+  for(var i = length; i <= data.length; i++) {
+    if(wsm.length > 0) {
+      wsm.push((data[i-1]-wsm[wsm.length-1]) * weight + wsm[wsm.length-1]);
+      continue;
+    }
+    var pl = data.slice(i-length,i),average=0;
+    for(q in pl) average += pl[q];
+    wsm.push(average/length);
+  }
+  return wsm;
 }
 async function pwma(data, len) {
   var weight = 0, wmaa = [], weights = [], length = (!len) ? 14 : len;
@@ -574,5 +594,5 @@ module.exports = {
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans,
-  normalize, denormalize
+  normalize, denormalize, wrsi, wsma
 }
