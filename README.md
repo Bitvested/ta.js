@@ -299,7 +299,7 @@ ta.kmeans(data, length);
 #### <a name="norm"></a>Normalize
 ```javascript
 var data = [5,4,9,4];
-var margin = 0.1; // margin %
+var margin = 0.1; // margin % (default = 0)
 ta.normalize(data, margin);
 // output (array)
 // [0.22, 0.06, 0.86, 0.06]
@@ -308,7 +308,7 @@ ta.normalize(data, margin);
 ```javascript
 var data = [5,4,9,4]; // original data || [highest, lowest]
 var norm = [0.22, 0.06, 0.86, 0.06, 0.44]; // normalized data
-var margin = 0.1; // margin %
+var margin = 0.1; // margin % (default = 0)
 ta.denormalize(data, norm, margin);
 // output (array)
 // [5 ,4, 9, 4, 6.4]
