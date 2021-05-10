@@ -98,7 +98,7 @@ ta.wma(data, length);
 #### <a name="wsma"></a>Wilder's Smoothing Moving Average
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 10];
-var length = 6;
+var length = 6; // default = 14
 ta.wsma(data, length);
 // output (array)
 // [3.5, 4.58]
@@ -181,7 +181,7 @@ ta.rsi(data, length);
 #### <a name="wrsi"></a>Wilder's Relative Strength Index
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 7, 5, 6];
-var length = 6;
+var length = 6; // default = 14
 ta.wrsi(data, length);
 // output (array)
 // [100, 71.43, 75.61]
@@ -223,8 +223,8 @@ ta.asi(data);
 #### <a name="ao"></a>Awesome Oscillator
 ```javascript
 var data = [[6, 5], [8, 6], [7, 4], [6, 5], [7, 6], [9, 8]]; // [high, low]
-var shortlength = 2;
-var longlength = 5;
+var shortlength = 2; // default = 5
+var longlength = 5; // default = 35
 ta.ao(data, shortlength, longlength);
 // output (array)
 // [0, 0.9]
@@ -251,7 +251,7 @@ ta.stoch(data, length, smoothd, smoothk);
 #### <a name="variance"></a>Variance
 ```javascript
 var data = [6, 7, 2, 3, 5, 8, 6, 2];
-var length = 7;
+var length = 7; // default = data.length
 ta.variance(data, length);
 // output (array)
 // [3.918, 5.061]
@@ -316,7 +316,7 @@ ta.denormalize(data, norm, margin);
 #### <a name="mad"></a>Median Absolute Deviation
 ```javascript
 var data = [3, 7, 5, 4, 3, 8, 9];
-var length = 6;
+var length = 6; // default = data.length
 ta.mad(data, length);
 // output (array)
 // [1, 2]
@@ -324,7 +324,7 @@ ta.mad(data, length);
 #### <a name="aad"></a>Average Absolute Deviation
 ```javascript
 var data = [4, 6, 8, 6, 8, 9, 10, 11];
-var length = 7;
+var length = 7; // default = data.length
 ta.aad(data, length);
 // output (array)
 // [1.673, 1.468]
@@ -332,7 +332,7 @@ ta.aad(data, length);
 #### <a name="ssd"></a>Sum Squared Differences
 ```javascript
 var data = [7, 6, 5, 7, 9, 8, 3, 5, 4];
-var length = 7;
+var length = 7; // default = data.length
 ta.ssd(data, length);
 // output (array)
 // [4.869, 4.986]
