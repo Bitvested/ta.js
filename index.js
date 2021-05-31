@@ -88,7 +88,7 @@ async function rsi(data, len) {
   for(var i = length,gain=0,loss=0; i < data.length; i++,gain=0,loss=0) {
     pl.push(data[i]);
     for(var q = 1; q < pl.length; q++) if(pl[q]-pl[q-1] < 0) {loss+=Math.abs(pl[q]-pl[q-1]);}else{gain+=pl[q]-pl[q-1];}
-    var rsi = Number(100 - 100 / (1 + ((gain / length) / (loss / length))));
+    var rsi = 100 - 100 / (1 + ((gain / length) / (loss / length)));
     arrsi.push(rsi);
     pl.splice(0,1);
   }
