@@ -22,6 +22,7 @@ ta.pr([2, 1, 3, 1, 2], 4).then((pr) => { try { assert.deepEqual(pr, [-100, -50])
 ta.stoch([[3,2,1], [2,2,1], [4,3,1], [2,2,1]], 2, 1, 1).then((stoch) => { try { assert.deepEqual(stoch, [[66.66666666666667, 66.66666666666667], [33.333333333333336, 33.333333333333336]]); } catch(e) { console.error('Test failed @ stoch \n'); }});
 ta.variance([6, 7, 2, 3, 5, 8, 6, 2], 7).then((variance) => { try { assert.deepEqual(variance, [3.918367346938776, 5.061224489795919]); } catch(e) { console.error('Test failed @ variance \n'); }});
 ta.std([1, 2, 3], 3).then((std) => { try { assert.deepEqual(std, 0.816496580927726); } catch(e) { console.error('Test failed @ std \n'); }});
+ta.normsinv(0.4732).then((norm) => { try { assert.deepEqual(norm, -0.06722824471054376); } catch(e) { console.error('Test failed @ normsinv \n'); }});
 ta.cor([1, 2, 3, 4, 5, 2], [1, 3, 2, 4, 6, 3]).then((cor) => { try { assert.deepEqual(cor, 0.8808929232684737); } catch(e) { console.error('Test failed @ cor \n'); }});
 ta.dif(0.75, 0.5).then((dif) => { try {assert.deepEqual(dif, 0.5); } catch(e) { console.error('Test failed @ dif \n'); }});
 ta.median([4, 6, 3, 1, 2, 5], 4).then((median) => { try { assert.deepEqual(median, [3, 2, 2]); } catch(e) { console.error('Test failed @ median \n'); }});
