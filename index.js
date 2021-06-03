@@ -461,11 +461,11 @@ async function sim(d, length, sims, perc) {
     for(var x = 0; x < length; x++) {
       var change = [];
       for(var y = 1; y < projected.length; y++) {
-        var df = await ta.dif(projected[y],projected[y-1]);
+        var df = await module.exports.dif(projected[y],projected[y-1]);
         change.push(df);
       }
-      var mean = await ta.sma(change, change.length),
-          std = await ta.std(change), random = await module.exports.normsinv(Math.random());
+      var mean = await module.exports.sma(change, change.length),
+          std = await module.exports.std(change), random = await module.exports.normsinv(Math.random());
       projected.push(projected[projected.length-1]*Math.exp(mean[0]-(std*std)/2+std*random));
     }
     sd.push(projected);
