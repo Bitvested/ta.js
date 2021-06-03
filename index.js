@@ -454,6 +454,34 @@ async function normsinv(p) {
   var q = Math.sqrt(-2 * Math.log(1 - p));
   return -(((((c1 * q + c2) * q + c3) * q + c4) * q + c5) * q + c6) / ((((d1 * q + d2) * q + d3) * q + d4) * q + 1);
 }
+async function sim(d, length, sims, perc) {
+  var sd = [], length = (!length) ? 50 : length, sims = (!sims) ? 1000 : sims;
+  for(var i = 0; i < sims; i++) {
+    var projected = d.slice();
+    for(var x = 0; x < length; x++) {
+      var change = [];
+      for(var y = 1; y < projected.length; y++) {
+        var df = await ta.dif(projected[y],projected[y-1]);
+        change.push(df);
+      }
+      var mean = await ta.sma(change, change.length),
+          std = await ta.std(change), random = await module.exports.normsinv(Math.random());
+      projected.push(projected[projected.length-1]*Math.exp(mean[0]-(std*std)/2+std*random));
+    }
+    sd.push(projected);
+  }
+  if(!perc) return sd;
+  var finalprojection = d.slice();
+  for(var i = d.length; i < sd[0].length; i++) {
+    sd.sort((a, b) => {
+      if(a[i] > b[i]) return 1;
+      if(a[i] < b[i]) return -1;
+      return 0;
+    });
+    finalprojection.push(sd[Math.round(sd.length*perc)][i]);
+  }
+  return finalprojection;
+}
 async function cor(data1, data2) {
   var d1avg = await module.exports.sma(data1, data1.length),
       d2avg = await module.exports.sma(data2, data2.length),
@@ -612,5 +640,5 @@ module.exports = {
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans,
-  normalize, denormalize, wrsi, wsma
+  normalize, denormalize, wrsi, wsma, normsinv, sim
 }
