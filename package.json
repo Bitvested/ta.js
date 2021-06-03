@@ -1,6 +1,6 @@
 {
   "name": "ta.js",
-  "version" : "1.1.4",
+  "version" : "1.2.0",
   "description": "Financial Technical Analysis in JavaScript",
   "main": "index.js",
   "scripts": {
@@ -37,7 +37,9 @@
     "aad",
     "mad",
     "ssd",
-    "kmeans"
+    "kmeans",
+    "monte",
+    "carlo"
   ],
   "author": "Nino Kroesen",
   "license": "MIT",
