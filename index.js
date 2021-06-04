@@ -130,10 +130,10 @@ async function bop(data, len) {
 async function fi(data, len) {
   var length = (!len) ? 13 : len, pl = [], ff = [];
   for(var i = 1; i < data.length; i++) {
-    pl.push(data[i][0] - data[i - 1][0]);
+    pl.push((data[i][0] - data[i - 1][0]) * data[i][1]);
     if(pl.length >= length) {
       var vfi = await module.exports.ema(pl, length);
-      ff.push((data[i][0] - data[i - 1][0]) * vfi[0]);
+      ff.push(vfi[vfi.length-1]);
       pl.splice(0, 1);
     }
   }
