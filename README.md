@@ -173,7 +173,6 @@ ta.macd(data, length1, length2);
 // [1.5, 3]
 ```
 #### <a name="rsi"></a>Relative Strength Index (RSI)
-Note: this function takes length times the difference of data
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 7, 5];
 var length = 6; // default = 14
@@ -182,7 +181,6 @@ ta.rsi(data, length);
 // [100.0, 71.43]
 ```
 #### <a name="wrsi"></a>Wilder's Relative Strength Index
-Note: this function takes length times the difference of data
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 7, 5, 6];
 var length = 6; // default = 14
