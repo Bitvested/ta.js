@@ -178,7 +178,7 @@ var data = [1, 2, 3, 4, 5, 6, 7, 5];
 var length = 6; // default = 14
 ta.rsi(data, length);
 // output (array)
-// [100.0, 71.43]
+// [100.0, 100.0, 66.667]
 ```
 #### <a name="wrsi"></a>Wilder's Relative Strength Index
 ```javascript
