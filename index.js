@@ -84,8 +84,8 @@ async function ssd(data, len) {
   return sd;
 }
 async function rsi(data, len) {
-  var length = (!len) ? 14 : len, arrsi = [], pl = data.slice(0,length-1);
-  for(var i = length-1,gain=0,loss=0; i < data.length; i++,gain=0,loss=0) {
+  var length = (!len) ? 14 : len, arrsi = [], pl = data.slice(0,length);
+  for(var i = length,gain=0,loss=0; i < data.length; i++,gain=0,loss=0) {
     pl.push(data[i]);
     for(var q = 1; q < pl.length; q++) if(pl[q]-pl[q-1] < 0) {loss+=Math.abs(pl[q]-pl[q-1]);}else{gain+=pl[q]-pl[q-1];}
     var rsi = 100 - 100 / (1 + ((gain / length) / (loss / length)));
