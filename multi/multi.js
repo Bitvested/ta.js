@@ -22,7 +22,7 @@ async function sim(d, length, sims, perc) {
   for(var i = 0; i < sims; i++) {
     worker.postMessage({f: 0, d: d, length: length});
   }
-  worker.postMessage({f: 1});
+  worker.postMessage({f: -1});
 }
 
 module.exports = {sim};

@@ -17,7 +17,7 @@ async function simulate(ops) {
 }
 
 parentPort.on('message', async(ops) => {
-  if(ops.f == 1) process.exit(0);
+  if(ops.f < 0) process.exit(0);
   const functions = [simulate],
         result = await functions[ops.f](ops);
   parentPort.postMessage(result);
