@@ -364,6 +364,7 @@ async function hull(data, len) {
     if(pl.length >= sqn) {
       var h = await wma(pl, sqn);
       hma.push(h[h.length - 1]);
+      pl.splice(0,1);
     }
   }
   return hma;
