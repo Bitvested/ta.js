@@ -1,3 +1,4 @@
+const multi = require('./multi/multi.js');
 async function median(data, len) {
   var length = (!len) ? data.length : len, med = [];
   for(var i = length; i <= data.length; i++) {
@@ -640,5 +641,5 @@ module.exports = {
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans,
-  normalize, denormalize, wrsi, wsma, normsinv, sim
+  normalize, denormalize, wrsi, wsma, normsinv, sim, multi
 }
