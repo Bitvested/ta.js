@@ -1,4 +1,4 @@
-const multi = require('./multi/multi.js');
+const multi = (Number(process.versions.node.split('.')[0]) >= 12) ? require('./multi/multi.js') : undefined;
 async function median(data, len) {
   var length = (!len) ? data.length : len, med = [];
   for(var i = length; i <= data.length; i++) {
