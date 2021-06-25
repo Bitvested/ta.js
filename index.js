@@ -497,6 +497,23 @@ async function cor(data1, data2) {
   return (sumavg / (n * sx * sy));
 }
 async function dif(n, o) { return (n - o) / o; }
+async function drawdown(d) {
+  var max = d[0], min = d[0], big = 0;
+  for(var y = 1; y < d.length; y++) {
+    if(d[y] > max) {
+      if(min != 0) {
+        var diff = await module.exports.dif(min, max);
+        if(diff < big) big = diff;
+        min = d[y];
+      }
+      max = d[y];
+    }
+    if(d[y] < min) min = d[y];
+  }
+  var diff = await module.exports.dif(min, max);
+  if(diff < big) big = diff
+  return big;
+}
 async function aroon_up(data, len) {
   var length = (!len) ? 10 : len, aroon = [];
   for(var i = length; i <= data.length; i++) {
@@ -641,6 +658,6 @@ module.exports = {
   }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
-  bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans,
+  bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
   normalize, denormalize, wrsi, wsma, normsinv, sim, multi
 }
