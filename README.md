@@ -47,6 +47,7 @@ const ta = require('ta.js');
 - [Monte Carlo Simulation](#sim)
 - [Correlation](#cor)
 - [Percentage Difference](#dif)
+- [Drawdown](#drawdown)
 - [Median](#median)
 - [K-means Clustering](#kmeans)
 - [Normalize](#norm)
@@ -283,6 +284,10 @@ ta.sim(data, length, simulations, percentile);
 // output (array)
 // [6, 4, 7, 8, 5, 6, 5.96, 5.7]
 ```
+Multi threaded ~ 95% faster (node version >= 12)
+```javascript
+ta.multi.sim(data, length, simulations, percentile);
+```
 #### <a name="cor"></a>Correlation
 ```javascript
 var data1 = [1, 2, 3, 4, 5, 2];
@@ -298,6 +303,13 @@ var oldval = 0.5;
 ta.dif(newval, oldval);
 // output (float)
 // 0.5
+```
+#### <a name="drawdown"></a>Drawdown
+```javascript
+var data = [1, 2, 3, 4, 2, 3];
+ta.drawdown(data);
+// output (float)
+// -0.5
 ```
 #### <a name="median"></a>Median
 ```javascript
