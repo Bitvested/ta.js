@@ -366,7 +366,7 @@ var data = [7, 6, 5, 7, 9, 8, 3, 5, 4];
 var length = 7; // default = data.length
 ta.ssd(data, length);
 // output (array)
-// [4.869, 4.986]
+// [4.87, 4.986, 5.372]
 ```
 #### <a name="bands"></a>Bollinger Bands
 ```javascript

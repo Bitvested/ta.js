@@ -77,7 +77,7 @@ async function aad(data, len) {
 }
 async function ssd(data, len) {
   var length = (!len) ? data.length : len, sd = [];
-  for(var i = length; i < data.length; i++) {
+  for(var i = length; i <= data.length; i++) {
     var tmp = data.slice(i-length,i), mean = await module.exports.sma(tmp, length), sum = 0;
     for(let x in tmp) sum += (tmp[x] - mean[mean.length-1]) ** 2;
     sd.push(Math.sqrt(sum));
