@@ -494,7 +494,7 @@ var s4 = 7; // default = 15
 var sig = 4; // default = 9
 ta.kst(data, r1, r2, r3, r4, s1, s2, s3, s4, sig);
 // output (array)
-// [[-0.68, -0.52], [-0.29, -0.58]]
+// [[-0.68, -0.52], [-0.29, -0.58], [0.35, -0.36]]
 // [kst line, signal line]
 ```
 #### <a name="obv"></a>On-Balance Volume

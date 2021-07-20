@@ -363,7 +363,7 @@ async function hull(data, len) {
     pl.push((first[i] * 2) - ewma[i]);
     if(pl.length >= sqn) {
       var h = await wma(pl, sqn);
-      hma.push(h[h.length - 1]);
+      hma.push(h[0]);
       pl.splice(0,1);
     }
   }
@@ -568,7 +568,7 @@ async function cop(data, len1, len2, len3) {
 async function kst(data, r1, r2, r3, r4, s1, s2, s3, s4, sig) {
   r1 = (!r1) ? 10 : r1, r2 = (!r2) ? 15 : r2, r3 = (!r3) ? 20 : r3, r4 = (!r4) ? 30 : r4, s1 = (!s1) ? 10 : s1, s2 = (!s2) ? 10 : s2, s3 = (!s3) ? 10 : s3, s4 = (!s4) ? 15 : s4, sig = (!sig) ? 9 : sig;
   var ks = [], fs = [], ms = (Math.max(r1, r2, r3, r4) + Math.max(s1, s2, s3, s4));
-  for(var i = ms; i < data.length; i++) {
+  for(var i = ms; i <= data.length; i++) {
     var pl = data.slice(i-ms,i),
         rcma1 = await module.exports.roc(pl, r1),
         rcma2 = await module.exports.roc(pl, r2),
