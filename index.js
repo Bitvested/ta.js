@@ -612,8 +612,8 @@ async function mom(data, len, p) {
   return mom;
 }
 async function mom_osc(data, len) {
-  var length = (!len) ? 9 : len, osc = [];
-  for(var i = length; i < data.length; i++) {
+  var length = (!len) ? 9+1 : len+1, osc = [];
+  for(var i = length; i <= data.length; i++) {
     var sumh = 0, suml = 0;
     for(var a = 1; a < length; a++) (data[i-length+(a-1)] < data[i-length+a]) ? sumh += data[i-length+a] : suml += data[i-length+a];
     osc.push((sumh - suml) / (sumh + suml) * 100);
