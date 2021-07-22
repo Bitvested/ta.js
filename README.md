@@ -431,7 +431,7 @@ var data = [5, 4, 5, 2];
 var length = 3; // default = 10
 ta.aroon.up(data, length);
 // output (array)
-// [66.67, 33.36]
+// [100, 50]
 ```
 #### <a name="aroon-down"></a>Aroon Down
 ```javascript
@@ -439,7 +439,7 @@ var data = [2, 5, 4, 5];
 var length = 3; // default = 10
 ta.aroon.down(data, length);
 // output (array)
-// [66.67, 33.36]
+// [0, 50]
 ```
 #### <a name="aroon-osc"></a>Aroon Oscillator
 ```javascript
@@ -447,7 +447,7 @@ var data = [2, 5, 4, 5];
 var length = 3; // default = 25
 ta.aroon.osc(data, length);
 // output (array)
-// [-33.36, 33.36]
+// [50, 50]
 ```
 #### <a name="mfi"></a>Money Flow Index
 ```javascript

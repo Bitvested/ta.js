@@ -519,17 +519,16 @@ async function aroon_up(data, len) {
   for(var i = length; i <= data.length; i++) {
     var pl = data.slice(i-length,i), hl = pl.slice();
     hl.sort((a, b) => { return a - b; });
-    aroon.push((100 * (length - (pl.findIndex(x => x === hl[length - 1]) + 1)) / length));
+    aroon.push((100 * (length-1-pl.reverse().findIndex(x => x === hl[length - 1])) / (length-1)));
   }
   return aroon;
 }
 async function aroon_down(data, len) {
   var length = (!len) ? 10 : len, aroon = [];
   for(var i = length; i <= data.length; i++) {
-    var pl = data.slice(i-length,i)
-    var hl = pl.slice(0);
+    var pl = data.slice(i-length,i), hl = pl.slice();
     hl.sort((a, b) => { return a - b; });
-    aroon.push((100 * (length - (pl.findIndex(x => x === hl[0]) + 1)) / length));
+    aroon.push((100 * (length-1-pl.reverse().findIndex(x => x === hl[0])) / (length-1)));
   }
   return aroon;
 }
