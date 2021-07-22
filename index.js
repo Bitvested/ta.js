@@ -199,20 +199,20 @@ async function ichimoku(data, len1, len2, len3, len4) {
   length3 = (!len3) ? 52 : len3, length4 = (!len4) ? 26 : len4, cloud = [], place = [];
   for(var i = 0; i < data.length; i++) {
     pl.push(data[i]);
-    if(pl.length > length3) {
+    if(pl.length >= length3) {
       var highs = [], lows = [];
       for(let a in pl) highs.push(pl[a][0]), lows.push(pl[a][2]);
-      var tsen = (Math.max.apply(null, highs.slice((highs.length - 1 - length1), highs.length - 1)) + Math.min.apply(null, lows.slice((lows.length - 1 - length1), lows.length - 1))) / 2,
-          ksen = (Math.max.apply(null, highs.slice((highs.length - 1 - length2), highs.length - 1)) + Math.min.apply(null, lows.slice((lows.length - 1 - length2), lows.length - 1))) / 2,
+      var tsen = (Math.max.apply(null, highs.slice((highs.length - length1), highs.length)) + Math.min.apply(null, lows.slice((lows.length - length1), lows.length))) / 2,
+          ksen = (Math.max.apply(null, highs.slice((highs.length - length2), highs.length)) + Math.min.apply(null, lows.slice((lows.length - length2), lows.length))) / 2,
           senka = data[i][1] + ksen,
-          senkb = (Math.max.apply(null, highs.slice((highs.length - 1 - length3), highs.length - 1)) + Math.min.apply(null, lows.slice((lows.length - 1 - length2), lows.length - 1))) / 2;
+          senkb = (Math.max.apply(null, highs.slice((highs.length - length3), highs.length)) + Math.min.apply(null, lows.slice((lows.length - length2), lows.length))) / 2;
           chik = data[i][1];
           place.push([tsen, ksen, senka, senkb, chik]);
       pl.splice(0, 1);
     }
   }
   for(var i = length4; i < place.length - length4; i++) {
-    cloud.push([place[i][0], place[i][1], place[i + (length4 - 1)][2], place[i + (length4 - 1)][3], place[i + length4 - 1][4]]);
+    cloud.push([place[i][0], place[i][1], place[i + length4][2], place[i + length4][3], place[i - length4][4]]);
   }
   return cloud;
 }
