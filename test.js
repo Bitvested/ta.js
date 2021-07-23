@@ -27,6 +27,7 @@ ta.cor([1, 2, 3, 4, 5, 2], [1, 3, 2, 4, 6, 3]).then((cor) => { try { assert.deep
 ta.dif(0.75, 0.5).then((dif) => { try {assert.deepEqual(dif, 0.5); } catch(e) { console.error('Test failed @ dif \n'); }});
 ta.drawdown([1,2,3,4,2,3]).then((draw) => { try { assert.deepEqual(draw, -0.5); } catch(e) { console.error('Test failed @ drawdown \n'); }});
 ta.median([4, 6, 3, 1, 2, 5], 4).then((median) => { try { assert.deepEqual(median, [3, 2, 2]); } catch(e) { console.error('Test failed @ median \n'); }});
+ta.percentile([[6,4,7], [5,3,6], [7,5,8]], 0.5).then((perc) => { try { assert.deepEqual(perc, [6,4,7]); } catch(e) { console.error('Test failed @ percentile')}});
 ta.kmeans([2, 3, 4, 5, 3, 5, 7, 8, 6, 8, 6, 4, 2, 6], 4).then((kmeans) => { try { assert.deepEqual(kmeans, [[ 4, 5, 5, 4 ], [ 7, 6, 6, 6 ], [ 8, 8 ], [ 2, 3, 3, 2 ]]); } catch(e) { console.error('Test failed @ kmeans \n'); }});
 ta.normalize([5,4,9,4], 0.1).then((norm) => { try { assert.deepEqual(norm, [0.2222222222222222, 0.06349206349206349, 0.8571428571428571, 0.06349206349206349]); } catch(e) { console.error('Test failed @ normalize \n'); } });
 ta.denormalize([5,4,9,4], [0.2222222222222222, 0.06349206349206349, 0.8571428571428571, 0.06349206349206349, 0.4444444444444444], 0.1).then((dnorm) => { try { assert.deepEqual(dnorm, [5,4,9,4,6.4]); } catch(e) { console.error('Test failed @ denormalize \n'); } });

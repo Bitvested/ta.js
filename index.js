@@ -484,6 +484,18 @@ async function sim(d, length, sims, perc) {
   }
   return finalprojection;
 }
+async function percentile(data, perc) {
+  var final = [];
+  for(var i = 0; i < data[0].length; i++) {
+    data.sort((a, b) => {
+      if(a[i] > b[i]) return 1;
+      if(a[i] < b[i]) return -1;
+      return 0;
+    });
+    final.push(data[Math.round((data.length-1)*perc)][i]);
+  }
+  return final;
+}
 async function cor(data1, data2) {
   var d1avg = await module.exports.sma(data1, data1.length),
       d2avg = await module.exports.sma(data2, data2.length),
@@ -658,5 +670,5 @@ module.exports = {
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
-  normalize, denormalize, wrsi, wsma, normsinv, sim, multi
+  normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile
 }

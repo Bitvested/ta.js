@@ -45,6 +45,7 @@ const ta = require('ta.js');
 - [Standard Deviation](#std)
 - [Inverse Normal Distribution](#normsinv)
 - [Monte Carlo Simulation](#sim)
+- [Percentile](#perc)
 - [Correlation](#cor)
 - [Percentage Difference](#dif)
 - [Drawdown](#drawdown)
@@ -287,6 +288,14 @@ ta.sim(data, length, simulations, percentile);
 Multi threaded ~ 95% faster (node version >= 12)
 ```javascript
 ta.multi.sim(data, length, simulations, percentile);
+```
+#### <a name="perc"></a>Percentile
+```javascript
+var data = [[6,4,7], [5,3,6], [7,5,8]];
+var percentile = 0.5;
+ta.percentile(data, percentile);
+// output (array)
+// [6, 4, 7]
 ```
 #### <a name="cor"></a>Correlation
 ```javascript
