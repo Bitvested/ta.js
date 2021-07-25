@@ -285,7 +285,7 @@ ta.sim(data, length, simulations, percentile);
 // output (array)
 // [6, 4, 7, 8, 5, 6, 5.96, 5.7]
 ```
-Multi threaded ~ 95% faster (node version >= 12)
+Multi threaded ~ not faster in all cases (node version >= 12)
 ```javascript
 ta.multi.sim(data, length, simulations, percentile);
 ```

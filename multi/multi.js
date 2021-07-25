@@ -1,8 +1,8 @@
 const { Worker } = require('worker_threads');
 
 async function sim(d, length, sims, perc) {
+  var sd = [], length = (!length) ? 50 : length, sims = (!sims) ? 1000 : sims;
   return new Promise(async(resolve, reject) => {
-    var sd = [], length = (!length) ? 50 : length, sims = (!sims) ? 1000 : sims;
     let worker = new Worker(__dirname + '/worker.js');
     worker.on('message', async(result) => {
       sd.push(result);
