@@ -692,6 +692,84 @@ async function fractals(data) {
   fractals.push([false,false], [false, false]);
   return fractals;
 }
+async function recent_high(data, lb) {
+  var xback = lb, hindex = 0, highest = data[data.length-1];
+  lb = (!lb) ? 25 : lb;
+  for(var i = data.length-2; i >= 0; i--) {
+    if(data[i] >= highest && xback > 0) {
+      highest = data[i];
+      hindex = i;
+      xback = lb;
+    } else {
+      xback--;
+    }
+    if(xback <= 0) break;
+  }
+  return {index: hindex, value: highest};
+}
+async function recent_low(data, lb) {
+  var xback = lb, lindex = 0, lowest = data[data.length-1];
+  lb = (!lb) ? 25 : lb;
+  for(var i = data.length-2; i >= 0; i--) {
+    if(data[i] <= lowest && xback > 0) {
+      lowest = data[i];
+      lindex = i;
+      xback = lb;
+    } else {
+      xback--;
+    }
+    if(xback <= 0) break;
+  }
+  return {index: lindex, value: lowest};
+}
+async function support(d, hl) {
+  hl = (!hl) ? await recent_low(d) : hl;
+  var index2, findex, lowform = hl.value;
+  do {
+    for(var i = hl.index; i < d.length; i++) {
+      var newlow = (hl.value-d[i])/(hl.index-i);
+      if(newlow < lowform) {
+        lowform = newlow;
+        index2 = i;
+      }
+    }
+    if(hl.index + 1 == index2 && index2 != d.length-1) {
+      hl.index = index2;
+      lowform = Math.min.apply(null, d.slice());
+      hl.value = d[hl.index];
+      findex = false;
+    } else {
+      findex = true;
+    }
+    if(hl.index == d.length-1) findex = true;
+  } while(!findex);
+  if(index2 == d.length-1 || hl.index == d.length-1) return {calculate: async(pos) => hl.value, slope: 0, lowest: hl.value, index: hl.index};
+  return {calculate: async(pos) => pos*lowform+hl.value, slope: lowform, lowest: hl.value, index: hl.index};
+}
+async function resistance(d, hl) {
+  hl = (!hl) ? await recent_high(d) : hl;
+  var index2, findex, highform = hl.value;
+  do {
+    for(var i = hl.index; i < d.length; i++) {
+      var newhigh = (d[i]-hl.value)/(hl.index-i);
+      if(newhigh < highform) {
+        highform = newhigh;
+        index2 = i;
+      }
+    }
+    if(hl.index+1 == index2 && index2 != d.length-1) {
+      hl.index = index2;
+      highform = Math.max.apply(null, d.slice());
+      hl.value = d[hl.index];
+      findex = false;
+    } else {
+      findex = true;
+    }
+    if(hl.index == d.length-1) findex = true;
+  } while(!findex);
+  if(index2 == d.length-1 || hl.index == d.length-1) return {calculate: async(pos) => hl.value, slope: 0, highest: hl.value, index: hl.index};
+  return {calculate: async(pos) => pos*-highform+hl.value, slope: highform, highest: hl.value, index: hl.index};
+}
 module.exports = {
   aroon: {
     up: aroon_up,
@@ -702,5 +780,6 @@ module.exports = {
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
   normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile,
-  envelope, chaikin_osc, fractals
+  envelope, chaikin_osc, fractals, recent_high, recent_low, support,
+  resistance
 }

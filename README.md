@@ -40,6 +40,8 @@ const ta = require('ta.js');
 - [Accumulative Swing Index](#asi)
 - [Awesome Oscillator](#ao)
 - [Williams %R](#pr)
+- [Recent High](#rh)
+- [Recent Low](#rl)
 - [Stochastics](#stoch)
 - [Variance](#variance)
 - [Standard Deviation](#std)
@@ -78,6 +80,9 @@ const ta = require('ta.js');
 - [Momentum](#mom)
 - [Heikin Ashi](#ha)
 - [Renko](#ren)
+#### Experimental
+- [Support Line](#sup)
+- [Resistance Line](#res)
 #### <a name="sma"></a>Simple Moving Average (SMA)
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 10];
@@ -243,6 +248,22 @@ var length = 4; // default = 14
 ta.pr(data, length);
 // output (array)
 // [-0, -100, -50]
+```
+#### <a name="rh"></a>Recent High
+```javascript
+var data = [4,5,6,7,8,9,8,7,8,9,10,3,2,1];
+var lookback = 3; // No higher values after 3 periods? resets after each new high
+ta.recent_high(data, lookback);
+// output (object)
+// {index: 10, value: 10}
+```
+#### <a name="rl"></a>Recent Low
+```javascript
+var data = [1,4,5,6,4,3,2,3,4,3,5,7,8,8,5];
+var lookback = 4; // No lower values after 4 periods? resets after each new low
+ta.recent_low(data, lookback);
+// output (object)
+// {index: 6, value: 2}
 ```
 #### <a name="stoch"></a>Stochastics
 ```javascript
@@ -583,6 +604,33 @@ var bricksize = 3;
 ta.ren(data, bricksize);
 // output (array)
 // [open, high, low, close]
+```
+### Experimental Functions
+#### <a name="sup"></a>Support Line
+```javascript
+var data = [4,3,2,5,7,6,5,4,7,8,5,4,6,7,5];
+var start = {index: 2, value: 2}; // default = recent_low(data, 25);
+var support = await ta.support(data, start);
+// output (object)
+// support.calculate = function(x) // calculates line at position x from start.index (= 0)
+// support.slope = delta y per x
+// support.lowest = lowest (start) value at x = 0
+// support.index = (start) index of the lowest value
+// to get the line at the current candle / chart period
+var current = await support.calculate(data.length-support.index);
+```
+#### <a name="res"></a>Resistance Line
+```javascript
+var data = [5,7,5,5,4,6,5,4,6,5,4,3,2,4,3,2,1];
+var start = {index: 1, value: 7}; // default = recent_high(data, 25);
+var resistance = await ta.resistance(data, start);
+// output (object)
+// resistance.calculate = function(x) // calculates line at position x from start.index (= 0)
+// resistance.slope = delta y per x
+// resistance.highest = highest (start) value
+// resistance.index = (start) index of highest value
+// to get the line at the current candle / chart period
+var current = await resistance.calculate(data, start);
 ```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
