@@ -1,6 +1,6 @@
 {
   "name": "ta.js",
-  "version": "1.3.4",
+  "version": "1.4.0",
   "description": "Financial Technical Analysis in JavaScript",
   "main": "index.js",
   "scripts": {

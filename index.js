@@ -661,6 +661,37 @@ async function ren(data, bs) {
   }
   return re;
 }
+async function envelope(data, len, p) {
+  len = (!len) ? 10 : len; p = (!p) ? 0.005 : p;
+  var enve = [];
+  for(var i = len; i < data.length; i++) {
+    var sm = await module.exports.sma(data.slice(i-len,i), len);
+    enve.push([sm[0]*(1+p),sm[0],sm[0]*(1-p)]);
+  }
+  return enve;
+}
+async function chaikin_osc(data, ema1, ema2) {
+  ema1 = (!ema1) ? 3 : ema1; ema2 = (!ema2) ? 10 : ema2;
+  var cha = [], adl = [];
+  for(var i = 0; i < data.length; i++) {
+    var mfm = ((data[i][1]-data[i][2])-(data[i][0]-data[i][1]))/(data[i][0]-data[i][2]);
+    (isNaN(mfm)) ? adl.push(0) : adl.push(mfm*data[i][3])
+  }
+  var ef = await module.exports.ema(adl, ema1), es = await module.exports.ema(adl, ema2);
+  if(ef.length > es.length) { ef.splice(0,ef.length-es.length); } else { es.splice(0,es.length-ef.length); }
+  for(var i = 0; i < ef.length; i++) cha.push(ef[i]-es[i]);
+  return cha;
+}
+async function fractals(data) {
+  var fractals = [[false, false], [false, false]];
+  for(var i = 2; i < data.length-2; i++) {
+    var up = (data[i-2][0] < data[i][0] && data[i-1][0] < data[i][0] && data[i][0] > data[i+1][0] && data[i][0] > data[i+2][0]) ? true : false,
+        down = (data[i-2][1] > data[i][1] && data[i-1][1] > data[i][1] && data[i][1] < data[i+1][1] && data[i][1] < data[i+2][1]) ? true : false;
+    fractals.push([up, down]);
+  }
+  fractals.push([false,false], [false, false]);
+  return fractals;
+}
 module.exports = {
   aroon: {
     up: aroon_up,
@@ -670,5 +701,6 @@ module.exports = {
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
-  normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile
+  normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile,
+  envelope, chaikin_osc, fractals
 }

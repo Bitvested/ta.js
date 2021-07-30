@@ -60,6 +60,7 @@ const ta = require('ta.js');
 - [Bollinger Bandwidth](#bandwidth)
 - [Keltner Channels](#kelt)
 - [Donchian Channels](#don)
+- [Envelope](#env)
 - [Ichimoku Cloud](#ichi)
 - [Average True Range](#atr)
 - [Aroon Up](#aroon-up)
@@ -72,6 +73,8 @@ const ta = require('ta.js');
 - [On-Balance Volume](#obv)
 - [Volume-Weighted Average Price](#vwap)
 - [Chande Momentum Oscillator](#mom_osc)
+- [Chaikin Oscillator](#chaikin_osc)
+- [Fractals](#fractals)
 - [Momentum](#mom)
 - [Heikin Ashi](#ha)
 - [Renko](#ren)
@@ -415,6 +418,16 @@ ta.don(data, length);
 // [[7, 4.5, 2], [7, 4.5, 2]]
 // [upper band, base line, lower band]
 ```
+#### <a name="enve"></a>Envelope
+```javascript
+var data = [6,7,8,7,6,7,8,7,8,7,8,7,8];
+var length = 11, // default = 10
+var percentage = 0.05; // default = 0.005
+ta.envelope(data, length, percentage);
+// output (array)
+// [[7.541, 7.182, 6.823], [7.636, 7.273, 6.909]]
+// [upper band, base line, lower band]
+```
 #### <a name="ichi"></a>Ichimoku Cloud
 ```javascript
 var data = [[6, 3, 2], [5, 4, 2], [5, 4, 3], [6, 4, 3], [7, 6, 4], [6, 5, 3]]; // [high, close, low]
@@ -528,6 +541,23 @@ var length = 4; // default = 9
 ta.mom_osc(data, length);
 // output (array)
 // [0, 3.85]
+```
+#### <a name="chaikin_osc"></a>Chaikin Oscillator
+```javascript
+var data = [[2,3,4,6],[5,5,5,4],[5,4,3,7],[4,3,3,4],[6,5,4,6],[7,4,3,6]]; // [high, close, low, volume]
+var length1 = 2; // default = 3
+var length2 = 4; // default = 10
+ta.chaikin_osc(data, length1, length2);
+// output (array)
+// [-1.667, -0.289, -0.736]
+```
+#### <a name="fractals"></a>Fractals
+```javascript
+var data = [[7,6],[8,6],[9,6],[8,5],[7,4],[6,3],[7,4],[8,5]];
+ta.fractals(data);
+// output (array, same length as input)
+// [[false, false],[false,false],[true,false],[false,false],[false,false],[false,true],[false,false],[false,false]]
+// [upper fractal, lower fractal]
 ```
 #### <a name="mom"></a>Momentum
 ```javascript
