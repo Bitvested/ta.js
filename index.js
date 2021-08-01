@@ -155,16 +155,23 @@ async function asi(data) {
 }
 async function ao(data, len1, len2) {
   var length1 = (!len1) ? 5 : len1, length2 = (!len2) ? 35 : len2, a = [];
-      data = data.map(x => (x[0]+x[1])/2), pl = data.slice(0,length2-1);
-  for(var i = length2-1; i < data.length; i++) {
-    pl.push(data[i]);
+      data = data.map(x => (x[0]+x[1])/2);
+  for(var i = length2; i <= data.length; i++) {
+    var pl = data.slice(i-length2,i);
     var f = await module.exports.sma(pl, length1),
         s = await module.exports.sma(pl, length2);
     a.push(f[f.length - 1] - s[s.length - 1]);
-    pl.splice(0,1);
   }
   return a;
 }
+async function ac(data, len1, len2) {
+  len1 = (!len1) ? 5 : len1, len2 = (!len2) ? 35 : len2;
+  var a = await ao(data, len1, len2), sm = await sma(data.map(x=>(x[0]+x[1])/2), len1), acr = [];
+  if(a.length > sm.length) {a.splice(0, a.length-sm.length)} else {sm.splice(0,sm.length-a.length)}
+  for(let i in a) acr.push(a[i]-sm[i]);
+  return acr;
+}
+async function fib(start, end) { return [start, (end-start)*.236+start, (end-start)*.382+start, (end-start)*.5+start, (end-start)*.618+start, (end-start)*.786+start, end, (end-start)*1.618+start, (end-start)*2.618+start, (end-start)*3.618+start, (end-start)*4.236+start]}
 async function pr(data, len) {
   var length = (!len) ? 14 : len, n = [];
   for(var i = length; i <= data.length; i++) {
@@ -781,5 +788,5 @@ module.exports = {
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
   normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile,
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
-  resistance
+  resistance, ac, fib
 }
