@@ -166,7 +166,7 @@ async function ao(data, len1, len2) {
 }
 async function ac(data, len1, len2) {
   len1 = (!len1) ? 5 : len1, len2 = (!len2) ? 35 : len2;
-  var a = await ao(data, len1, len2), sm = await sma(data.map(x=>(x[0]+x[1])/2), len1), acr = [];
+  var a = await ao(data, len1, len2), sm = await sma(a, len1), acr = [];
   if(a.length > sm.length) {a.splice(0, a.length-sm.length)} else {sm.splice(0,sm.length-a.length)}
   for(let i in a) acr.push(a[i]-sm[i]);
   return acr;

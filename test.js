@@ -60,5 +60,5 @@ ta.recent_high([4,5,6,7,8,9,8,7,8,9,10,3,2,1], 3).then((hi) => { try { assert.de
 ta.recent_low([1,4,5,6,4,3,2,3,4,3,5,7,8,8,5], 4).then((lo) => { try { assert.deepEqual(lo, {index: 6, value: 2}); } catch(e) { console.error('Test failed @ recent_low \n'); } });
 ta.support([4,3,2,5,7,6,5,4,7,8,5,4,6,7,5]).then((sup) => { try { sup.calculate(9).then((calc) => { assert.deepEqual(calc, 4) }); } catch(e) { console.error('Test failed @ support \n'); } });
 ta.resistance([5,7,5,5,4,6,5,4,6,5,4,3,2,4,3,2,1]).then((res) => { try { res.calculate(4).then((res) => { assert.deepEqual(res, 6.428571428571429); }); } catch(e) { console.error('Test failed @ resistance \n'); } });
-ta.ac([[6, 5], [8, 6], [7, 4], [6, 5], [7, 6], [9, 8]], 2, 4).then((ac) => { try { assert.deepEqual(ac, [-5.875,-6.125,-6.5]) } catch(e) { console.error('Test failed @ ac \n'); } });
+ta.ac([[6, 5], [8, 6], [7, 4], [6, 5], [7, 6], [9, 8]], 2, 4).then((ac) => { try { assert.deepEqual(ac, [0.125, 0.5625]) } catch(e) { console.error('Test failed @ ac \n'); } });
 ta.fib(1, 2).then((fib) => { try { assert.deepEqual(fib, [1,1.236,1.3820000000000001,1.5,1.6179999999999999,1.786,2,2.6180000000000003,3.618,4.618,5.236]); } catch(e) { console.error('Test failed @ fib \n'); } });
