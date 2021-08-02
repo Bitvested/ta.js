@@ -699,6 +699,30 @@ async function fractals(data) {
   fractals.push([false,false], [false, false]);
   return fractals;
 }
+async function alligator(data, jl, tl, ll, js, ts, ls) { // data = [(high+low)/2]
+  jl = (!jl) ? 13 : jl; tl = (!tl) ? 8 : tl; ll = (!ll) ? 5 : ll;
+  js = (!js) ? 8 : js; ts = (!ts) ? 5 : ts; ls = (!ls) ? 3 : ls;
+  var ret = [],
+      jaw = await module.exports.smma(data, jl),
+      teeth = await module.exports.smma(data, tl),
+      lips = await module.exports.smma(data, ll);
+  teeth.splice(0,teeth.length-jaw.length);
+  lips.splice(0,lips.length-jaw.length);
+  for(var i = jaw.length-1; i >= 7; i--) ret.push([jaw[i-(js-1)], teeth[i-(ts-1)], lips[i-(ls-1)]]);
+  return ret;
+}
+async function gator(data, jl, tl, ll, js, ts, ls) {
+  jl = (!jl) ? 13 : jl; tl = (!tl) ? 8 : tl; ll = (!ll) ? 5 : ll;
+  js = (!js) ? 8 : js; ts = (!ts) ? 5 : ts; ls = (!ls) ? 3 : ls;
+  var ret = [],
+      jaw = await module.exports.smma(data, jl),
+      teeth = await module.exports.smma(data, tl),
+      lips = await module.exports.smma(data, ll);
+  teeth.splice(0,teeth.length-jaw.length);
+  lips.splice(0,lips.length-jaw.length);
+  for(var i = jaw.length-1; i >= (js-1); i--) ret.push([jaw[i-(js-1)]-teeth[i-(ts-1)], -(Math.abs(teeth[i-(ts-1)]-lips[i-(ls-1)]))]);
+  return ret;
+}
 async function recent_high(data, lb) {
   var xback = lb, hindex = 0, highest = data[data.length-1];
   lb = (!lb) ? 25 : lb;
@@ -788,5 +812,5 @@ module.exports = {
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
   normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile,
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
-  resistance, ac, fib
+  resistance, ac, fib, alligator, gator
 }
