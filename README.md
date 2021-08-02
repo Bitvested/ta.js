@@ -254,7 +254,7 @@ ta.ac(data, shortlength, longlength);
 // output (array)
 // [-5.875, -6.125, -6.5]
 ```
-#### <id ="alli"></a>Alligator Indicator
+#### <a id="alli"></a>Alligator Indicator
 ```javascript
 var data = [8,7,8,9,7,8,9,6,7,8,6,8,10,8,7,9,8,7,9,6,7,9];
 // defaults shown
@@ -268,7 +268,7 @@ ta.alligator(data, jawlength, teethlength, liplength, jawshift, teethshift, lips
 // output (array)
 // [jaw, teeth, lips]
 ```
-#### <id ="gator"></a>Alligator Oscillator
+#### <a id="gator"></a>Alligator Oscillator
 ```javascript
 var data = [8,7,8,9,7,8,9,6,7,8,6,8,10,8,7,9,8,7,9,6,7,9];
 // defaults shown
