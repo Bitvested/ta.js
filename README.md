@@ -679,7 +679,7 @@ var resistance = await ta.resistance(data, start);
 // resistance.highest = highest (start) value
 // resistance.index = (start) index of highest value
 // to get the line at the current candle / chart period
-var current = await resistance.calculate(data, start);
+var current = await resistance.calculate(data.length-resistance.index);
 ```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
