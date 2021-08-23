@@ -85,6 +85,7 @@ const ta = require('ta.js');
 - [Sum Squared Differences](#ssd)
 - [Normalize](#norm)
 - [Denormalize](#dnorm)
+- [Standardize](#standard)
 - [K-means Clustering](#kmeans)
 #### Chart Types
 - [Heikin Ashi](#ha)
@@ -639,6 +640,13 @@ var margin = 0.1; // margin % (default = 0)
 ta.denormalize(data, norm, margin);
 // output (array)
 // [5 ,4, 9, 4, 6.4]
+```
+#### <a id="standard"></a>Standardize
+```javascript
+var data = [6,4,6,8,6];
+ta.standardize(data);
+// output (array)
+// [0, -1.581, 0, 1.581, 0]
 ```
 #### <a id="kmeans"></a>K-means Clustering
 ```javascript
