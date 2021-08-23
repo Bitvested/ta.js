@@ -699,7 +699,7 @@ async function fractals(data) {
   fractals.push([false,false], [false, false]);
   return fractals;
 }
-async function alligator(data, jl, tl, ll, js, ts, ls) { // data = [(high+low)/2]
+async function alligator(data, jl, tl, ll, js, ts, ls) {
   jl = (!jl) ? 13 : jl; tl = (!tl) ? 8 : tl; ll = (!ll) ? 5 : ll;
   js = (!js) ? 8 : js; ts = (!ts) ? 5 : ts; ls = (!ls) ? 3 : ls;
   var ret = [],
