@@ -18,19 +18,20 @@ npm install ta.js --save
 ```javascript
 const ta = require('ta.js');
 ```
-
 ## Examples
+#### Moving Averages
 - [Simple Moving Average](#sma)
 - [Smoothed Moving Average](#smma)
 - [Weighted Moving Average](#wma)
+- [Exponential Moving Average](#ema)
+- [Hull Moving Average](#hull)
+- [Least Squares Moving Average](#lsma)
+- [Volume Weighted Moving Average](#vwma)
 - [Wilder's Smoothing Moving Average](#wsma)
 - [Parabolic Weighted Moving Average](#pwma)
 - [Hyperbolic Weighted Moving Average](#hwma)
-- [Hull Moving Average](#hull)
 - [Kaufman Adaptive Moving Average](#kama)
-- [Volume Weighted Moving Average](#vwma)
-- [Exponential Moving Average](#ema)
-- [Least Squares Moving Average](#lsma)
+#### Indicators
 - [Moving Average Convergence / Divergence](#macd)
 - [Relative Strength Index](#rsi)
 - [Wilder's Relative Strength Index](#wrsi)
@@ -38,17 +39,38 @@ const ta = require('ta.js');
 - [Balance Of Power](#bop)
 - [Force Index](#fi)
 - [Accumulative Swing Index](#asi)
+- [Alligator Indicator](#alli)
+- [Williams %R](#pr)
+- [Stochastics](#stoch)
+- [Fibonacci Retracement](#fib)
+- [Bollinger Bandwidth](#bandwidth)
+- [Ichimoku Cloud](#ichi)
+- [Average True Range](#atr)
+- [Aroon Up](#aroon-up)
+- [Aroon Down](#aroon-down)
+- [Money Flow Index](#mfi)
+- [Rate Of Change](#roc)
+- [Coppock Curve](#cop)
+- [Know Sure Thing](#kst)
+- [On-Balance Volume](#obv)
+- [Volume-Weighted Average Price](#vwap)
+- [Fractals](#fractals)
+- [Momentum](#mom)
+#### Oscillators
+- [Alligator Oscillator](#gator)
+- [Chande Momentum Oscillator](#mom_osc)
+- [Chaikin Oscillator](#chaikin_osc)
+- [Aroon Oscillator](#aroon-osc)
 - [Awesome Oscillator](#ao)
 - [Accelerator Oscillator](#ac)
-- [Alligator Indicator](#alli)
-- [Alligator Oscillator](#gator)
-- [Fibonacci Retracement](#fib)
-- [Williams %R](#pr)
-- [Recent High](#rh)
-- [Recent Low](#rl)
-- [Stochastics](#stoch)
-- [Variance](#variance)
+#### Bands
+- [Bollinger Bands](#bands)
+- [Keltner Channels](#kelt)
+- [Donchian Channels](#don)
+- [Envelope](#env)
+#### Statistics
 - [Standard Deviation](#std)
+- [Variance](#variance)
 - [Inverse Normal Distribution](#normsinv)
 - [Monte Carlo Simulation](#sim)
 - [Percentile](#perc)
@@ -56,37 +78,21 @@ const ta = require('ta.js');
 - [Percentage Difference](#dif)
 - [Drawdown](#drawdown)
 - [Median](#median)
-- [K-means Clustering](#kmeans)
-- [Normalize](#norm)
-- [Denormalize](#dnorm)
+- [Recent High](#rh)
+- [Recent Low](#rl)
 - [Median Absolute Deviation](#mad)
 - [Average Absolute Deviation](#aad)
 - [Sum Squared Differences](#ssd)
-- [Bollinger Bands](#bands)
-- [Bollinger Bandwidth](#bandwidth)
-- [Keltner Channels](#kelt)
-- [Donchian Channels](#don)
-- [Envelope](#env)
-- [Ichimoku Cloud](#ichi)
-- [Average True Range](#atr)
-- [Aroon Up](#aroon-up)
-- [Aroon Down](#aroon-down)
-- [Aroon Oscillator](#aroon-osc)
-- [Money Flow Index](#mfi)
-- [Rate Of Change](#roc)
-- [Coppock Curve](#cop)
-- [Know Sure Thing](#kst)
-- [On-Balance Volume](#obv)
-- [Volume-Weighted Average Price](#vwap)
-- [Chande Momentum Oscillator](#mom_osc)
-- [Chaikin Oscillator](#chaikin_osc)
-- [Fractals](#fractals)
-- [Momentum](#mom)
+- [Normalize](#norm)
+- [Denormalize](#dnorm)
+- [K-means Clustering](#kmeans)
+#### Chart Types
 - [Heikin Ashi](#ha)
 - [Renko](#ren)
 #### Experimental
 - [Support Line](#sup)
 - [Resistance Line](#res)
+### Moving Averages
 #### <a id="sma"></a>Simple Moving Average (SMA)
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 10];
@@ -110,6 +116,38 @@ var length = 4; // default = 14
 ta.wma(data, length);
 // output (array)
 // [68.3, 68.2]
+```
+#### <a id="ema"></a>Exponential Moving Average (EMA)
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 10];
+var length = 6; // default = 12
+ta.ema(data, length);
+// output (array)
+// [3.5, 5.357]
+```
+#### <a id="hull"></a>Hull Moving Average
+```javascript
+var data = [6, 7, 5, 6, 7, 4, 5, 7];
+var length = 6; // default = 14
+ta.hull(data, length);
+// output (array)
+// [4.76, 5.48]
+```
+#### <a id="lsma"></a>Least Squares Moving Average (LSMA)
+```javascript
+var data = [5, 6, 6, 3, 4, 6, 7];
+var length = 6; // default = 25
+ta.lsma(data, length);
+// output (array)
+// [4.714, 5.761]
+```
+#### <a id="vwma"></a>Volume Weighted Moving Average (VWMA)
+```javascript
+var data = [[1, 59], [1.1, 82], [1.21, 27], [1.42, 73], [1.32, 42]]; // [price, volume (quantity)]
+var length = 4; // default = 20
+ta.vwma(data, length);
+// output (array)
+// [1.185, 1.259]
 ```
 #### <a id="wsma"></a>Wilder's Smoothing Moving Average
 ```javascript
@@ -135,14 +173,6 @@ ta.hwma(data, length);
 // output (array)
 // [56.2, 55.0]
 ```
-#### <a id="hull"></a>Hull Moving Average
-```javascript
-var data = [6, 7, 5, 6, 7, 4, 5, 7];
-var length = 6; // default = 14
-ta.hull(data, length);
-// output (array)
-// [4.76, 5.48]
-```
 #### <a id="kama"></a>Kaufman Adaptive Moving Average (KAMA)
 ```javascript
 var data = [8, 7, 8, 9, 7, 9];
@@ -153,30 +183,7 @@ ta.kama(data, length1, length2, length3);
 // output (array)
 // [8, 8.64, 8.57, 8.57]
 ```
-#### <a id="vwma"></a>Volume Weighted Moving Average (VWMA)
-```javascript
-var data = [[1, 59], [1.1, 82], [1.21, 27], [1.42, 73], [1.32, 42]]; // [price, volume (quantity)]
-var length = 4; // default = 20
-ta.vwma(data, length);
-// output (array)
-// [1.185, 1.259]
-```
-#### <a id="ema"></a>Exponential Moving Average (EMA)
-```javascript
-var data = [1, 2, 3, 4, 5, 6, 10];
-var length = 6; // default = 12
-ta.ema(data, length);
-// output (array)
-// [3.5, 5.357]
-```
-#### <a id="lsma"></a>Least Squares Moving Average (LSMA)
-```javascript
-var data = [5, 6, 6, 3, 4, 6, 7];
-var length = 6; // default = 25
-ta.lsma(data, length);
-// output (array)
-// [4.714, 5.761]
-```
+### Indicators
 #### <a id="macd"></a>Moving Average Convergence / Divergence (MACD)
 ```javascript
 var data = [1, 2, 3, 4, 5, 6, 14];
@@ -236,24 +243,6 @@ ta.asi(data);
 // output (array)
 // [0, -12.5]
 ```
-#### <a id="ao"></a>Awesome Oscillator
-```javascript
-var data = [[6, 5], [8, 6], [7, 4], [6, 5], [7, 6], [9, 8]]; // [high, low]
-var shortlength = 2; // default = 5
-var longlength = 5; // default = 35
-ta.ao(data, shortlength, longlength);
-// output (array)
-// [0, 0.9]
-```
-#### <a id="ac"></a>Accelerator Oscillator
-```javascript
-var data = [[6, 5], [8, 6], [7, 4], [6, 5], [7, 6], [9, 8]]; // [high, low]
-var shortlength = 2; // default = 5
-var longlength = 4; // default = 35
-ta.ac(data, shortlength, longlength);
-// output (array)
-// [-5.875, -6.125, -6.5]
-```
 #### <a id="alli"></a>Alligator Indicator
 ```javascript
 var data = [8,7,8,9,7,8,9,6,7,8,6,8,10,8,7,9,8,7,9,6,7,9];
@@ -268,28 +257,6 @@ ta.alligator(data, jawlength, teethlength, liplength, jawshift, teethshift, lips
 // output (array)
 // [jaw, teeth, lips]
 ```
-#### <a id="gator"></a>Alligator Oscillator
-```javascript
-var data = [8,7,8,9,7,8,9,6,7,8,6,8,10,8,7,9,8,7,9,6,7,9];
-// defaults shown
-var jawlength = 13;
-var teethlength = 8;
-var liplength = 5;
-var jawshift = 8;
-var teethshift = 5;
-var lipshift = 3;
-ta.gator(data, jawlength, teethlength, liplength, jawshift, teethshift, lipshift);
-// output (array)
-// [upper gator, lower gator]
-```
-#### <a id="fib"></a>Fibonacci Retracement
-```javascript
-var start = 1;
-var end = 2;
-ta.fib(start, end);
-// output (array)
-// [1, 1.236, 1.382, 1.5, 1.618, 1.786, 2, 2.618, 3.618, 4.618, 5.236]
-```
 #### <a id="pr"></a>Williams %R
 ```javascript
 var data = [2, 1, 3, 1, 2];
@@ -297,22 +264,6 @@ var length = 4; // default = 14
 ta.pr(data, length);
 // output (array)
 // [-0, -100, -50]
-```
-#### <a id="rh"></a>Recent High
-```javascript
-var data = [4,5,6,7,8,9,8,7,8,9,10,3,2,1];
-var lookback = 3; // No higher values after 3 periods? resets after each new high
-ta.recent_high(data, lookback);
-// output (object)
-// {index: 10, value: 10}
-```
-#### <a id="rl"></a>Recent Low
-```javascript
-var data = [1,4,5,6,4,3,2,3,4,3,5,7,8,8,5];
-var lookback = 4; // No lower values after 4 periods? resets after each new low
-ta.recent_low(data, lookback);
-// output (object)
-// {index: 6, value: 2}
 ```
 #### <a id="stoch"></a>Stochastics
 ```javascript
@@ -325,140 +276,13 @@ ta.stoch(data, length, smoothd, smoothk);
 // [[66.667, 66.667], [33.336, 33.336]]
 // [kline, dline]
 ```
-#### <a id="variance"></a>Variance
+#### <a id="fib"></a>Fibonacci Retracement
 ```javascript
-var data = [6, 7, 2, 3, 5, 8, 6, 2];
-var length = 7; // default = data.length
-ta.variance(data, length);
+var start = 1;
+var end = 2;
+ta.fib(start, end);
 // output (array)
-// [3.918, 5.061]
-```
-#### <a id="std"></a>Standard Deviation
-```javascript
-var data = [1, 2, 3];
-var length = 3; // default = data.length
-ta.std(data, length);
-// output (float)
-// 0.81649658092773
-```
-#### <a id="normsinv"></a>Inverse Normal Distribution
-```javascript
-var data = 0.4732;
-ta.normsinv(data);
-// output (float)
-// -0.06722824471054376
-```
-#### <a id="sim"></a>Monte Carlo Simulation
-```javascript
-var data = [6, 4, 7, 8, 5, 6];
-var length = 2; // default = 50
-var simulations = 100; // default = 1000
-var percentile = 0.5; // default = undefined (returns all raw simulations)
-ta.sim(data, length, simulations, percentile);
-// output (array)
-// [6, 4, 7, 8, 5, 6, 5.96, 5.7]
-```
-Multi threaded ~ not faster in all cases (node version >= 12)
-```javascript
-ta.multi.sim(data, length, simulations, percentile);
-```
-#### <a id="perc"></a>Percentile
-```javascript
-var data = [[6,4,7], [5,3,6], [7,5,8]];
-var percentile = 0.5;
-ta.percentile(data, percentile);
-// output (array)
-// [6, 4, 7]
-```
-#### <a id="cor"></a>Correlation
-```javascript
-var data1 = [1, 2, 3, 4, 5, 2];
-var data2 = [1, 3, 2, 4, 6, 3];
-ta.cor(data1, data2);
-// output (float)
-// 0.8808929232684737
-```
-#### <a id="dif"></a>Percentage Difference
-```javascript
-var newval = 0.75;
-var oldval = 0.5;
-ta.dif(newval, oldval);
-// output (float)
-// 0.5
-```
-#### <a id="drawdown"></a>Drawdown
-```javascript
-var data = [1, 2, 3, 4, 2, 3];
-ta.drawdown(data);
-// output (float)
-// -0.5
-```
-#### <a id="median"></a>Median
-```javascript
-var data = [4, 6, 3, 1, 2, 5];
-var length = 4; // default = data.length
-ta.median(data, length);
-// output (array)
-// [3, 2, 2]
-```
-#### <a id="kmeans"></a>K-means Clustering
-```javascript
-var data = [2, 3, 4, 5, 3, 5, 7, 8, 6, 8, 6, 4, 2, 6];
-var length = 4;
-ta.kmeans(data, length);
-// output (array)
-// [[ 4, 5, 5, 4 ], [ 7, 6, 6, 6 ], [ 8, 8 ], [ 2, 3, 3, 2 ]]
-```
-#### <a id="norm"></a>Normalize
-```javascript
-var data = [5,4,9,4];
-var margin = 0.1; // margin % (default = 0)
-ta.normalize(data, margin);
-// output (array)
-// [0.22, 0.06, 0.86, 0.06]
-```
-#### <a id="dnorm"></a>Denormalize
-```javascript
-var data = [5,4,9,4]; // original data || [highest, lowest]
-var norm = [0.22, 0.06, 0.86, 0.06, 0.44]; // normalized data
-var margin = 0.1; // margin % (default = 0)
-ta.denormalize(data, norm, margin);
-// output (array)
-// [5 ,4, 9, 4, 6.4]
-```
-#### <a id="mad"></a>Median Absolute Deviation
-```javascript
-var data = [3, 7, 5, 4, 3, 8, 9];
-var length = 6; // default = data.length
-ta.mad(data, length);
-// output (array)
-// [1, 2]
-```
-#### <a id="aad"></a>Average Absolute Deviation
-```javascript
-var data = [4, 6, 8, 6, 8, 9, 10, 11];
-var length = 7; // default = data.length
-ta.aad(data, length);
-// output (array)
-// [1.673, 1.468]
-```
-#### <a id="ssd"></a>Sum Squared Differences
-```javascript
-var data = [7, 6, 5, 7, 9, 8, 3, 5, 4];
-var length = 7; // default = data.length
-ta.ssd(data, length);
-// output (array)
-// [4.87, 4.986, 5.372]
-```
-#### <a id="bands"></a>Bollinger Bands
-```javascript
-var data = [1, 2, 3, 4, 5, 6];
-var length = 5; // default = 14
-var deviations = 2; // default = 1
-ta.bands(data, length, deviations);
-// output (array)
-// [[5.828, 3, 0.172], [6.828, 4, 1.172]]
-// [upper band, middle band, lower band]
+// [1, 1.236, 1.382, 1.5, 1.618, 1.786, 2, 2.618, 3.618, 4.618, 5.236]
 ```
 #### <a id="bandwidth"></a>Bollinger Bandwidth
 ```javascript
@@ -468,35 +292,6 @@ var deviations = 2; // default = 1
 ta.bandwidth(data, length, deviations);
 // output (array)
 // [1.886, 1.344]
-```
-#### <a id="kelt"></a>Keltner Channels
-```javascript
-var data = [[3,2,1], [2,2,1], [4,3,1], [2,2,1], [3,3,1]]; // [high, close, low]
-var length = 5; // default = 14
-var deviations = 1; // default = 1
-ta.keltner(data, length, deviations);
-// output (array)
-// [[3.93, 2.06, 0.20]]
-// [upper band, middle band, lower band]
-```
-#### <a id="don"></a>Donchian Channels
-```javascript
-var data = [[6, 2], [5, 2], [5, 3], [6, 3], [7, 4], [6, 3]]; // [high, low]
-var length = 5; // default = 20
-ta.don(data, length);
-// output (array)
-// [[7, 4.5, 2], [7, 4.5, 2]]
-// [upper band, base line, lower band]
-```
-#### <a id="env"></a>Envelope
-```javascript
-var data = [6,7,8,7,6,7,8,7,8,7,8,7,8];
-var length = 11, // default = 10
-var percentage = 0.05; // default = 0.005
-ta.envelope(data, length, percentage);
-// output (array)
-// [[7.541, 7.182, 6.823], [7.636, 7.273, 6.909]]
-// [upper band, base line, lower band]
 ```
 #### <a id="ichi"></a>Ichimoku Cloud
 ```javascript
@@ -532,14 +327,6 @@ var length = 3; // default = 10
 ta.aroon.down(data, length);
 // output (array)
 // [0, 50]
-```
-#### <a id="aroon-osc"></a>Aroon Oscillator
-```javascript
-var data = [2, 5, 4, 5];
-var length = 3; // default = 25
-ta.aroon.osc(data, length);
-// output (array)
-// [50, 50]
 ```
 #### <a id="mfi"></a>Money Flow Index
 ```javascript
@@ -604,6 +391,38 @@ ta.vwap(data, length);
 // output (array)
 // [127.204, 127.164]
 ```
+#### <a id="fractals"></a>Fractals
+```javascript
+var data = [[7,6],[8,6],[9,6],[8,5],[7,4],[6,3],[7,4],[8,5]]; // [high, low]
+ta.fractals(data);
+// output (array, same length as input)
+// [[false, false],[false,false],[true,false],[false,false],[false,false],[false,true],[false,false],[false,false]]
+// [upper fractal, lower fractal]
+```
+#### <a id="mom"></a>Momentum
+```javascript
+var data = [1, 1.1, 1.2, 1.24, 1.34];
+var length = 4; // default = 10
+var percentage = false; // default = false (true returns percentage)
+ta.mom(data, length, percentage);
+// output (array)
+// [0.24, 0.24]
+```
+### Oscillators
+#### <a id="gator"></a>Alligator Oscillator
+```javascript
+var data = [8,7,8,9,7,8,9,6,7,8,6,8,10,8,7,9,8,7,9,6,7,9];
+// defaults shown
+var jawlength = 13;
+var teethlength = 8;
+var liplength = 5;
+var jawshift = 8;
+var teethshift = 5;
+var lipshift = 3;
+ta.gator(data, jawlength, teethlength, liplength, jawshift, teethshift, lipshift);
+// output (array)
+// [upper gator, lower gator]
+```
 #### <a id="mom_osc"></a>Chande Momentum Oscillator
 ```javascript
 var data = [1, 1.2, 1.3, 1.3, 1.2, 1.4];
@@ -621,23 +440,215 @@ ta.chaikin_osc(data, length1, length2);
 // output (array)
 // [-1.667, -0.289, -0.736]
 ```
-#### <a id="fractals"></a>Fractals
+#### <a id="aroon-osc"></a>Aroon Oscillator
 ```javascript
-var data = [[7,6],[8,6],[9,6],[8,5],[7,4],[6,3],[7,4],[8,5]];
-ta.fractals(data);
-// output (array, same length as input)
-// [[false, false],[false,false],[true,false],[false,false],[false,false],[false,true],[false,false],[false,false]]
-// [upper fractal, lower fractal]
-```
-#### <a id="mom"></a>Momentum
-```javascript
-var data = [1, 1.1, 1.2, 1.24, 1.34];
-var length = 4; // default = 10
-var percentage = false; // default = false (true returns percentage)
-ta.mom(data, length, percentage);
+var data = [2, 5, 4, 5];
+var length = 3; // default = 25
+ta.aroon.osc(data, length);
 // output (array)
-// [0.24, 0.24]
+// [50, 50]
 ```
+#### <a id="ao"></a>Awesome Oscillator
+```javascript
+var data = [[6, 5], [8, 6], [7, 4], [6, 5], [7, 6], [9, 8]]; // [high, low]
+var shortlength = 2; // default = 5
+var longlength = 5; // default = 35
+ta.ao(data, shortlength, longlength);
+// output (array)
+// [0, 0.9]
+```
+#### <a id="ac"></a>Accelerator Oscillator
+```javascript
+var data = [[6, 5], [8, 6], [7, 4], [6, 5], [7, 6], [9, 8]]; // [high, low]
+var shortlength = 2; // default = 5
+var longlength = 4; // default = 35
+ta.ac(data, shortlength, longlength);
+// output (array)
+// [-5.875, -6.125, -6.5]
+```
+### Bands
+#### <a id="bands"></a>Bollinger Bands
+```javascript
+var data = [1, 2, 3, 4, 5, 6];
+var length = 5; // default = 14
+var deviations = 2; // default = 1
+ta.bands(data, length, deviations);
+// output (array)
+// [[5.828, 3, 0.172], [6.828, 4, 1.172]]
+// [upper band, middle band, lower band]
+```
+#### <a id="kelt"></a>Keltner Channels
+```javascript
+var data = [[3,2,1], [2,2,1], [4,3,1], [2,2,1], [3,3,1]]; // [high, close, low]
+var length = 5; // default = 14
+var deviations = 1; // default = 1
+ta.keltner(data, length, deviations);
+// output (array)
+// [[3.93, 2.06, 0.20]]
+// [upper band, middle band, lower band]
+```
+#### <a id="don"></a>Donchian Channels
+```javascript
+var data = [[6, 2], [5, 2], [5, 3], [6, 3], [7, 4], [6, 3]]; // [high, low]
+var length = 5; // default = 20
+ta.don(data, length);
+// output (array)
+// [[7, 4.5, 2], [7, 4.5, 2]]
+// [upper band, base line, lower band]
+```
+#### <a id="env"></a>Envelope
+```javascript
+var data = [6,7,8,7,6,7,8,7,8,7,8,7,8];
+var length = 11, // default = 10
+var percentage = 0.05; // default = 0.005
+ta.envelope(data, length, percentage);
+// output (array)
+// [[7.541, 7.182, 6.823], [7.636, 7.273, 6.909]]
+// [upper band, base line, lower band]
+```
+### Statistics
+#### <a id="std"></a>Standard Deviation
+```javascript
+var data = [1, 2, 3];
+var length = 3; // default = data.length
+ta.std(data, length);
+// output (float)
+// 0.81649658092773
+```
+#### <a id="variance"></a>Variance
+```javascript
+var data = [6, 7, 2, 3, 5, 8, 6, 2];
+var length = 7; // default = data.length
+ta.variance(data, length);
+// output (array)
+// [3.918, 5.061]
+```
+#### <a id="normsinv"></a>Inverse Normal Distribution
+```javascript
+var data = 0.4732;
+ta.normsinv(data);
+// output (float)
+// -0.06722824471054376
+```
+#### <a id="sim"></a>Monte Carlo Simulation
+```javascript
+var data = [6, 4, 7, 8, 5, 6];
+var length = 2; // default = 50
+var simulations = 100; // default = 1000
+var percentile = 0.5; // default = undefined (returns all raw simulations)
+ta.sim(data, length, simulations, percentile);
+// output (array)
+// [6, 4, 7, 8, 5, 6, 5.96, 5.7]
+```
+Multi threaded ~ not faster in all cases (node version >= 12)
+```javascript
+ta.multi.sim(data, length, simulations, percentile);
+```
+#### <a id="perc"></a>Percentile
+```javascript
+var data = [[6,4,7], [5,3,6], [7,5,8]];
+var percentile = 0.5;
+ta.percentile(data, percentile);
+// output (array)
+// [6, 4, 7]
+```
+#### <a id="cor"></a>Correlation
+```javascript
+var data1 = [1, 2, 3, 4, 5, 2];
+var data2 = [1, 3, 2, 4, 6, 3];
+ta.cor(data1, data2);
+// output (float)
+// 0.8808929232684737
+```
+#### <a id="dif"></a>Percentage Difference
+```javascript
+var newval = 0.75;
+var oldval = 0.5;
+ta.dif(newval, oldval);
+// output (float)
+// 0.5
+```
+#### <a id="drawdown"></a>Drawdown
+```javascript
+var data = [1, 2, 3, 4, 2, 3];
+ta.drawdown(data);
+// output (float)
+// -0.5
+```
+#### <a id="median"></a>Median
+```javascript
+var data = [4, 6, 3, 1, 2, 5];
+var length = 4; // default = data.length
+ta.median(data, length);
+// output (array)
+// [3, 2, 2]
+```
+#### <a id="rh"></a>Recent High
+```javascript
+var data = [4,5,6,7,8,9,8,7,8,9,10,3,2,1];
+var lookback = 3; // No higher values after 3 periods? resets after each new high
+ta.recent_high(data, lookback);
+// output (object)
+// {index: 10, value: 10}
+```
+#### <a id="rl"></a>Recent Low
+```javascript
+var data = [1,4,5,6,4,3,2,3,4,3,5,7,8,8,5];
+var lookback = 4; // No lower values after 4 periods? resets after each new low
+ta.recent_low(data, lookback);
+// output (object)
+// {index: 6, value: 2}
+```
+#### <a id="mad"></a>Median Absolute Deviation
+```javascript
+var data = [3, 7, 5, 4, 3, 8, 9];
+var length = 6; // default = data.length
+ta.mad(data, length);
+// output (array)
+// [1, 2]
+```
+#### <a id="aad"></a>Average Absolute Deviation
+```javascript
+var data = [4, 6, 8, 6, 8, 9, 10, 11];
+var length = 7; // default = data.length
+ta.aad(data, length);
+// output (array)
+// [1.673, 1.468]
+```
+#### <a id="ssd"></a>Sum Squared Differences
+```javascript
+var data = [7, 6, 5, 7, 9, 8, 3, 5, 4];
+var length = 7; // default = data.length
+ta.ssd(data, length);
+// output (array)
+// [4.87, 4.986, 5.372]
+```
+#### <a id="norm"></a>Normalize
+```javascript
+var data = [5,4,9,4];
+var margin = 0.1; // margin % (default = 0)
+ta.normalize(data, margin);
+// output (array)
+// [0.22, 0.06, 0.86, 0.06]
+```
+#### <a id="dnorm"></a>Denormalize
+```javascript
+var data = [5,4,9,4]; // original data || [highest, lowest]
+var norm = [0.22, 0.06, 0.86, 0.06, 0.44]; // normalized data
+var margin = 0.1; // margin % (default = 0)
+ta.denormalize(data, norm, margin);
+// output (array)
+// [5 ,4, 9, 4, 6.4]
+```
+#### <a id="kmeans"></a>K-means Clustering
+```javascript
+var data = [2, 3, 4, 5, 3, 5, 7, 8, 6, 8, 6, 4, 2, 6];
+var length = 4;
+ta.kmeans(data, length);
+// output (array)
+// [[ 4, 5, 5, 4 ], [ 7, 6, 6, 6 ], [ 8, 8 ], [ 2, 3, 3, 2 ]]
+```
+### Chart types
 #### <a id="ha"></a>Heikin Ashi
 ```javascript
 var data = [[3, 4, 2, 3], [3, 6, 3, 5], [5, 5, 2, 3]]; // [open, high, low, close]
