@@ -3,11 +3,7 @@ async function median(data, len) {
   var length = (!len) ? data.length : len, med = [];
   for(var i = length; i <= data.length; i++) {
     var pl = data.slice(i-len,i);
-    pl.sort((a, b) => {
-      if(a > b) return -1;
-      if(a < b) return 1;
-      return 0;
-    });
+    pl.sort((a, b) => a-b);
     med.push(pl[Math.round(pl.length / 2)]);
   }
   return med;
@@ -479,26 +475,12 @@ async function sim(d, length, sims, perc) {
     }
     sd.push(projected);
   }
-  if(!perc) return sd;
-  var finalprojection = d.slice();
-  for(var i = d.length; i < sd[0].length; i++) {
-    sd.sort((a, b) => {
-      if(a[i] > b[i]) return 1;
-      if(a[i] < b[i]) return -1;
-      return 0;
-    });
-    finalprojection.push(sd[Math.round(sd.length*perc)][i]);
-  }
-  return finalprojection;
+  return (!perc) ? sd : await module.exports.percentile(sd, perc);
 }
 async function percentile(data, perc) {
   var final = [];
   for(var i = 0; i < data[0].length; i++) {
-    data.sort((a, b) => {
-      if(a[i] > b[i]) return 1;
-      if(a[i] < b[i]) return -1;
-      return 0;
-    });
+    data.sort((a, b) => a[i]-b[i]);
     final.push(data[Math.round((data.length-1)*perc)][i]);
   }
   return final;
@@ -537,7 +519,7 @@ async function aroon_up(data, len) {
   var length = (!len) ? 10 : len, aroon = [];
   for(var i = length; i <= data.length; i++) {
     var pl = data.slice(i-length,i), hl = pl.slice();
-    hl.sort((a, b) => { return a - b; });
+    hl.sort((a, b) => a-b);
     aroon.push((100 * (length-1-pl.reverse().findIndex(x => x === hl[length - 1])) / (length-1)));
   }
   return aroon;
@@ -546,7 +528,7 @@ async function aroon_down(data, len) {
   var length = (!len) ? 10 : len, aroon = [];
   for(var i = length; i <= data.length; i++) {
     var pl = data.slice(i-length,i), hl = pl.slice();
-    hl.sort((a, b) => { return a - b; });
+    hl.sort((a, b) => a-b);
     aroon.push((100 * (length-1-pl.reverse().findIndex(x => x === hl[0])) / (length-1)));
   }
   return aroon;
