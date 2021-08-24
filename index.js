@@ -50,6 +50,12 @@ async function denormalize(data, norm, marg) {
   for(var i = 0; i < norm.length; i++) dnorm.push(min+norm[i]*(max-min));
   return dnorm;
 }
+async function standardize(data) {
+  var mean = await module.exports.sma(data, data.length),
+      std = await module.exports.std(data), res = [];
+  for(var i = 0; i < data.length; i++) res.push((data[i]-mean[0])/std);
+  return res;
+}
 async function mad(data, len) {
   var length = (!len) ? data.length : len, med = [];
   for(var i = length; i <= data.length; i++) {
@@ -794,5 +800,5 @@ module.exports = {
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
   normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile,
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
-  resistance, ac, fib, alligator, gator
+  resistance, ac, fib, alligator, gator, standardize
 }
