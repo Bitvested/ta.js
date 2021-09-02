@@ -712,8 +712,8 @@ async function gator(data, jl, tl, ll, js, ts, ls) {
   return ret;
 }
 async function recent_high(data, lb) {
-  var xback = lb, hindex = 0, highest = data[data.length-1];
   lb = (!lb) ? 25 : lb;
+  var xback = lb, hindex = 0, highest = data[data.length-1];
   for(var i = data.length-2; i >= 0; i--) {
     if(data[i] >= highest && xback > 0) {
       highest = data[i];
@@ -727,8 +727,8 @@ async function recent_high(data, lb) {
   return {index: hindex, value: highest};
 }
 async function recent_low(data, lb) {
-  var xback = lb, lindex = 0, lowest = data[data.length-1];
   lb = (!lb) ? 25 : lb;
+  var xback = lb, lindex = 0, lowest = data[data.length-1];
   for(var i = data.length-2; i >= 0; i--) {
     if(data[i] <= lowest && xback > 0) {
       lowest = data[i];
