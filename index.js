@@ -4,7 +4,7 @@ async function median(data, len) {
   for(var i = length; i <= data.length; i++) {
     var pl = data.slice(i-len,i);
     pl.sort((a, b) => a-b);
-    med.push(pl[Math.round(pl.length / 2)]);
+    med.push(pl[Math.round(pl.length / 2)-1]);
   }
   return med;
 }
