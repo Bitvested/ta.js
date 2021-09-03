@@ -656,7 +656,7 @@ ta.kmeans(data, length);
 // output (array)
 // [[ 4, 5, 5, 4 ], [ 7, 6, 6, 6 ], [ 8, 8 ], [ 2, 3, 3, 2 ]]
 ```
-### Chart types
+### Chart Types
 #### <a id="ha"></a>Heikin Ashi
 ```javascript
 var data = [[3, 4, 2, 3], [3, 6, 3, 5], [5, 5, 2, 3]]; // [open, high, low, close]
