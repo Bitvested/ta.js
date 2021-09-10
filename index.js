@@ -86,6 +86,14 @@ async function ssd(data, len) {
   }
   return sd;
 }
+async function er(data) {
+  var wins = [], losses = [], wp = 1, lp = 1;
+  for(let i in data) (data[i] >= 0) ? wins.push(1+data[i]) : losses.push(1+data[i]);
+  var win = (wins.length / data.length), loss = (losses.length / data.length);
+  for(let i in losses) lp *= (losses[i]);
+  for(let i in wins) wp *= (wins[i]);
+  return (((wp**(1/wins.length)-1)*100) * win + ((lp**(1/losses.length)-1)*100) * loss) / 100;
+}
 async function rsi(data, len) {
   var length = (!len) ? 14 : len, arrsi = [], pl = data.slice(0,length);
   for(var i = length,gain=0,loss=0; i < data.length; i++,gain=0,loss=0) {
@@ -800,5 +808,5 @@ module.exports = {
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
   normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile,
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
-  resistance, ac, fib, alligator, gator, standardize
+  resistance, ac, fib, alligator, gator, standardize, er
 }

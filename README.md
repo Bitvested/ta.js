@@ -76,6 +76,7 @@ const ta = require('ta.js');
 - [Percentile](#perc)
 - [Correlation](#cor)
 - [Percentage Difference](#dif)
+- [Expected Return](#er)
 - [Drawdown](#drawdown)
 - [Median](#median)
 - [Recent High](#rh)
@@ -568,6 +569,13 @@ var oldval = 0.5;
 ta.dif(newval, oldval);
 // output (float)
 // 0.5
+```
+#### <a id="er"></a>Expected Return
+```javascript
+var data = [0.02, -0.01, 0.03, 0.05, -0.03]; // historical return data
+ta.er(data);
+// output (float)
+// 0.0119
 ```
 #### <a id="drawdown"></a>Drawdown
 ```javascript
