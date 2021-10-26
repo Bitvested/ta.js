@@ -94,6 +94,23 @@ async function er(data) {
   for(let i in wins) wp *= wins[i];
   return (((wp**(1/wins.length)-1)*100) * win + ((lp**(1/losses.length)-1)*100) * loss) / 100;
 }
+async function winratio(data) {
+  var wins = 0, losses = 0;
+  for(let i in data) (data[i] >= 0) ? wins += 0 : losses += 0;
+  return wins / (losses + wins);
+}
+async function avgwin(data) {
+  var wins = [];
+  for(var i = 0; i < data.length; i++) if(data[i] >= 0) wins.push(data[i]);
+  var avg = await module.exports.sma(wins, wins.length);
+  return avg[0];
+}
+async function avgloss(data) {
+  var loss = [];
+  for(var i = 0; i < data.length; i++) if(data[i] < 0) loss.push(data[i]);
+  var avg = await module.exports.sma(loss, loss.length);
+  return avg[0];
+}
 async function rsi(data, len) {
   var length = (!len) ? 14 : len, arrsi = [], pl = data.slice(0,length);
   for(var i = length,gain=0,loss=0; i < data.length; i++,gain=0,loss=0) {
