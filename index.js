@@ -814,6 +814,19 @@ async function resistance(d, hl) {
   if(index2 == d.length-1 || hl.index == d.length-1) return {calculate: async(pos) => hl.value, slope: 0, highest: hl.value, index: hl.index};
   return {calculate: async(pos) => pos*-highform+hl.value, slope: highform, highest: hl.value, index: hl.index};
 }
+async function fisher(data, len) {
+  var out = [], fish = 0, v1 = 0;
+  for(let i = len; i < data.length; i++) {
+    var pl = data.slice(i-len,i), pf = fish,
+        mn = Math.min.apply(null, pl),
+        v1 = .33*2*((data[i]-mn)/(Math.max.apply(null, pl)-mn)-.5)+.67*v1;
+    if(v1 > .99) v1 = 0.999;
+    if(v1 < -0.99) v1 = -0.999;
+    fish = 0.5 * Math.log((1+v1)/(1-v1)) + 0.5 * pf;
+    out.push([fish, pf]);
+  }
+  return out.slice(1,out.length);
+}
 module.exports = {
   aroon: {
     up: aroon_up,
@@ -825,5 +838,6 @@ module.exports = {
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
   normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile,
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
-  resistance, ac, fib, alligator, gator, standardize, er
+  resistance, ac, fib, alligator, gator, standardize, er, winratio,
+  avgwin, avgloss, fisher
 }
