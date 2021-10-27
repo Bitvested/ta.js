@@ -55,6 +55,7 @@ const ta = require('ta.js');
 - [On-Balance Volume](#obv)
 - [Volume-Weighted Average Price](#vwap)
 - [Fractals](#fractals)
+- [Crossover](#cross)
 - [Momentum](#mom)
 #### Oscillators
 - [Alligator Oscillator](#gator)
@@ -404,6 +405,15 @@ ta.fractals(data);
 // output (array, same length as input)
 // [[false, false],[false,false],[true,false],[false,false],[false,false],[false,true],[false,false],[false,false]]
 // [upper fractal, lower fractal]
+```
+#### <a id="cross"></a>Crossover (golden cross)
+```javascript
+var fastdata = [3,4,5,4,3]; // short period gets spliced when longer
+var slowdata = [4,3,2,3,4];
+ta.cross(fastdata, slowdata);
+// output (array)
+// [{index: 1, cross true}, {index: 4, cross: false}]
+// cross is true when fastdata is greater than the slowdata
 ```
 #### <a id="mom"></a>Momentum
 ```javascript
