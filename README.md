@@ -474,11 +474,11 @@ ta.ac(data, shortlength, longlength);
 ```
 #### <a id="fish"></a>Fisher Transform
 ```javascript
-var data = [8,6,8,9,7,8,9,8,7,8,6,7];
+var data = [8,6,8,9,7,8,9,8,7,8,6,7]; // high + low / 2
 var length = 9;
 ta.fisher(data, length);
 // output (array)
-// [[-0.207, 0.11], [-0.393, -0.207]]
+// [[-0.207, 0.11], [-0.393, -0.207]] // [fisher, trigger]
 ```
 ### Bands
 #### <a id="bands"></a>Bollinger Bands
