@@ -63,6 +63,7 @@ const ta = require('ta.js');
 - [Aroon Oscillator](#aroon-osc)
 - [Awesome Oscillator](#ao)
 - [Accelerator Oscillator](#ac)
+- [Fisher Transform](#fish)
 #### Bands
 - [Bollinger Bands](#bands)
 - [Keltner Channels](#kelt)
@@ -77,6 +78,9 @@ const ta = require('ta.js');
 - [Correlation](#cor)
 - [Percentage Difference](#dif)
 - [Expected Return](#er)
+- [Winratio](#winratio)
+- [Average Win](#avgwin)
+- [Average Loss](#avgloss)
 - [Drawdown](#drawdown)
 - [Median](#median)
 - [Recent High](#rh)
@@ -468,6 +472,14 @@ ta.ac(data, shortlength, longlength);
 // output (array)
 // [-5.875, -6.125, -6.5]
 ```
+#### <a id="fish"></a>Fisher Transform
+```javascript
+var data = [8,6,8,9,7,8,9,8,7,8,6,7];
+var length = 9;
+ta.fisher(data, length);
+// output (array)
+// [[-0.207, 0.11], [-0.393, -0.207]]
+```
 ### Bands
 #### <a id="bands"></a>Bollinger Bands
 ```javascript
@@ -576,6 +588,27 @@ var data = [0.02, -0.01, 0.03, 0.05, -0.03]; // historical return data
 ta.er(data);
 // output (float)
 // 0.0119
+```
+#### <a id="winratio"></a> Winratio
+```javascript
+var data = [0.01, 0.02, -0.01, -0.03, -0.015, 0.005];
+ta.winratio(data);
+// output (float)
+// 0.5
+```
+#### <a id="avgwin"></a> Average Win
+```javascript
+var data = [0.01, 0.02, -0.01, -0.03, -0.015, 0.005];
+ta.avgwin(data);
+// output (float)
+// 0.012
+```
+#### <a id="avgloss"></a> Average Loss
+```javascript
+var data = [0.01, 0.02, -0.01, -0.03, -0.015, 0.005];
+ta.avgloss(data);
+// output (float)
+//-0.018
 ```
 #### <a id="drawdown"></a>Drawdown
 ```javascript
