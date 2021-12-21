@@ -79,6 +79,7 @@ const ta = require('ta.js');
 - [Correlation](#cor)
 - [Percentage Difference](#dif)
 - [Expected Return](#er)
+- [Abnormal Return](#ar)
 - [Winratio](#winratio)
 - [Average Win](#avgwin)
 - [Average Loss](#avgloss)
@@ -599,7 +600,15 @@ ta.er(data);
 // output (float)
 // 0.0119
 ```
-#### <a id="winratio"></a> Winratio
+#### <a id="ar"></a>Abnormal Return
+```javascript
+var data = [0.02, -0.01, 0.03, 0.05, -0.03]; // historical return data
+var length = 3;
+ta.ar(data, length);
+// output (array)
+// [0.037, -0.053]
+```
+#### <a id="winratio"></a>Winratio
 ```javascript
 var data = [0.01, 0.02, -0.01, -0.03, -0.015, 0.005];
 ta.winratio(data);

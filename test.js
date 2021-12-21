@@ -66,6 +66,7 @@ ta.alligator([8,7,8,9,7,8,9,6,7,8,6,8,10,8,7,9,8,7,9,6,7,9]).then((alli) => { tr
 ta.gator([8,7,8,9,7,8,9,6,7,8,6,8,10,8,7,9,8,7,9,6,7,9]).then((gato) => { try { assert.deepEqual(gato, [[0.23249042726568714, -0.5289079390282767], [0.05222951769608297, -0.4002233481486188]]); } catch(e) { console.error('Test failed @ gator \n'); } });
 ta.standardize([6,4,6,8,6]).then((standard) => { try { assert.deepEqual(standard, [0, -1.5811388300841895, 0, 1.5811388300841895, 0]); } catch(e) { console.error('Test failed @ standardize \n'); } });
 ta.er([0.02, -0.01, 0.03, 0.05, -0.03]).then((er) => { try { assert.deepEqual(er, 0.011934565489708282); } catch(e) { console.error('Test failed @ er \n'); } });
+ta.ar([0.02, -0.01, 0.03, 0.05, -0.03], 3).then((ar) => { try { assert.deepEqual(ar, [0.03667479679633267, -0.053301281310417566]); } catch(e) { console.error('Test failed @ ar \n'); } });
 ta.winratio([0.01,0.02,-0.01,-0.03,-0.015,0.005]).then((wr) => { try { assert.deepEqual(wr, 0.5); } catch(e) { console.error('Test failed @ winratio \n') } });
 ta.avgwin([0.01,0.02,-0.01,-0.03,-0.015,0.005]).then((wn) => { try { assert.deepEqual(wn, 0.011666666666666665); } catch(e) { console.error('Test failed @ avgwin \n'); } });
 ta.avgloss([0.01,0.02,-0.01,-0.03,-0.015,0.005]).then((ln) => { try { assert.deepEqual(ln, -0.018333333333333333); } catch(e) { console.error('Test failed @ avgloss \n'); } });

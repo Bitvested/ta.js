@@ -94,6 +94,14 @@ async function er(data) {
   for(let i in wins) wp *= wins[i];
   return (((wp**(1/wins.length)-1)*100) * win + ((lp**(1/losses.length)-1)*100) * loss) / 100;
 }
+async function ar(data, len) {
+  var out = [];
+  for(var i = len; i < data.length; i++) {
+    var exp = await module.exports.er(data.slice(i-len,i));
+    out.push(data[i]-exp);
+  }
+  return out;
+}
 async function winratio(data) {
   var wins = 0, losses = 0;
   for(let i in data) (data[i] >= 0) ? wins++ : losses++;
