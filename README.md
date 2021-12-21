@@ -89,6 +89,7 @@ const ta = require('ta.js');
 - [Recent Low](#rl)
 - [Median Absolute Deviation](#mad)
 - [Average Absolute Deviation](#aad)
+- [Standard Error](#stderr)
 - [Sum Squared Differences](#ssd)
 - [Normalize](#norm)
 - [Denormalize](#dnorm)
@@ -675,6 +676,14 @@ var length = 7; // default = data.length
 ta.aad(data, length);
 // output (array)
 // [1.673, 1.468]
+```
+#### <a id="stderr"></a>Standard Error
+```javascript
+var data = [34, 54, 45, 43, 57, 38, 49];
+var size = 10; // default = data.length
+ta.se(data, size);
+// output (float)
+// 2.424
 ```
 #### <a id="ssd"></a>Sum Squared Differences
 ```javascript

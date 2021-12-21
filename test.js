@@ -72,3 +72,4 @@ ta.avgwin([0.01,0.02,-0.01,-0.03,-0.015,0.005]).then((wn) => { try { assert.deep
 ta.avgloss([0.01,0.02,-0.01,-0.03,-0.015,0.005]).then((ln) => { try { assert.deepEqual(ln, -0.018333333333333333); } catch(e) { console.error('Test failed @ avgloss \n'); } });
 ta.fisher([8,6,8,9,7,8,9,8,7,8,6,7], 9).then((fish) => { try { assert.deepEqual(fish, [[-0.20692076425551026, 0.11044691579009712], [-0.3930108381942109, -0.20692076425551026]]); } catch(e) { console.error('Test failed @ fisher \n'); } });
 ta.cross([3,4,5,4,3], [4,3,2,3,4]).then((cross) => { try { assert.deepEqual(cross, [{index: 1, cross: true}, {index: 4, cross: false}]); } catch(e) { console.error("Test failed @ cross \n"); } });
+ta.se([34,54,45,43,57,38,49], 10).then((err) => { try { assert.deepEqual(err, 2.4243661069253055) } catch(e) { console.error(e); } });

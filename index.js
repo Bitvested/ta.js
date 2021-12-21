@@ -850,6 +850,11 @@ async function cross(d1, d2) {
   }
   return indexes;
 }
+async function se(data, size) {
+  size = (!size) ? data.length : size;
+  var stdv = await module.exports.std(data);
+  return stdv / (size ** 0.5);
+}
 module.exports = {
   aroon: {
     up: aroon_up,
