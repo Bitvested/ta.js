@@ -134,6 +134,17 @@ async function avgloss(data) {
   var avg = await module.exports.sma(loss, loss.length);
   return avg[0];
 }
+async function zscore(data, len) {
+  var out = [], pl = data.slice(0,len-1);
+  for(let i = len-1; i < data.length; i++) {
+    pl.push(data[i]);
+    var mean = await module.exports.sma(pl, len),
+        stdv = await module.exports.std(pl, len);
+    out.push((data[i]-mean[0])/stdv)
+    pl.splice(0,1);
+  }
+  return out;
+}
 async function rsi(data, len) {
   var length = (!len) ? 14 : len, arrsi = [], pl = data.slice(0,length);
   for(var i = length,gain=0,loss=0; i < data.length; i++,gain=0,loss=0) {
@@ -882,5 +893,6 @@ module.exports = {
   normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile,
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
-  avgwin, avgloss, fisher, cross
+  avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
+  ar, zscore
 }

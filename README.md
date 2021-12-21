@@ -97,6 +97,7 @@ const ta = require('ta.js');
 - [Normalize Pair](#normp)
 - [Normalize From](#normf)
 - [Standardize](#standard)
+- [Z-Score](#zscore)
 - [K-means Clustering](#kmeans)
 #### Chart Types
 - [Heikin Ashi](#ha)
@@ -742,6 +743,14 @@ var data = [6,4,6,8,6];
 ta.standardize(data);
 // output (array)
 // [0, -1.581, 0, 1.581, 0]
+```
+#### <a id="zscore"></a>Z-Score
+```javascript
+var data = [34,54,45,43,57,38,49];
+var length = 5;
+ta.zscore(data, length);
+// output (array)
+// [1.266, -1.331, 0.408]
 ```
 #### <a id="kmeans"></a>K-means Clustering
 ```javascript
