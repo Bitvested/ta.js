@@ -80,6 +80,7 @@ const ta = require('ta.js');
 - [Percentage Difference](#dif)
 - [Expected Return](#er)
 - [Abnormal Return](#ar)
+- [Kelly Criterion](#kelly)
 - [Winratio](#winratio)
 - [Average Win](#avgwin)
 - [Average Loss](#avgloss)
@@ -610,6 +611,13 @@ var length = 3;
 ta.ar(data, length);
 // output (array)
 // [0.037, -0.053]
+```
+#### <a id="kelly"></a>Kelly Criterion
+```javascript
+var data = [0.01, 0.02, -0.01, -0.03, -0.015, 0.045, 0.005];
+ta.kelly(data);
+// output (float)
+// 0.1443
 ```
 #### <a id="winratio"></a>Winratio
 ```javascript

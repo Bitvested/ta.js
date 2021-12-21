@@ -112,6 +112,11 @@ async function ar(data, len) {
   }
   return out;
 }
+async function kelly(data) {
+  var exp = await module.exports.er(data) + 1,
+      winr = await module.exports.winratio(data);
+  return winr - (1-winr) / exp;
+}
 async function winratio(data) {
   var wins = 0, losses = 0;
   for(let i in data) (data[i] >= 0) ? wins++ : losses++;
