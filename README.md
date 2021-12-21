@@ -93,6 +93,7 @@ const ta = require('ta.js');
 - [Sum Squared Differences](#ssd)
 - [Normalize](#norm)
 - [Denormalize](#dnorm)
+- [Normalize Pair](#normp)
 - [Standardize](#standard)
 - [K-means Clustering](#kmeans)
 #### Chart Types
@@ -709,6 +710,14 @@ var margin = 0.1; // margin % (default = 0)
 ta.denormalize(data, norm, margin);
 // output (array)
 // [5 ,4, 9, 4, 6.4]
+```
+#### <a id="normp"></a>Normalize Pair
+```javascript
+var pair1 = [10,12,11,13];
+var pair2 = [100,130,100,140];
+ta.normalize_pair(pair1, pair2);
+// output (array)
+// [[55, 55], [66, 71.5], [60.5, 54.99], [71.5, 76.99]]
 ```
 #### <a id="standard"></a>Standardize
 ```javascript
