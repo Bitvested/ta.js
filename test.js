@@ -32,6 +32,7 @@ ta.kmeans([2, 3, 4, 5, 3, 5, 7, 8, 6, 8, 6, 4, 2, 6], 4).then((kmeans) => { try 
 ta.normalize([5,4,9,4], 0.1).then((norm) => { try { assert.deepEqual(norm, [0.2222222222222222, 0.06349206349206349, 0.8571428571428571, 0.06349206349206349]); } catch(e) { console.error('Test failed @ normalize \n'); } });
 ta.denormalize([5,4,9,4], [0.2222222222222222, 0.06349206349206349, 0.8571428571428571, 0.06349206349206349, 0.4444444444444444], 0.1).then((dnorm) => { try { assert.deepEqual(dnorm, [5,4,9,4,6.4]); } catch(e) { console.error('Test failed @ denormalize \n'); } });
 ta.normalize_pair([10,12,11,13],[100,130,100,140]).then((pair) => { try { assert.deepEqual(pair, [[55,55],[66,71.5],[60.5,54.99999999999999],[71.5,76.99999999999999]]); } catch(e) { console.error('Test failed @ normalize_pair \n') } });
+ta.normalize_from([8,12,10,11], 100).then((data) => { try { assert.deepEqual(data, [100,150,125,137.5]); } catch(e) { console.error('Test failed @ normalize_from \n') } });
 ta.mad([3, 7, 5, 4, 3, 8, 9], 6).then((mad) => { try { assert.deepEqual(mad, [1, 2]); } catch(e) { console.error('Test failed @ mad \n'); }});
 ta.aad([4, 6, 8, 6, 8, 9, 10, 11], 7).then((aad) => { try { assert.deepEqual(aad, [1.6734693877551021, 1.469387755102041]); } catch(e) { console.error('Test failed @aad \n'); }});
 ta.ssd([7, 6, 5, 7, 9, 8, 3, 5, 4], 7).then((ssd) => { try { assert.deepEqual(ssd, [4.869731585445518, 4.9856938190329, 5.3718844791323335]); } catch(e) { console.error('Test failed @ ssd \n'); }});

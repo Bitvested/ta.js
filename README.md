@@ -94,6 +94,7 @@ const ta = require('ta.js');
 - [Normalize](#norm)
 - [Denormalize](#dnorm)
 - [Normalize Pair](#normp)
+- [Normalize From](#normf)
 - [Standardize](#standard)
 - [K-means Clustering](#kmeans)
 #### Chart Types
@@ -718,6 +719,14 @@ var pair2 = [100,130,100,140];
 ta.normalize_pair(pair1, pair2);
 // output (array)
 // [[55, 55], [66, 71.5], [60.5, 54.99], [71.5, 76.99]]
+```
+#### <a id="normf"></a>Normalize From
+```javascript
+var data = [8, 12, 10, 11];
+var baseline = 100;
+ta.normalize_from(data, baseline);
+// output (array)
+// [100, 150, 125, 137.5]
 ```
 #### <a id="standard"></a>Standardize
 ```javascript

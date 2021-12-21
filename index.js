@@ -55,6 +55,11 @@ async function normalize_pair(data1, data2) {
   for(var i = 1; i < data1.length; i++) ret.push([ret[ret.length-1][0]*((data1[i]-data1[i-1])/data1[i-1]+1),ret[ret.length-1][1]*((data2[i]-data2[i-1])/data2[i-1]+1)]);
   return ret;
 }
+async function normalize_from(data, value) {
+  var ret = [value];
+  for(var i = 1; i < data.length; i++) ret.push(ret[ret.length-1]*((data[i]-data[i-1])/data[i-1]+1));
+  return ret;
+}
 async function standardize(data) {
   var mean = await module.exports.sma(data, data.length),
       std = await module.exports.std(data), res = [];
