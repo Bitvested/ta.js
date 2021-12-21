@@ -1,4 +1,4 @@
-const ta = require('./index.js'), assert = require('assert');
+const ta = require('../index.js'), assert = require('assert');
 ta.sma([1, 2, 3, 4, 5, 6, 10], 6).then((sma) => { try { assert.deepEqual(sma, [3.5, 5]); } catch(e) { console.error('Test failed @ sma \n'); }});
 ta.smma([1, 2, 3, 4, 5, 6, 10], 5).then((smma) => { try { assert.deepEqual(smma, [3.4, 4.92]); } catch(e) { console.error('Test failed @ smma \n'); }});
 ta.wma([69, 68, 66, 70, 68], 4).then((wma) => { try { assert.deepEqual(wma, [68.3, 68.2]); } catch(e) { console.error('Test failed @ wma \n'); }});
