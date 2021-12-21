@@ -4,7 +4,7 @@
   "description": "Financial Technical Analysis in JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node ./test/test.js"
   },
   "repository": {
     "type": "git",
