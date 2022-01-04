@@ -639,7 +639,7 @@ ta.avgwin(data);
 var data = [0.01, 0.02, -0.01, -0.03, -0.015, 0.005];
 ta.avgloss(data);
 // output (float)
-//-0.018
+// -0.018
 ```
 #### <a id="drawdown"></a>Drawdown
 ```javascript
