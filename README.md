@@ -57,6 +57,7 @@ const ta = require('ta.js');
 - [Fractals](#fractals)
 - [Crossover](#cross)
 - [Momentum](#mom)
+- [HalfTrend](#half)
 #### Oscillators
 - [Alligator Oscillator](#gator)
 - [Chande Momentum Oscillator](#mom_osc)
@@ -92,6 +93,8 @@ const ta = require('ta.js');
 - [Average Absolute Deviation](#aad)
 - [Standard Error](#stderr)
 - [Sum Squared Differences](#ssd)
+- [Logarithm](#log)
+- [Exponent](#exp)
 - [Normalize](#norm)
 - [Denormalize](#dnorm)
 - [Normalize Pair](#normp)
@@ -430,6 +433,26 @@ ta.mom(data, length, percentage);
 // output (array)
 // [0.24, 0.24]
 ```
+#### <a id="half"></a>HalfTrend
+```javascript
+// experimental (untested) function (may change in the future), ported from:
+// https://www.tradingview.com/script/U1SJ8ubc-HalfTrend/
+// data = [high, close, low]
+var data = [[100,97,90],[101,98,94],[103,96,92],[106,100,95],[110,101,100],[112,110,105],[110,100,90],[103,100,97],[95,90,85],[94,80,80],[90,82,81],[85,80,70]];
+var atrlen = 6;
+var amplitude = 3;
+var deviation = 2;
+ta.halftrend(data, atrlen, amplitude, deviation);
+// output (array)
+// [
+//   [ 115.14, 105, 94.86, 'long' ],
+//   [ 100.77, 90, 79.22, 'long' ],
+//   [ 116.32, 105, 93.68, 'long' ],
+//   [ 101.1, 90, 78.89, 'long' ],
+//   [ 116.25, 105, 93.75, 'long' ],
+//   [ 99.77, 90, 80.23, 'long' ]
+// ]
+```
 ### Oscillators
 #### <a id="gator"></a>Alligator Oscillator
 ```javascript
@@ -703,6 +726,20 @@ var length = 7; // default = data.length
 ta.ssd(data, length);
 // output (array)
 // [4.87, 4.986, 5.372]
+```
+#### <a id="log"></a>Logarithm
+```javascript
+var data = [5, 14, 18, 28, 68, 103];
+ta.log(data);
+// output (array)
+// [1.61, 2.64, 2.89, 3.33, 4.22, 4.63]
+```
+#### <a id="exp"></a>Exponent
+```javascript
+var data = [1.6, 2.63, 2.89, 3.33, 4.22, 4.63];
+ta.exp(data);
+// output (array)
+// [4.95, 13.87, 17.99, 27.94, 68.03, 102.51]
 ```
 #### <a id="norm"></a>Normalize
 ```javascript
