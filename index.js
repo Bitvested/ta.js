@@ -883,12 +883,59 @@ async function se(data, size) {
   var stdv = await module.exports.std(data);
   return stdv / (size ** 0.5);
 }
+async function halftrend(data, atrlen, amplitude, deviation) {
+  let out = [], nexttrend = [0], trend = [0], up = [0], down = [0], direction = undefined;
+  for(let i = atrlen; i < data.length; i++) {
+    let maxlow = data[i-1][2],
+        minhigh = data[i-1][0],
+        atr2 = await module.exports.atr(data.slice(i-atrlen,i), atrlen);
+        atr2 = atr2[atr2.length-1] / 2;
+    let dev = deviation * atr2,
+        highprice = Math.max.apply(null, data.slice(i-1, i).map(x=>x[0])),
+        lowprice = Math.min.apply(null, data.slice(i-1, i).map(x=>x[2])),
+        highma = await module.exports.sma(data.slice(i-amplitude,i).map(x=>x[0]), amplitude),
+        lowma = await module.exports.sma(data.slice(i-amplitude,i).map(x=>x[2]), amplitude);
+    if(nexttrend[nexttrend.length-1] == 1) {
+      maxlow = Math.max(lowprice, maxlow);
+      if(highma[0] < maxlow && data[i][1] < data[i-1][2]) {
+        trend.push(1)
+        nexttrend.push(0)
+        minhigh = data[i-1][0]
+      }
+    } else {
+      minhigh = Math.min(highprice, minhigh)
+      if(lowma[0] > minhigh && data[i][1] < data[i-1][0]) {
+        trend.push(0);
+        nexttrend.push(1);
+        maxlow = lowprice
+      }
+    }
+    if(trend[trend.length-1] == 0) {
+      if(!isNaN(trend[trend.length-2]) && trend[trend.length-2] != 0) {
+        up.push((isNaN(down[down.length-2])) ? down[down.length-1] : down[down.length-2])
+      } else {
+        up.push((isNaN(up[up.length-2])) ? maxlow : Math.max(up[up.length-2], maxlow))
+      }
+      direction = 'long';
+      var atrHigh = up[up.length-1] + dev,
+          atrLow = up[up.length-1] - dev;
+    } else {
+      if(!isNaN(trend[trend.length-2]) && trend[trend.length-2] != 1) {
+        down.push((isNaN(up[up.len-2])) ? up[up.length-1] : up[up.length-2])
+      } else {
+        down.push((isNaN(down[down.length-2])) ? minhigh : Math.min(minhigh, down[down.length-2]))
+      }
+      direction = 'short'
+      var atrHigh = down[down.length-1] + dev,
+          atrLow = down[down.length-1] - dev
+    }
+    out.push([atrHigh, (trend[trend.length-1] == 0) ? up[up.length-1] : down[down.length-1], atrLow, direction]);
+  }
+  return out // out = atrhigh, halftrend, atrlow, signal
+}
 module.exports = {
-  aroon: {
-    up: aroon_up,
-    down: aroon_down,
-    osc: aroon_osc,
-  }, rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
+  aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
+  rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
@@ -896,5 +943,5 @@ module.exports = {
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
-  ar, zscore, log, exp
+  ar, zscore, log, exp, halftrend
 }
