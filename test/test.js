@@ -15,5 +15,5 @@ for(let x in ta) {
     }
     continue;
   }
-  ta[x].apply(null, parameters[x].in).then((res) => { try { assert.deepEqual(res, parameters[x].out); } catch(e) { console.error(parameters[x].out);console.error('Test failed @ ' + x + '\n'); } })
+  ta[x].apply(null, parameters[x].in).then((res) => { try { assert.deepEqual(res, parameters[x].out); } catch(e) { console.log(res);console.error(parameters[x].out);console.error('Test failed @ ' + x + '\n'); } })
 }

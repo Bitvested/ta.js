@@ -885,26 +885,27 @@ async function se(data, size) {
 }
 async function halftrend(data, atrlen, amplitude, deviation) {
   let out = [], nexttrend = [0], trend = [0], up = [0], down = [0], direction = undefined;
-  for(let i = atrlen; i < data.length; i++) {
-    let maxlow = data[i-1][2],
-        minhigh = data[i-1][0],
-        atr2 = await module.exports.atr(data.slice(i-atrlen,i), atrlen);
+  for(let i = atrlen; i <= data.length; i++) {
+    let pl = data.slice(i-atrlen,i);
+        maxlow = pl[pl.length-2][2],
+        minhigh = pl[pl.length-2][0],
+        atr2 = await module.exports.atr(pl, atrlen);
         atr2 = atr2[atr2.length-1] / 2;
     let dev = deviation * atr2,
-        highprice = Math.max.apply(null, data.slice(i-1, i).map(x=>x[0])),
-        lowprice = Math.min.apply(null, data.slice(i-1, i).map(x=>x[2])),
-        highma = await module.exports.sma(data.slice(i-amplitude,i).map(x=>x[0]), amplitude),
-        lowma = await module.exports.sma(data.slice(i-amplitude,i).map(x=>x[2]), amplitude);
+        highprice = Math.max.apply(null, pl.slice(pl.length-1, pl.length).map(x=>x[0])),
+        lowprice = Math.min.apply(null, pl.slice(pl.length-1, pl.length).map(x=>x[2])),
+        highma = await module.exports.sma(pl.slice(pl.length-amplitude,pl.length).map(x=>x[0]), amplitude),
+        lowma = await module.exports.sma(pl.slice(pl.length-amplitude,pl.length).map(x=>x[2]), amplitude);
     if(nexttrend[nexttrend.length-1] == 1) {
       maxlow = Math.max(lowprice, maxlow);
-      if(highma[0] < maxlow && data[i][1] < data[i-1][2]) {
+      if(highma[0] < maxlow && pl[pl.length-1][1] < pl[pl.length-2][2]) {
         trend.push(1)
         nexttrend.push(0)
-        minhigh = data[i-1][0]
+        minhigh = pl[pl.length-2][0]
       }
     } else {
       minhigh = Math.min(highprice, minhigh)
-      if(lowma[0] > minhigh && data[i][1] < data[i-1][0]) {
+      if(lowma[0] > minhigh && pl[pl.length-1][1] < pl[pl.length-2][0]) {
         trend.push(0);
         nexttrend.push(1);
         maxlow = lowprice
@@ -931,7 +932,7 @@ async function halftrend(data, atrlen, amplitude, deviation) {
     }
     out.push([atrHigh, (trend[trend.length-1] == 0) ? up[up.length-1] : down[down.length-1], atrLow, direction]);
   }
-  return out // out = atrhigh, halftrend, atrlow, signal
+  return out;
 }
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
