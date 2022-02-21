@@ -77,3 +77,5 @@ ta.cross([3,4,5,4,3], [4,3,2,3,4]).then((cross) => { try { assert.deepEqual(cros
 ta.se([34,54,45,43,57,38,49], 10).then((err) => { try { assert.deepEqual(err, 2.4243661069253055) } catch(e) { console.error(e); } });
 ta.kelly([0.01,0.02,-0.01,-0.03,-0.015,0.045,0.005]).then((kel) => { try { assert.deepEqual(kel, 0.14434748152632182); } catch(e) { console.error("Test failed @ kelly"); } });
 ta.zscore([34,54,45,43,57,38,49], 5).then((z) => { try { assert.deepEqual(z, [1.2664106627730554, -1.3314928442246727, 0.4078462733398033]) } catch(e) { console.error('Test failed @ zscore \n'); } });
+ta.log([5, 14, 18, 28, 68, 103]).then((log) => { try { assert.deepEqual(log, [1.6094379124341003, 2.6390573296152584, 2.8903717578961645, 3.332204510175204, 4.219507705176107, 4.634728988229636]); } catch(e) { console.error(e); } });
+ta.exp([1.6, 2.63, 2.89, 3.33, 4.22, 4.63]).then((exp) => { try { assert.deepEqual(exp, [4.953032424395115, 13.873769902129904,17.993309601550315, 27.938341703236507, 68.03348428941965, 102.51406411049345]); } catch(e) { console.error(e); } });

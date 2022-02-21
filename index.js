@@ -563,6 +563,8 @@ async function cor(data1, data2) {
   return (sumavg / (n * sx * sy));
 }
 async function dif(n, o) { return (n - o) / o; }
+async function log(d) { return d.map(x=>Math.log(x)); }
+async function exp(d) { return d.map(x=>Math.exp(x)); }
 async function drawdown(d) {
   var max = d[0], min = d[0], big = 0;
   for(var y = 1; y < d.length; y++) {
@@ -894,5 +896,5 @@ module.exports = {
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
-  ar, zscore
+  ar, zscore, log, exp
 }
