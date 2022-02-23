@@ -444,14 +444,7 @@ var amplitude = 3;
 var deviation = 2;
 ta.halftrend(data, atrlen, amplitude, deviation);
 // output (array)
-// [
-//   [ 115.14, 105, 94.86, 'long' ],
-//   [ 100.77, 90, 79.22, 'long' ],
-//   [ 116.32, 105, 93.68, 'long' ],
-//   [ 101.1, 90, 78.89, 'long' ],
-//   [ 116.25, 105, 93.75, 'long' ],
-//   [ 99.77, 90, 80.23, 'long' ]
-// ]
+// [[high, halftrend, low, signal]]
 ```
 ### Oscillators
 #### <a id="gator"></a>Alligator Oscillator
