@@ -2,6 +2,10 @@
 
 ta.js is a JavaScript module for dealing with financial technical analysis.
 
+#### NOTE
+**A react compatible version of this package is available here:**
+https://github.com/Bitvested/ta.web
+
 ## Installation
 
 #### NPM
