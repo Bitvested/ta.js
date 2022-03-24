@@ -934,6 +934,7 @@ async function halftrend(data, atrlen, amplitude, deviation) {
   }
   return out;
 }
+const sum = async(data) => data.reduce((a,b) => a+b);
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
