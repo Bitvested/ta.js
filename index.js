@@ -29,9 +29,9 @@ async function kmeans(data, clusters) {
     }
     old = centers;
     for(x = 0; x < clusters; x++) {
-      var sum = 0;
-      for(y = 0; y < means[x].length; y++) sum += means[x][y];
-      var m = sum / means[n].length;
+      var sm = 0;
+      for(y = 0; y < means[x].length; y++) sm += means[x][y];
+      var m = sm / means[n].length;
       centers[x] = m;
     }
     for(x = 0; x < clusters; x++) if(centers[x] !== old[x]) changed = true;
@@ -80,19 +80,19 @@ async function mad(data, len) {
 async function aad(data, len) {
   var length = (!len) ? data.length : len, med = [];
   for(var i = length; i <= data.length; i++) {
-    var tmp = data.slice(i-length, i), sum = 0,
+    var tmp = data.slice(i-length, i), sm = 0,
         m = await module.exports.sma(tmp, length);
-    for(q in tmp) sum += Math.abs(tmp[q] - m[m.length-1]);
-    med.push(sum/length);
+    for(q in tmp) sm += Math.abs(tmp[q] - m[m.length-1]);
+    med.push(sm/length);
   }
   return med;
 }
 async function ssd(data, len) {
   var length = (!len) ? data.length : len, sd = [];
   for(var i = length; i <= data.length; i++) {
-    var tmp = data.slice(i-length,i), mean = await module.exports.sma(tmp, length), sum = 0;
-    for(let x in tmp) sum += (tmp[x] - mean[mean.length-1]) ** 2;
-    sd.push(Math.sqrt(sum));
+    var tmp = data.slice(i-length,i), mean = await module.exports.sma(tmp, length), sm = 0;
+    for(let x in tmp) sm += (tmp[x] - mean[mean.length-1]) ** 2;
+    sd.push(Math.sqrt(sm));
   }
   return sd;
 }
@@ -319,9 +319,8 @@ async function atr(data, len) {
 }
 async function sma(data, len) {
   var length = (!len) ? 14 : len, sma = [];
-  for(var i = length, avg = 0; i <= data.length; i++, avg=0) {
-    var pl = data.slice(i-length, i);
-    for(q in pl) avg += pl[q];
+  for(var i = length; i <= data.length; i++) {
+    let avg = await module.exports.sum(data.slice(i-length,i));
     sma.push(avg / length);
   }
   return sma;
@@ -490,9 +489,9 @@ async function keltner(data, len, dev) {
 async function variance(data, len) {
   var length = (!len) ? data.length : len, va = [];
   for(var i = length; i <= data.length; i++) {
-    var tmp = data.slice(i - length, i), mean = await module.exports.sma(tmp, length), sum = 0;
-    for(x in tmp) sum += ((tmp[x] - mean[mean.length-1]) ** 2);
-    va.push(sum/length);
+    var tmp = data.slice(i - length, i), mean = await module.exports.sma(tmp, length), sm = 0;
+    for(x in tmp) sm += ((tmp[x] - mean[mean.length-1]) ** 2);
+    va.push(sm/length);
   }
   return va;
 }
