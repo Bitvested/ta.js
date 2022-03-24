@@ -934,6 +934,21 @@ async function halftrend(data, atrlen, amplitude, deviation) {
   return out;
 }
 const sum = async(data) => data.reduce((a,b) => a+b);
+async function covariance(data1, data2, length) {
+  let out = [], x_mean = await module.exports.sma(data1, data1.length),
+      y_mean = await module.exports.sma(data2, data2.length);
+  for(let z = length; z <= data1.length; z++) {
+    let x = data1.slice(z-length,z), y = data2.slice(z-length,z),
+        x_mean = await module.exports.sma(x, length), res = [],
+        y_mean = await module.exports.sma(y, length);
+    for(let i = 0; i < length; i++) {
+      res.push((x[i]-x_mean[0])*(y[i]-y_mean[0]));
+    }
+    res = await module.exports.sum(res);
+    out.push(res/length);
+  }
+  return out;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
@@ -944,5 +959,5 @@ module.exports = {
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
-  ar, zscore, log, exp, halftrend
+  ar, zscore, log, exp, halftrend, sum, covariance
 }
