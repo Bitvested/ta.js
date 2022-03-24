@@ -76,12 +76,14 @@ const ta = require('ta.js');
 - [Donchian Channels](#don)
 - [Envelope](#env)
 #### Statistics
+- [Sum](#sum)
 - [Standard Deviation](#std)
 - [Variance](#variance)
 - [Inverse Normal Distribution](#normsinv)
 - [Monte Carlo Simulation](#sim)
 - [Percentile](#perc)
 - [Correlation](#cor)
+- [Covariance](#cov)
 - [Percentage Difference](#dif)
 - [Expected Return](#er)
 - [Abnormal Return](#ar)
@@ -557,6 +559,13 @@ ta.envelope(data, length, percentage);
 // [upper band, base line, lower band]
 ```
 ### Statistics
+#### <a id="sum"></a>Sum
+```javascript
+var data = [1,2,3];
+ta.sum(data);
+// output (float)
+// 6
+```
 #### <a id="std"></a>Standard Deviation
 ```javascript
 var data = [1, 2, 3];
@@ -609,6 +618,15 @@ var data2 = [1, 3, 2, 4, 6, 3];
 ta.cor(data1, data2);
 // output (float)
 // 0.8808929232684737
+```
+#### <a id="cov"></a>Covariance
+```javascript
+var data1 = [12,13,25,39];
+var data2 = [67,45,32,21];
+var length = 4;
+ta.covariance(data1, data2, 4);
+// output (array)
+// [-165.8125]
 ```
 #### <a id="dif"></a>Percentage Difference
 ```javascript
