@@ -951,6 +951,7 @@ async function covariance(data1, data2, length) {
 }
 const range = (min, max, rng) => Math.floor((rng) ? rng()*(Math.floor(max)-Math.ceil(min))+Math.ceil(min) : Math.random()*(Math.floor(max)-Math.ceil(min))+Math.ceil(min));
 const pick = (data, rng) => data[Math.floor((rng) ? rng()*(Math.floor(data.length)) : Math.random()*(Math.floor(data.length)))];
+const float = (min, max, rng) => (rng) ? rng()*(max-min)+min : Math.random()*(max-min)+min;
 function prng(seed) {
   for(var i = 0, h = 1779033703 ^ seed.length; i < seed.length; i++) {
     h = Math.imul(h ^ seed.charCodeAt(i), 3432918353);
@@ -975,11 +976,12 @@ async function ncdf(x, mean, std) {
 }
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
+  random: { range, pick, float, prng },
   rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
   bop, cop, kama, mad, aad, variance, ssd, pwma, hwma, kmeans, drawdown,
-  normalize, denormalize, wrsi, wsma, normsinv, sim, multi, percentile,
+  normalize, denormalize, wrsi, wsma, normsinv, ncdf, sim, multi, percentile,
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
