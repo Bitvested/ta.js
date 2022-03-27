@@ -1,6 +1,6 @@
 const ta = require('../index.js'), assert = require('assert'), parameters = require('./parameters.js');
 for(let x in ta) {
-  if(x == 'sim' || x == 'multi') continue;
+  if(x == 'sim' || x == 'multi' || x == 'random') continue;
   if(x == 'support') {
     ta[x].apply(null, parameters[x].in).then((res) => { try { res.calculate(9).then((res) => { try { assert.deepEqual(res, parameters[x].out); } catch(e) { console.error("Test failed @ " + x + "\n"); } }); } catch(e) { console.error("Test failed @ " + x + "\n"); } });
     continue
