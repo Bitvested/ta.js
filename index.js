@@ -966,6 +966,13 @@ function prng(seed) {
     return ((t ^ t >>> 14) >>> 0) / 4294967296;
   }
 }
+async function ncdf(x, mean, std) {
+  x = (!mean && !std) ? x : (x - mean) / std;
+  var t = 1 / (1+.2315419*Math.abs(x)),
+      d = .3989423*Math.exp(-x*x/2),
+      p = d*t*(.3193815 + t * ( -.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));
+  return (x > 0) ? 1-p : p;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
