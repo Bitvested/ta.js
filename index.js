@@ -949,6 +949,8 @@ async function covariance(data1, data2, length) {
   }
   return out;
 }
+const range = (min, max, rng) => Math.floor((rng) ? rng()*(Math.floor(max)-Math.ceil(min))+Math.ceil(min) : Math.random()*(Math.floor(max)-Math.ceil(min))+Math.ceil(min));
+const pick = (data, rng) => data[Math.floor((rng) ? rng()*(Math.floor(data.length)) : Math.random()*(Math.floor(data.length)))];
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
