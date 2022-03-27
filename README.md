@@ -79,6 +79,7 @@ const ta = require('ta.js');
 - [Sum](#sum)
 - [Standard Deviation](#std)
 - [Variance](#variance)
+- [Normal CDF](#ncdf)
 - [Inverse Normal Distribution](#normsinv)
 - [Monte Carlo Simulation](#sim)
 - [Percentile](#perc)
@@ -108,6 +109,11 @@ const ta = require('ta.js');
 - [Standardize](#standard)
 - [Z-Score](#zscore)
 - [K-means Clustering](#kmeans)
+#### Random functions
+- [Pseudo Random Number Generator](#prng)
+- [Pick Random](#pick)
+- [Random Range](#range)
+- [Random Float](#float)
 #### Chart Types
 - [Heikin Ashi](#ha)
 - [Renko](#ren)
@@ -582,6 +588,20 @@ ta.variance(data, length);
 // output (array)
 // [3.918, 5.061]
 ```
+#### <a id="ncdf"></a>Normal CDF
+```javascript
+var sample = 13;
+var mean = 10;
+var stdv = 2;
+ta.ncdf(sample, mean, stdv);
+// output (float)
+// 0.9331737996110652
+
+var zscore = 1.5;
+ta.ncdf(zscore);
+// output (float)
+// 0.9331737996110652
+```
 #### <a id="normsinv"></a>Inverse Normal Distribution
 ```javascript
 var data = 0.4732;
@@ -811,6 +831,41 @@ var length = 4;
 ta.kmeans(data, length);
 // output (array)
 // [[ 4, 5, 5, 4 ], [ 7, 6, 6, 6 ], [ 8, 8 ], [ 2, 3, 3, 2 ]]
+```
+### Random Functions
+#### <a id="prng"></a>Pseudo Random Number Generator
+```javascript
+var seed = "abcdefg"; // string || number
+var prng = ta.random.prng(seed);
+console.log(prng());
+// output (float)
+// 0.9100735441315919
+```
+#### <a id="pick"></a>Pick Random
+```javascript
+var data = ['a', 'b', 'c'];
+var prng = ta.random.prng('abcdefg');
+ta.random.pick(data, prng); // default number generator = Math.random
+// output (array element)
+// 'c'
+```
+#### <a id="range"></a>Random Range
+```javascript
+var min = 10;
+var max = 50;
+var prng = ta.random.prng('abcdefg');
+ta.random.range(min, max, prng); // default number generator = Math.random
+// output (int)
+// 46
+```
+#### <a id="float"></a>Random Float
+```javascript
+var min = 1.4;
+var max = 2.8;
+var prng = ta.random.prng('abcdefg');
+ta.random.float(min, max, prng); // default number generator = Math.random
+// output (float)
+// 2.6741029617842287
 ```
 ### Chart Types
 #### <a id="ha"></a>Heikin Ashi
