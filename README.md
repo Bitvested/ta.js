@@ -62,6 +62,7 @@ const ta = require('ta.js');
 - [Crossover](#cross)
 - [Momentum](#mom)
 - [HalfTrend](#half)
+- [ZigZag](#zigzag)
 #### Oscillators
 - [Alligator Oscillator](#gator)
 - [Chande Momentum Oscillator](#mom_osc)
@@ -457,6 +458,14 @@ var deviation = 2;
 ta.halftrend(data, atrlen, amplitude, deviation);
 // output (array)
 // [[high, halftrend, low, signal]]
+```
+#### <a id="zigzag"></a>ZigZag
+```javascript
+var data = [[10,9], [12,10], [14,12], [15,13], [16,15], [11,10], [18,15]]; // [high, low]
+var percentage = 0.25; // default = 0.05
+ta.zigzag(data, percentage);
+// output (array)
+// [9, 10.75, 12.5, 14.25, 16, 10, 18]
 ```
 ### Oscillators
 #### <a id="gator"></a>Alligator Oscillator
