@@ -974,6 +974,69 @@ async function ncdf(x, mean, std) {
       p = d*t*(.3193815 + t * ( -.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));
   return (x > 0) ? 1-p : p;
 }
+async function zigzag(data, perc=0.05) {
+  let indexes = [], min = Infinity, max = -Infinity, lmin = false, lmax = false, final = [];
+  for(let i = 0; i < data.length; i++) {
+    if(lmin) {
+      if(indexes[indexes.length-1].value >= data[i][1]) {
+        indexes[indexes.length-1].value = data[i][1];
+        indexes[indexes.length-1].index = i;
+      }
+      if(min >= data[i][1]) min = data[i][1];
+      let hdif = (data[i][0]-min)/min;
+      if(hdif > perc) {
+        indexes.push({index: i, value: data[i][0]});
+        lmax = true;
+        lmin = false;
+        min = Infinity
+      }
+    } else if(lmax) {
+      if(indexes[indexes.length-1].value <= data[i][0]) {
+        indexes[indexes.length-1].value = data[i][0];
+        indexes[indexes.length-1].index = i;
+      }
+      if(max <= data[i][1]) max = data[i][1];
+      let ldif = (max-data[i][1])/data[i][1];
+      if(ldif > perc) {
+        indexes.push({index: i, value: data[i][1]});
+        lmin = true;
+        lmax = false;
+        max = -Infinity
+      }
+    } else {
+      if(min >= data[i][1]) min = data[i][1];
+      if(max <= data[i][0]) max = data[i][0];
+      let hdif = (data[i][0]-min)/min,
+          ldif = (max-data[i][1])/max;
+      if(ldif > perc && hdif < perc) {
+        lmin = true;
+        indexes.push({index: 0, value: data[0][0]});
+        indexes.push({index: i, value: data[i][1]});
+      } else if(hdif > perc && ldif < perc) {
+        lmax = true;
+        indexes.push({index: 0, value: data[0][1]});
+        indexes.push({index: i, value: data[i][0]});
+      } else {
+        if(ldif > hdif) {
+          lmin = true;
+          indexes.push({index: 0, value: data[0][0]});
+          indexes.push({index: i, value: data[i][1]});
+        } else {
+          lmax = true;
+          indexes.push({index: 0, value: data[0][1]});
+          indexes.push({index: i, value: data[i][0]});
+        }
+      }
+    }
+  }
+  final = [indexes[0].value]
+  for(let i = 1; i < indexes.length; i++) {
+    let len = indexes[i].index - indexes[i-1].index,
+        delta = (indexes[i].value - indexes[i-1].value) / len;
+    for(let x = 1; x <= len; x++) final.push(x*delta+indexes[i-1].value);
+  }
+  return final;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   random: { range, pick, float, prng },
@@ -985,5 +1048,5 @@ module.exports = {
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
-  ar, zscore, log, exp, halftrend, sum, covariance
+  ar, zscore, log, exp, halftrend, sum, covariance, zigzag
 }
