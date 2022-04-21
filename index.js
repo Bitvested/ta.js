@@ -952,7 +952,7 @@ async function zigzag(data, perc=0.05) {
   }
   return final;
 }
-async function psar(data, step, max) {
+async function psar(data, step=0.02, max=0.2) {
   let furthest = data[0], up = true, accel = step, prev = data[0],
       sar = data[0][1], extreme = data[0][0], final = [sar];
   for(let i = 1; i < data.length; i++) {
