@@ -419,6 +419,14 @@ async function macd_signal(data, length1=12, length2=26, lengthsig=9) {
       console.log(mas)
   return mas;
 }
+async function macd_bars(data, length1=12, length2=26, lengthsig=9) {
+  var ma = await module.exports.macd(data, length1, length2),
+      mas = await module.exports.ema(ma, lengthsig), ret = [];
+  ma.splice(0,ma.length-mas.length);
+  for(let i in ma) ret.push(ma[i]-mas[i]);
+  console.log(ret)
+  return ret;
+}
 async function bands(data, length=14, deviations=1) {
   for(var i = 0, pl = [], deviation = [], boll = [], sma = await module.exports.sma(data, length); i < data.length; i++) {
     pl.push(data[i]);
@@ -999,5 +1007,6 @@ module.exports = {
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
-  ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar
+  ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
+  macd_bars
 }

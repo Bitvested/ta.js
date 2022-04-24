@@ -38,6 +38,7 @@ const ta = require('ta.js');
 #### Indicators
 - [Moving Average Convergence / Divergence](#macd)
 - [MACD Signal](#macd_signal)
+- [MACD Bars](#macd_bars)
 - [Relative Strength Index](#rsi)
 - [Wilder's Relative Strength Index](#wrsi)
 - [True Strength Index](#tsi)
@@ -233,6 +234,16 @@ var signal_length = 3;
 ta.macd_signal(data, length1, length2, signal_length);
 // output (array)
 // [2.107, 1.838, 1.653]
+```
+#### <a id="macd_bars"></a>MACD Bars
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 14, 8, 10, 11];
+var length1 = 3;
+var length2 = 6;
+var signal_length = 3;
+ta.macd_bars(data, length1, length2, signal_length);
+// output (array)
+// [-0.286, -0.269, -0.184]
 ```
 #### <a id="rsi"></a>Relative Strength Index (RSI)
 ```javascript
