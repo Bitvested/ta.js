@@ -413,6 +413,12 @@ async function macd(data, length1=12, length2=26) {
   for(var i = 0; i < emb.length; i++) macd.push(ema[i] - emb[i]);
   return macd;
 }
+async function macd_signal(data, length1=12, length2=26, lengthsig=9) {
+  let ma = await module.exports.macd(data, length1, length2),
+      mas = await module.exports.ema(ma, lengthsig);
+      console.log(mas)
+  return mas;
+}
 async function bands(data, length=14, deviations=1) {
   for(var i = 0, pl = [], deviation = [], boll = [], sma = await module.exports.sma(data, length); i < data.length; i++) {
     pl.push(data[i]);
