@@ -413,6 +413,18 @@ async function macd(data, length1=12, length2=26) {
   for(var i = 0; i < emb.length; i++) macd.push(ema[i] - emb[i]);
   return macd;
 }
+async function macd_signal(data, length1=12, length2=26, lengthsig=9) {
+  let ma = await module.exports.macd(data, length1, length2),
+      mas = await module.exports.ema(ma, lengthsig);
+  return mas;
+}
+async function macd_bars(data, length1=12, length2=26, lengthsig=9) {
+  var ma = await module.exports.macd(data, length1, length2),
+      mas = await module.exports.ema(ma, lengthsig), ret = [];
+  ma.splice(0,ma.length-mas.length);
+  for(let i in ma) ret.push(ma[i]-mas[i]);
+  return ret;
+}
 async function bands(data, length=14, deviations=1) {
   for(var i = 0, pl = [], deviation = [], boll = [], sma = await module.exports.sma(data, length); i < data.length; i++) {
     pl.push(data[i]);
@@ -952,6 +964,36 @@ async function zigzag(data, perc=0.05) {
   }
   return final;
 }
+async function psar(data, step=0.02, max=0.2) {
+  let furthest = data[0], up = true, accel = step, prev = data[0],
+      sar = data[0][1], extreme = data[0][0], final = [sar];
+  for(let i = 1; i < data.length; i++) {
+    sar = sar + accel * (extreme - sar);
+    if(up) {
+      sar = Math.min(sar, furthest[1], prev[1]);
+      if(data[i][0] > extreme) {
+        extreme = data[i][0];
+        accel = Math.min(accel+step, max);
+      }
+    } else {
+      sar = Math.max(sar, furthest[0], prev[0]);
+      if(data[i][1] < extreme) {
+        extreme = data[i][0];
+        accel = Math.min(accel + step, max);
+      }
+    }
+    if((up && data[i][1] < sar) || (!up && data[i][0] > sar)) {
+      accel = step;
+      sar = extreme;
+      up = !up;
+      extreme = !up ? data[i][1] : data[i][0]
+    }
+    furthest = prev;
+    prev = data[i];
+    final.push(sar);
+  }
+  return final;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   random: { range, pick, float, prng },
@@ -963,5 +1005,6 @@ module.exports = {
   envelope, chaikin_osc, fractals, recent_high, recent_low, support,
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
-  ar, zscore, log, exp, halftrend, sum, covariance, zigzag
+  ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
+  macd_bars
 }
