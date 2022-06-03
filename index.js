@@ -1071,7 +1071,7 @@ async function fibbands(data, length=20, deviations=3) {
         lower3 = vwma[i] - 0.5 * deviation[i],
         lower4 = vwma[i] - 0.618 * deviation[i],
         lower5 = vwma[i] - 0.764 * deviation[i],
-        lower6 = vwma[i] - deviation[i]
+        lower6 = vwma[i] - deviation[i];
     boll.push([upper6, upper5, upper4, upper3, upper2, upper1, vwma[i], lower1, lower2, lower3, lower4, lower5, lower6]);
   }
   return boll;
