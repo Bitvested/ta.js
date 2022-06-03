@@ -994,6 +994,32 @@ async function psar(data, step=0.02, max=0.2) {
   }
   return final;
 }
+async function fibbands(data, length=20, deviations=3) {
+  for(var i = 0, pl = [], deviation = [], vwma = await module.exports.vwma(data, length); i < data.length; i++) {
+    pl.push(data[i]);
+    if(pl.length >= length) {
+      var devi = await module.exports.std(pl.map(x=>x[0]), length);
+      deviation.push(devi * 3);
+      pl.splice(0,1);
+    }
+  }
+  for(var i = 0, boll = []; i < vwma.length; i++) {
+    let upper1 = vwma[i] + (0.236 * deviation[i]),
+        upper2 = vwma[i] + (0.382 * deviation[i]),
+        upper3 = vwma[i] + (0.5 * deviation[i]),
+        upper4 = vwma[i] + (0.618 * deviation[i]),
+        upper5 = vwma[i] + (0.764 * deviation[i]),
+        upper6 = vwma[i] + deviation[i],
+        lower1 = vwma[i] - 0.236 * deviation[i],
+        lower2 = vwma[i] - 0.382 * deviation[i],
+        lower3 = vwma[i] - 0.5 * deviation[i],
+        lower4 = vwma[i] - 0.618 * deviation[i],
+        lower5 = vwma[i] - 0.764 * deviation[i],
+        lower6 = vwma[i] - deviation[i]
+    boll.push([upper6, upper5, upper4, upper3, upper2, upper1, vwma[i], lower1, lower2, lower3, lower4, lower5, lower6]);
+  }
+  return boll;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   random: { range, pick, float, prng },
@@ -1006,5 +1032,5 @@ module.exports = {
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
-  macd_bars
+  macd_bars, fibbands
 }
