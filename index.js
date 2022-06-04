@@ -1052,19 +1052,19 @@ async function psar(data, step=0.02, max=0.2) {
 }
 async function fibbands(data, length=20, deviations=3) {
   for(var i = 0, pl = [], deviation = [], vwma = await module.exports.vwma(data, length); i < data.length; i++) {
-    pl.push(data[i]);
+    pl.push(data[i][0]);
     if(pl.length >= length) {
-      var devi = await module.exports.std(pl.map(x=>x[0]), length);
-      deviation.push(devi * 3);
+      var devi = await module.exports.std(pl, length);
+      deviation.push(devi * deviations);
       pl.splice(0,1);
     }
   }
   for(var i = 0, boll = []; i < vwma.length; i++) {
-    let upper1 = vwma[i] + (0.236 * deviation[i]),
-        upper2 = vwma[i] + (0.382 * deviation[i]),
-        upper3 = vwma[i] + (0.5 * deviation[i]),
-        upper4 = vwma[i] + (0.618 * deviation[i]),
-        upper5 = vwma[i] + (0.764 * deviation[i]),
+    let upper1 = vwma[i] + 0.236 * deviation[i],
+        upper2 = vwma[i] + 0.382 * deviation[i],
+        upper3 = vwma[i] + 0.5 * deviation[i],
+        upper4 = vwma[i] + 0.618 * deviation[i],
+        upper5 = vwma[i] + 0.764 * deviation[i],
         upper6 = vwma[i] + deviation[i],
         lower1 = vwma[i] - 0.236 * deviation[i],
         lower2 = vwma[i] - 0.382 * deviation[i],
