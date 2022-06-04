@@ -1076,6 +1076,12 @@ async function fibbands(data, length=20, deviations=3) {
   }
   return boll;
 }
+async function supertrend(data, length=20, multiplier=2) { // [high, close low]
+  for(var i = length-1, atr = await module.exports.atr(data, length), trend = []; i < data.length; i++) {
+    trend.push([data[i][0] + data[i][2] / 2 + multiplier * atr[i], (data[i][0] + data[i][2]) / 2 - multiplier * atr[i]]);
+  }
+  return trend;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   random: { range, pick, float, prng },
@@ -1088,5 +1094,5 @@ module.exports = {
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
-  macd_bars, fibbands
+  macd_bars, fibbands, supertrend
 }
