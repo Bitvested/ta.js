@@ -1082,7 +1082,6 @@ async function supertrend(data, length=20, multiplier=3) { // [high, close low]
   }
   return trend;
 }
-
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   random: { range, pick, float, prng },
