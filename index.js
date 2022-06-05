@@ -1082,6 +1082,17 @@ async function supertrend(data, length=20, multiplier=3) { // [high, close low]
   }
   return trend;
 }
+async function cwma(data, weights) {
+  for(var i = weights.length, ma = []; i <= data.length; i++) {
+    var pl = data.slice(i-weights.length,i), sum = 0, weight = 0;
+    for(var q = 0; q < weights.length; q++) {
+      sum += pl[q] * weights[q];
+      weight += weights[q];
+    }
+    ma.push(sum / weight);
+  }
+  return ma;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   random: { range, pick, float, prng },
@@ -1094,5 +1105,5 @@ module.exports = {
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
-  macd_bars, fibbands, supertrend
+  macd_bars, fibbands, supertrend, cwma
 }
