@@ -1076,7 +1076,7 @@ async function fibbands(data, length=20, deviations=3) {
   }
   return boll;
 }
-async function supertrend(data, length=20, multiplier=3) { // [high, close low]
+async function supertrend(data, length=20, multiplier=3) {
   for(var i = length-1, atr = await module.exports.atr(data, length), trend = []; i < data.length; i++) {
     trend.push([data[i][0] + data[i][2] / 2 + multiplier * atr[i], (data[i][0] + data[i][2]) / 2 - multiplier * atr[i]]);
   }
