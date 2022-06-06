@@ -460,7 +460,7 @@ async function variance(data, length=data.length) {
   return va;
 }
 async function std(data, length=data.length) {
-  var mean = data.reduce((a, b) => Number(a) + Number(b)) / length;
+  var mean = data.reduce((a, b) => a + b) / length;
   return Math.sqrt(data.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / length);
 }
 async function normsinv(p) {
@@ -628,7 +628,7 @@ async function mom_osc(data, length=10) {
   return osc;
 }
 async function ha(data) {
-  var ha = [[(Number(data[0][0]) + Number(data[0][3])) / 2, Number(data[0][1]), Number(data[0][2]), (Number(data[0][0]) + Number(data[0][1]) + Number(data[0][2]) + Number(data[0][3])) / 4]];
+  var ha = [[(data[0][0] + data[0][3]) / 2, data[0][1], data[0][2], (data[0][0] + data[0][1] + data[0][2] + data[0][3]) / 4]];
   for(var i = 1; i < data.length; i++) {
     ha.push([(ha[ha.length - 1][0] + ha[ha.length - 1][3]) / 2, Math.max(ha[ha.length - 1][0], ha[ha.length - 1][3], data[i][1]), Math.min(ha[ha.length - 1][0], ha[ha.length - 1][3], data[i][2]), (data[i][0] + data[i][1] + data[i][2] + data[i][3]) / 4]);
   }
