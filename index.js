@@ -106,6 +106,28 @@ async function kelly(data) {
       winr = await module.exports.winratio(data);
   return winr - (1-winr) / exp;
 }
+async function martingale(data, bet, max, multiplier=2) {
+  var current = bet;
+  for(let i in data) {
+    if(data[i] < 0) {
+      current *= multiplier;
+    } else {
+      current = bet;
+    }
+  }
+  return current;
+}
+async function antimartingale(data, bet, max, multliplier=2) {
+  var current = bet;
+  for(let i in data) {
+    if(data[i] > 0) {
+      current *= multiplier;
+    } else {
+      current = bet;
+    }
+  }
+  return current;
+}
 async function winratio(data) {
   var wins = 0, losses = 0;
   for(let i in data) (data[i] >= 0) ? wins++ : losses++;
@@ -1107,5 +1129,6 @@ module.exports = {
   resistance, ac, fib, alligator, gator, standardize, er, winratio,
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
-  macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations
+  macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations, martingale,
+  antimartingale
 }
