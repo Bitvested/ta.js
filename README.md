@@ -24,7 +24,7 @@ const ta = require('ta.js');
 ```
 
 ## Examples
-https://github.com/Bitvested/ta.js/EXAMPLES.md
+https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md
 (NPM can't load the full file)
 
 ## Contributing
