@@ -119,7 +119,6 @@ const ta = require('ta.js');
 - [Standardize](#standard)
 - [Z-Score](#zscore)
 - [K-means Clustering](#kmeans)
-- [Fibonacci Sequence](#fibnumbers)
 #### Random functions
 - [Pseudo Random Number Generator](#prng)
 - [Pick Random](#pick)
