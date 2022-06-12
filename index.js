@@ -104,6 +104,7 @@ async function ar(data, len=data.length) {
 async function kelly(data) {
   var exp = await module.exports.er(data) + 1,
       winr = await module.exports.winratio(data);
+  if(isNaN(exp)) exp = 1;
   return winr - (1-winr) / exp;
 }
 async function martingale(data, bet, max, multiplier=2) {
