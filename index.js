@@ -843,8 +843,8 @@ async function halftrend(data, atrlen, amplitude, deviation) {
     let dev = deviation * atr2,
         highprice = Math.max.apply(null, pl.slice(pl.length-1, pl.length).map(x=>x[0])),
         lowprice = Math.min.apply(null, pl.slice(pl.length-1, pl.length).map(x=>x[2])),
-        highma = await module.exports.sma(pl.slice(pl.length-amplitude,pl.length).map(x=>x[0]), amplitude),
-        lowma = await module.exports.sma(pl.slice(pl.length-amplitude,pl.length).map(x=>x[2]), amplitude);
+        highma = await module.exports.sma(pl.slice(pl.length-amplitude,amplitude).map(x=>x[0]), amplitude),
+        lowma = await module.exports.sma(pl.slice(pl.length-amplitude,amplitude).map(x=>x[2]), amplitude);
     if(nexttrend[nexttrend.length-1] == 1) {
       maxlow = Math.max(lowprice, maxlow);
       if(highma[0] < maxlow && pl[pl.length-1][1] < pl[pl.length-2][2]) {
