@@ -112,7 +112,7 @@ async function martingale(data, bet, max, multiplier=2) {
   for(let i in data) {
     if(data[i] < 0) {
       current *= multiplier;
-    } else {
+    } else if(data[i] < 0) {
       current = bet;
     }
   }
@@ -123,7 +123,7 @@ async function antimartingale(data, bet, max, multiplier=2) {
   for(let i in data) {
     if(data[i] > 0) {
       current *= multiplier;
-    } else {
+    } else if(data[i] < 0) {
       current = bet;
     }
   }
