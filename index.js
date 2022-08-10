@@ -1118,6 +1118,10 @@ async function cwma(data, weights) {
 }
 const fibnumbers = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181];
 const permutations = async(data) => data.reduce((a,b) => a * b);
+async function mse(data1, data2) {
+  for(var i = 0, err = 0; i < data1.length; i++) err += Math.pow((data2[i] - data1[i]), 2);
+  return err / data1.length;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
   random: { range, pick, float, prng },
@@ -1131,5 +1135,5 @@ module.exports = {
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
   macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations, martingale,
-  antimartingale
+  antimartingale, mse
 }
