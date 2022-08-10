@@ -1123,7 +1123,7 @@ async function mse(data1, data2) {
   return err / data1.length;
 }
 module.exports = {
-  aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc,},
+  aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, prng },
   rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
