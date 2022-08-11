@@ -112,7 +112,7 @@ async function martingale(data, bet, max, multiplier=2) {
   for(let i in data) {
     if(data[i] < 0) {
       current *= multiplier;
-    } else if(data[i] < 0) {
+    } else if(data[i] > 0) {
       current = bet;
     }
   }
