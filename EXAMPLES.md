@@ -31,6 +31,7 @@ const ta = require('ta.js');
 - [Hull Moving Average](#hull)
 - [Least Squares Moving Average](#lsma)
 - [Volume Weighted Moving Average](#vwma)
+- [Volume Weighted Weighted Moving Average](#vwwma)
 - [Wilder's Smoothing Moving Average](#wsma)
 - [Parabolic Weighted Moving Average](#pwma)
 - [Hyperbolic Weighted Moving Average](#hwma)
@@ -119,6 +120,8 @@ const ta = require('ta.js');
 - [Standardize](#standard)
 - [Z-Score](#zscore)
 - [K-means Clustering](#kmeans)
+- [Mean Squared Error](#mse)
+- [Cumulative](#cum)
 #### Random functions
 - [Pseudo Random Number Generator](#prng)
 - [Pick Random](#pick)
@@ -188,6 +191,14 @@ var length = 4; // default = 20
 await ta.vwma(data, length);
 // output (array)
 // [1.185, 1.259]
+```
+#### <a id="vwwma"></a>Volume Weighted Weighted Moving Average
+```javascript
+var data = [[1,59],[1.1,82],[1.21,27],[1.42,73],[1.32,42]]; // [price, volume]
+var length = 4;
+await ta.vwwma(data, length);
+// output (array)
+// [1.262, 1.316]
 ```
 #### <a id="wsma"></a>Wilder's Smoothing Moving Average
 ```javascript
@@ -944,6 +955,22 @@ var length = 4;
 await ta.kmeans(data, length);
 // output (array)
 // [[ 4, 5, 5, 4 ], [ 7, 6, 6, 6 ], [ 8, 8 ], [ 2, 3, 3, 2 ]]
+```
+#### <a id="mse"></a>Mean Squared Error
+```javascript
+var data1 = [7,8,7,8,6,9];
+var data2 = [6,8,8,9,6,8];
+await ta.mse(data1, data2);
+// output (float)
+// 0.6666666666666666
+```
+#### <a id="cum"></a>Cumulative
+```javascript
+var data = [3,5,7,5,10];
+var length = 4;
+await ta.cum(data, length);
+// output (array)
+// [20, 27]
 ```
 ### Random Functions
 #### <a id="prng"></a>Pseudo Random Number Generator
