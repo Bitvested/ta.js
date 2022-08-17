@@ -69,6 +69,7 @@ const ta = require('ta.js');
 - [ZigZag](#zigzag)
 - [Parabolic SAR](#psar)
 - [SuperTrend](#supertrend)
+- [Elder Ray Index](#elderray)
 #### Oscillators
 - [Alligator Oscillator](#gator)
 - [Chande Momentum Oscillator](#mom_osc)
@@ -544,6 +545,15 @@ await ta.supertrend(data, length, multiplier);
 // output (array)
 // [[5.56,1.44],[3.37,0.63]]
 // [up, down]
+```
+#### <a id="elderray"></a>Elder Ray Index
+```javascript
+var data = [6,5,4,7,8,9,6,8];
+var length = 7;
+await ta.elderray(data, length);
+// output (array)
+// [[2.57,-2.43],[2.29,-2.71]]
+// [bull, bear]
 ```
 ### Oscillators
 #### <a id="gator"></a>Alligator Oscillator

@@ -1142,6 +1142,16 @@ async function vwwma(data, length=20) {
   }
   return vwma;
 }
+async function elderray(data, length=13) {
+  for(var i = length, eld = []; i <= data.length; i++) {
+    var pl = data.slice(i-length,i),
+        low = Math.min.apply(undefined, pl),
+        high = Math.max.apply(undefined, pl),
+        em = await module.exports.ema(pl, pl.length);
+    eld.push([high-em[0],low-em[0]]);
+  }
+  return eld;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, prng },
@@ -1155,5 +1165,5 @@ module.exports = {
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
   macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations, martingale,
-  antimartingale, mse, cum, vwwma
+  antimartingale, mse, cum, vwwma, elderray
 }
