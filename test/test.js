@@ -4,7 +4,7 @@ for(let x in ta) {
     ta['zigzag'].apply(null, parameters[x].in).then((res) => { try { assert.deepEqual(res, parameters[x].out); } catch(e) { console.error('Test failed @ ' + x + '\n'); } });
     continue
   }
-  if(x == 'sim' || x == 'multi' || x == 'random' || x == 'fibnumbers') continue;
+  if(x == 'sim' || x == 'multi' || x == 'random' || x == 'fibnumbers' || x == 't_table') continue;
   if(x == 'support') {
     ta[x].apply(null, parameters[x].in).then((res) => { try { res.calculate(9).then((res) => { try { assert.deepEqual(res, parameters[x].out); } catch(e) { console.error("Test failed @ " + x + "\n"); } }); } catch(e) { console.error("Test failed @ " + x + "\n"); } });
     continue

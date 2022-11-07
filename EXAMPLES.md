@@ -121,6 +121,7 @@ const ta = require('ta.js');
 - [Normalize From](#normf)
 - [Standardize](#standard)
 - [Z-Score](#zscore)
+- [P-Value](#pvalue)
 - [K-means Clustering](#kmeans)
 - [Mean Squared Error](#mse)
 - [Cumulative](#cum)
@@ -966,6 +967,14 @@ var length = 5;
 await ta.zscore(data, length);
 // output (array)
 // [1.266, -1.331, 0.408]
+```
+#### <a id="pvalue"></a>P-Value
+```javascript
+var t_stat = 2;
+var df = 4;
+await ta.pvalue(t_stat, df);
+// output (float)
+// 0.075
 ```
 #### <a id="kmeans"></a>K-means Clustering
 ```javascript
