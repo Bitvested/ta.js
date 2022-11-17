@@ -1175,6 +1175,8 @@ const t_table = [
   {value:.0005,"1":636.62,"2":31.599,"3":12.924,"4":8.61,"5":6.869,"6":5.959,"7":5.408,"8":5.041,"9":4.781,"10":4.587,"11":4.437,"12":4.318,"13":4.221,"14":4.14,"15":4.073,"16":4.015,"17":3.965,"18":3.922,"19":3.883,"20":3.85,"21":3.819,"22":3.792,"23":3.768,"24":3.745,"25":3.725}
 ]
 async function pvalue(t, df) {
+  if(df > 25) throw new Error('ta.js | pvalue | df too high!')
+  if(df < 1) throw new Error('ta.js | pvalue | df too low!')
   for(var x = 0; x < t_table.length-1; x++) {
     if(t >= t_table[x][Number(df).toString()] && t <= t_table[Number(x)+1][Number(df).toString()]) {
       return Math.round((t_table[x].value + t_table[Number(x)+1].value) / 2 * 1e5) / 1e5;
