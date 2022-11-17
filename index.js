@@ -29,7 +29,7 @@ async function kmeans(data, clusters) {
     old = centers;
     for(var x = 0; x < clusters; x++) {
       var sm = 0;
-      for(y = 0; y < means[x].length; y++) sm += means[x][y];
+      for(var y = 0; y < means[x].length; y++) sm += means[x][y];
       var m = sm / means[n].length;
       centers[x] = m;
     }
@@ -73,7 +73,7 @@ async function aad(data, length=data.length) {
   for(var i = length, med = []; i <= data.length; i++) {
     var tmp = data.slice(i-length, i), sm = 0,
         m = await module.exports.sma(tmp, length);
-    for(q in tmp) sm += Math.abs(tmp[q] - m[m.length-1]);
+    for(var q in tmp) sm += Math.abs(tmp[q] - m[m.length-1]);
     med.push(sm/length);
   }
   return med;
@@ -81,17 +81,17 @@ async function aad(data, length=data.length) {
 async function ssd(data, length=data.length) {
   for(var i = length, sd = []; i <= data.length; i++) {
     var tmp = data.slice(i-length,i), mean = await module.exports.sma(tmp, length), sm = 0;
-    for(let x in tmp) sm += (tmp[x] - mean[mean.length-1]) ** 2;
+    for(var x in tmp) sm += (tmp[x] - mean[mean.length-1]) ** 2;
     sd.push(Math.sqrt(sm));
   }
   return sd;
 }
 async function er(data) {
   var wins = [], losses = [], wp = 1, lp = 1;
-  for(let i in data) (data[i] >= 0) ? wins.push(1+data[i]) : losses.push(1+data[i]);
+  for(var i in data) (data[i] >= 0) ? wins.push(1+data[i]) : losses.push(1+data[i]);
   var win = (wins.length / data.length), loss = (losses.length / data.length);
-  for(let i in losses) lp *= losses[i];
-  for(let i in wins) wp *= wins[i];
+  for(var i in losses) lp *= losses[i];
+  for(var i in wins) wp *= wins[i];
   return (((wp**(1/wins.length)-1)*100) * win + ((lp**(1/losses.length)-1)*100) * loss) / 100;
 }
 async function ar(data, len=data.length) {
@@ -109,7 +109,7 @@ async function kelly(data) {
 }
 async function martingale(data, bet, max, multiplier=2) {
   var current = bet;
-  for(let i in data) {
+  for(var i in data) {
     if(data[i] < 0) {
       current *= multiplier;
     } else if(data[i] > 0) {
@@ -120,7 +120,7 @@ async function martingale(data, bet, max, multiplier=2) {
 }
 async function antimartingale(data, bet, max, multiplier=2) {
   var current = bet;
-  for(let i in data) {
+  for(var i in data) {
     if(data[i] > 0) {
       current *= multiplier;
     } else if(data[i] < 0) {
@@ -131,7 +131,7 @@ async function antimartingale(data, bet, max, multiplier=2) {
 }
 async function winratio(data) {
   var wins = 0, losses = 0;
-  for(let i in data) (data[i] >= 0) ? wins++ : losses++;
+  for(var i in data) (data[i] >= 0) ? wins++ : losses++;
   return wins / (losses + wins);
 }
 async function avgwin(data) {
@@ -168,7 +168,7 @@ async function rsi(data, length=14) {
 async function wrsi(data, length=14) {
   for(var i = 1, arrsi = [], u = [], d = []; i < data.length; i++) if(data[i]-data[i-1]<0) {d.push(Math.abs(data[i]-data[i-1])),u.push(0);}else{d.push(0),u.push(data[i]-data[i-1]);}
   d = await module.exports.wsma(d, length), u = await module.exports.wsma(u, length);
-  for(let i in d) arrsi.push(100-100/(1+(u[i]/d[i])));
+  for(var i in d) arrsi.push(100-100/(1+(u[i]/d[i])));
   return arrsi;
 }
 async function tsi(data, long=25, short=13, signal=13) {
@@ -227,7 +227,7 @@ async function ao(data, length1=5, length2=35) {
 async function ac(data, len1=5, len2=35) {
   var a = await ao(data, len1, len2), sm = await sma(a, len1), acr = [];
   if(a.length > sm.length) {a.splice(0, a.length-sm.length)} else {sm.splice(0,sm.length-a.length)}
-  for(let i in a) acr.push(a[i]-sm[i]);
+  for(var i in a) acr.push(a[i]-sm[i]);
   return acr;
 }
 const fib = async(start, end) => [start, (end-start)*.236+start, (end-start)*.382+start, (end-start)*.5+start, (end-start)*.618+start, (end-start)*.786+start, end, (end-start)*1.618+start, (end-start)*2.618+start, (end-start)*3.618+start, (end-start)*4.236+start];
@@ -251,7 +251,7 @@ async function lsma(data, length=25) {
 async function don(data, length=20) {
   for(var i = length, channel = []; i <= data.length; i++) {
     var pl = data.slice(i-length,i), highs = [], lows = [];
-    for(let h in pl) highs.push(pl[h][0]), lows.push(pl[h][1]);
+    for(var h in pl) highs.push(pl[h][0]), lows.push(pl[h][1]);
     var max = Math.max.apply(null, highs.slice()), min = Math.min.apply(null, lows.slice());
     channel.push([max, (max + min) / 2, min]);
   }
@@ -262,7 +262,7 @@ async function ichimoku(data, length1=9, length2=26, length3=52, length4=26) {
     pl.push(data[i]);
     if(pl.length >= length3) {
       var highs = [], lows = [];
-      for(let a in pl) highs.push(pl[a][0]), lows.push(pl[a][2]);
+      for(var a in pl) highs.push(pl[a][0]), lows.push(pl[a][2]);
       var tsen = (Math.max.apply(null, highs.slice((highs.length - length1), highs.length)) + Math.min.apply(null, lows.slice((lows.length - length1), lows.length))) / 2,
           ksen = (Math.max.apply(null, highs.slice((highs.length - length2), highs.length)) + Math.min.apply(null, lows.slice((lows.length - length2), lows.length))) / 2,
           senka = data[i][1] + ksen,
@@ -310,7 +310,7 @@ async function atr(data, length=14) {
 }
 async function sma(data, length=14) {
   for(var i = length, sma = []; i <= data.length; i++) {
-    let avg = await module.exports.sum(data.slice(i-length,i));
+    var avg = await module.exports.sum(data.slice(i-length,i));
     sma.push(avg / length);
   }
   return sma;
@@ -318,7 +318,7 @@ async function sma(data, length=14) {
 async function smma(data, length=14) {
   for(var i = length, smma = []; i <= data.length; i++) {
     var pl = data.slice(i-length,i), average = 0;
-    for(q in pl) average += pl[q];
+    for(var q in pl) average += pl[q];
     if(smma.length <= 0) { smma.push(average / length); } else { smma.push((average - smma[smma.length - 1]) / length); }
   }
   smma.splice(0, 1);
@@ -328,7 +328,7 @@ async function wma(data, length=14) {
   for(var i = 1, weight = 0, wma = []; i <= length; i++) weight += i;
   for(var i = length; i <= data.length; i++) {
     var pl = data.slice(i-length,i), average = 0;
-    for(q in pl) average += pl[q] * (Number(q)+1) / weight;
+    for(var q in pl) average += pl[q] * (Number(q)+1) / weight;
     wma.push(average);
   }
   return wma;
@@ -340,7 +340,7 @@ async function wsma(data, length=14) {
       continue;
     }
     var pl = data.slice(i-length,i),average=0;
-    for(q in pl) average += pl[q];
+    for(var q in pl) average += pl[q];
     wsm.push(average/length);
   }
   return wsm;
@@ -401,7 +401,7 @@ async function ema(data, length=12) {
       continue;
     }
     var pl = data.slice(i-length,i), average = 0;
-    for(q in pl) average += pl[q];
+    for(var q in pl) average += pl[q];
     ema.push(average / length);
   }
   return ema;
@@ -410,7 +410,7 @@ async function hull(data, length=14) {
   var pl = [], hma = [], ewma = await module.exports.wma(data, length), sqn = Math.round(Math.sqrt(length)),
       first = await wma(data, Math.round(length / 2));
   first.splice(0, first.length - ewma.length);
-  for(let i in ewma) {
+  for(var i in ewma) {
     pl.push((first[i] * 2) - ewma[i]);
     if(pl.length >= sqn) {
       var h = await wma(pl, sqn);
@@ -437,7 +437,7 @@ async function macd(data, length1=12, length2=26) {
   return macd;
 }
 async function macd_signal(data, length1=12, length2=26, lengthsig=9) {
-  let ma = await module.exports.macd(data, length1, length2),
+  var ma = await module.exports.macd(data, length1, length2),
       mas = await module.exports.ema(ma, lengthsig);
   return mas;
 }
@@ -445,7 +445,7 @@ async function macd_bars(data, length1=12, length2=26, lengthsig=9) {
   var ma = await module.exports.macd(data, length1, length2),
       mas = await module.exports.ema(ma, lengthsig), ret = [];
   ma.splice(0,ma.length-mas.length);
-  for(let i in ma) ret.push(ma[i]-mas[i]);
+  for(var i in ma) ret.push(ma[i]-mas[i]);
   return ret;
 }
 async function bands(data, length=14, deviations=1) {
@@ -468,7 +468,7 @@ async function bandwidth(data, length=14, deviations=1) {
 }
 async function keltner(data, length=14, devi=1) {
   var closing = [], atr = await module.exports.atr(data, length), kma, kelt = [];
-  for(let i in data) closing.push((data[i][0] + data[i][1] + data[i][2]) / 3);
+  for(var i in data) closing.push((data[i][0] + data[i][1] + data[i][2]) / 3);
   kma = await module.exports.sma(closing, length);
   atr.splice(0, length - 1);
   for(var i = 0; i < kma.length; i++) kelt.push([kma[i] + atr[i] * devi, kma[i], kma[i] - atr[i] * devi]);
@@ -477,7 +477,7 @@ async function keltner(data, length=14, devi=1) {
 async function variance(data, length=data.length) {
   for(var i = length, va = []; i <= data.length; i++) {
     var tmp = data.slice(i - length, i), mean = await module.exports.sma(tmp, length), sm = 0;
-    for(x in tmp) sm += ((tmp[x] - mean[mean.length-1]) ** 2);
+    for(var x in tmp) sm += ((tmp[x] - mean[mean.length-1]) ** 2);
     va.push(sm/length);
   }
   return va;
@@ -582,7 +582,7 @@ async function aroon_osc(data, length=25) {
 }
 async function mfi(data, length=14) {
   for(var i = length, mfi = [], n = data.map(x => x[1]), p = data.map(x => x[0]), pos = 0, neg = 0; i <= data.length; i++, pos = 0, neg = 0) {
-    for(q = i-length; q < i; q++) pos += p[q], neg += n[q];
+    for(var q = i-length; q < i; q++) pos += p[q], neg += n[q];
     mfi.push((100 - 100 / (1 + pos / neg)));
   }
   return mfi;
@@ -802,7 +802,7 @@ async function resistance(d, hl) {
 }
 async function fisher(data, len) {
   var out = [], fish = 0, v1 = 0;
-  for(let i = len; i <= data.length; i++) {
+  for(var i = len; i <= data.length; i++) {
     var pl = data.slice(i-len,i), pf = fish,
         mn = Math.min.apply(null, pl),
         v1 = .33*2*((data[i-1]-mn)/(Math.max.apply(null, pl)-mn)-.5)+.67*v1;
@@ -834,14 +834,14 @@ async function se(data, size) {
   return stdv / (size ** 0.5);
 }
 async function halftrend(data, atrlen, amplitude, deviation) {
-  let out = [], nexttrend = [0], trend = [0], up = [0], down = [0], direction = undefined;
-  for(let i = atrlen; i <= data.length; i++) {
-    let pl = data.slice(i-atrlen,i);
+  var out = [], nexttrend = [0], trend = [0], up = [0], down = [0], direction = undefined;
+  for(var i = atrlen; i <= data.length; i++) {
+    var pl = data.slice(i-atrlen,i);
         maxlow = pl[pl.length-2][2],
         minhigh = pl[pl.length-2][0],
         atr2 = await module.exports.atr(pl, atrlen);
         atr2 = atr2[atr2.length-1] / 2;
-    let dev = deviation * atr2,
+    var dev = deviation * atr2,
         highprice = Math.max.apply(null, pl.slice(pl.length-1, pl.length).map(x=>x[0])),
         lowprice = Math.min.apply(null, pl.slice(pl.length-1, pl.length).map(x=>x[2])),
         highma = await module.exports.sma(pl.slice(pl.length-amplitude,amplitude).map(x=>x[0]), amplitude),
@@ -886,13 +886,13 @@ async function halftrend(data, atrlen, amplitude, deviation) {
 }
 const sum = async(data) => data.reduce((a,b) => a+b);
 async function covariance(data1, data2, length) {
-  let out = [], x_mean = await module.exports.sma(data1, data1.length),
+  var out = [], x_mean = await module.exports.sma(data1, data1.length),
       y_mean = await module.exports.sma(data2, data2.length);
-  for(let z = length; z <= data1.length; z++) {
-    let x = data1.slice(z-length,z), y = data2.slice(z-length,z),
+  for(var z = length; z <= data1.length; z++) {
+    var x = data1.slice(z-length,z), y = data2.slice(z-length,z),
         x_mean = await module.exports.sma(x, length), res = [],
         y_mean = await module.exports.sma(y, length);
-    for(let i = 0; i < length; i++) {
+    for(var i = 0; i < length; i++) {
       res.push((x[i]-x_mean[0])*(y[i]-y_mean[0]));
     }
     res = await module.exports.sum(res);
@@ -926,16 +926,16 @@ async function ncdf(x, mean, std) {
   return (x > 0) ? 1-p : p;
 }
 async function zigzag(data, perc=0.05) {
-  let indexes = [], min = Infinity, max = -Infinity, lmin = false, lmax = false, final = [];
+  var indexes = [], min = Infinity, max = -Infinity, lmin = false, lmax = false, final = [];
   if(Array.isArray(data[0])) {
-    for(let i = 0; i < data.length; i++) {
+    for(var i = 0; i < data.length; i++) {
       if(lmin) {
         if(indexes[indexes.length-1].value >= data[i][1]) {
           indexes[indexes.length-1].value = data[i][1];
           indexes[indexes.length-1].index = i;
         }
         if(min >= data[i][1]) min = data[i][1];
-        let hdif = (data[i][0]-min)/min;
+        var hdif = (data[i][0]-min)/min;
         if(hdif > perc) {
           indexes.push({index: i, value: data[i][0]});
           lmax = true;
@@ -948,7 +948,7 @@ async function zigzag(data, perc=0.05) {
           indexes[indexes.length-1].index = i;
         }
         if(max <= data[i][1]) max = data[i][1];
-        let ldif = (max-data[i][1])/data[i][1];
+        var ldif = (max-data[i][1])/data[i][1];
         if(ldif > perc) {
           indexes.push({index: i, value: data[i][1]});
           lmin = true;
@@ -958,7 +958,7 @@ async function zigzag(data, perc=0.05) {
       } else {
         if(min >= data[i][1]) min = data[i][1];
         if(max <= data[i][0]) max = data[i][0];
-        let hdif = (data[i][0]-min)/min,
+        var hdif = (data[i][0]-min)/min,
             ldif = (max-data[i][1])/max;
         if(ldif > perc && hdif < perc) {
           lmin = true;
@@ -982,14 +982,14 @@ async function zigzag(data, perc=0.05) {
       }
     }
   } else {
-    for(let i = 0; i < data.length; i++) {
+    for(var i = 0; i < data.length; i++) {
       if(lmin) {
         if(indexes[indexes.length-1].value >= data[i]) {
           indexes[indexes.length-1].value = data[i];
           indexes[indexes.length-1].index = i;
         }
         if(min >= data[i]) min = data[i];
-        let hdif = (data[i]-min)/min;
+        var hdif = (data[i]-min)/min;
         if(hdif > perc) {
           indexes.push({index: i, value: data[i]});
           lmax = true;
@@ -1002,7 +1002,7 @@ async function zigzag(data, perc=0.05) {
           indexes[indexes.length-1].index = i;
         }
         if(max <= data[i]) max = data[i];
-        let ldif = (max-data[i])/data[i];
+        var ldif = (max-data[i])/data[i];
         if(ldif > perc) {
           indexes.push({index: i, value: data[i]});
           lmin = true;
@@ -1012,7 +1012,7 @@ async function zigzag(data, perc=0.05) {
       } else {
         if(min >= data[i]) min = data[i];
         if(max <= data[i]) max = data[i];
-        let hdif = (data[i]-min)/min,
+        var hdif = (data[i]-min)/min,
             ldif = (max-data[i])/max;
         if(ldif > perc && hdif < perc) {
           lmin = true;
@@ -1037,17 +1037,17 @@ async function zigzag(data, perc=0.05) {
     }
   }
   final = [indexes[0].value]
-  for(let i = 1; i < indexes.length; i++) {
-    let len = indexes[i].index - indexes[i-1].index,
+  for(var i = 1; i < indexes.length; i++) {
+    var len = indexes[i].index - indexes[i-1].index,
         delta = (indexes[i].value - indexes[i-1].value) / len;
-    for(let x = 1; x <= len; x++) final.push(x*delta+indexes[i-1].value);
+    for(var x = 1; x <= len; x++) final.push(x*delta+indexes[i-1].value);
   }
   return final;
 }
 async function psar(data, step=0.02, max=0.2) {
-  let furthest = data[0], up = true, accel = step, prev = data[0],
+  var furthest = data[0], up = true, accel = step, prev = data[0],
       sar = data[0][1], extreme = data[0][0], final = [sar];
-  for(let i = 1; i < data.length; i++) {
+  for(var i = 1; i < data.length; i++) {
     sar = sar + accel * (extreme - sar);
     if(up) {
       sar = Math.min(sar, furthest[1], prev[1]);
@@ -1084,7 +1084,7 @@ async function fibbands(data, length=20, deviations=3) {
     }
   }
   for(var i = 0, boll = []; i < vwma.length; i++) {
-    let upper1 = vwma[i] + 0.236 * deviation[i],
+    var upper1 = vwma[i] + 0.236 * deviation[i],
         upper2 = vwma[i] + 0.382 * deviation[i],
         upper3 = vwma[i] + 0.5 * deviation[i],
         upper4 = vwma[i] + 0.618 * deviation[i],
@@ -1135,7 +1135,7 @@ async function vwwma(data, length=20) {
   for(var i = length, vwma = []; i <= data.length; i++) {
     var pl = data.slice(i-length,i);
     var totalv = 0, totalp = 0;
-    for(q in pl) {
+    for(var q in pl) {
       totalv += pl[q][1] * (Number(q)+1) / weight;
       totalp += pl[q][0] * (Number(q)+1) / weight;
     }
