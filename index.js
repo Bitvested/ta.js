@@ -1179,10 +1179,10 @@ async function pvalue(t, df) {
   if(df < 1) throw new Error('ta.js | pvalue | df too low!')
   for(var x = 0; x < t_table.length-1; x++) {
     if(t >= t_table[x][Number(df).toString()] && t <= t_table[Number(x)+1][Number(df).toString()]) {
-      return Math.round((t_table[x].value + t_table[Number(x)+1].value) / 2 * 1e5) / 1e5;
+      return t_table[x+1].value + (t_table[Number(x)+1].value - t_table[x].value) * (t_table[x+1][Number(df).toString()] - t) / (t_table[x][Number(df).toString()] - t_table[x+1][Number(df).toString()]);
     }
   }
-  return 0.0005;
+  return 0.0001;
 }
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
