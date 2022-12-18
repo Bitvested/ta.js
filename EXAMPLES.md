@@ -71,6 +71,8 @@ const ta = require('ta.js');
 - [SuperTrend](#supertrend)
 - [Elder Ray Index](#elderray)
 - [Historical Volatility](#hv)
+- [Relative Vigor Index](#rvi)
+- [Relative Vigor Index Signal](#rvi_signal)
 #### Oscillators
 - [Alligator Oscillator](#gator)
 - [Chande Momentum Oscillator](#mom_osc)
@@ -564,6 +566,22 @@ var length = 8;
 await ta.hv(data, length);
 // output (array)
 // [0.642, 0.682]
+```
+#### <a id="rvi"></a>Relative Vigor Index
+```javascript
+// data = [[open,high,low,close]] (requires at least 4 + length values)
+var data = [[4,6,3,3], [3,5,2,2], [2,5,2,4], [4,6,4,5], [5,7,4,4], [4,6,3,4], [4,7,3,5], [5,7,5,6], [6,8,6,6], [6,9,5,6], [6,8,6,7], [7,9,5,6],[6,7,4,5],[5,6,5,6],[6,8,5,5],[5,7,2,6]];
+var length = 8;
+await ta.rvi(data, length);
+// output (array)
+// [0.29,0.21,0.15,0.16,0.09,0.05]
+```
+#### <a id="rvi_signal"></a>Relative Vigor Index Signal
+```javascript
+var rvi = [0.29,0.21,0.15,0.16,0.09,0.05]; // requires at least 4 values
+await ta.rvi_signal(rvi);
+// output (array)
+// [0.20,0.15,0.12]
 ```
 ### Oscillators
 #### <a id="gator"></a>Alligator Oscillator

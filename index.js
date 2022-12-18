@@ -1184,6 +1184,25 @@ async function pvalue(t, df) {
   }
   return 0.0001;
 }
+async function rvi(data, len=20) {
+  for(var i = 3, num = [], dnom = [], rv = []; i < data.length; i++) {
+    num.push((data[i][3]-data[i][0]+2*(data[i][3]-data[i-1][0])+2*(data[i][3]-data[i-2][0])+(data[i][3]-data[i-3][0]))/6);
+    dnom.push((data[i][1]-data[i][2]+2*(data[i][1]-data[i-1][2])+2*(data[i][1]-data[i-2][2])+(data[i][1]-data[i-3][2]))/6);
+    if(num.length >= len) {
+      var sn = await module.exports.sma(num, len),
+          dn = await module.exports.sma(dnom, len);
+      rv.push(sn[0]/dn[0]);
+      num.splice(0,1);dnom.splice(0,1);
+    }
+  }
+  return rv;
+}
+async function rvi_signal(rv) {
+  for(var i = 3, sig = []; i < rv.length; i++) {
+    sig.push((rv[i]+2*rv[i-1]+2*rv[i-2]+rv[i-3])/6);
+  }
+  return sig;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, prng },
@@ -1197,5 +1216,5 @@ module.exports = {
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
   macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations, martingale,
-  antimartingale, mse, cum, vwwma, elderray, hv, pvalue
+  antimartingale, mse, cum, vwwma, elderray, hv, pvalue, rvi, rvi_signal
 }
