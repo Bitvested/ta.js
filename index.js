@@ -903,6 +903,15 @@ async function covariance(data1, data2, length) {
 const range = (min, max, rng) => Math.floor((rng) ? rng()*(Math.floor(max)-Math.ceil(min))+Math.ceil(min) : Math.random()*(Math.floor(max)-Math.ceil(min))+Math.ceil(min));
 const pick = (data, rng) => data[Math.floor((rng) ? rng()*(Math.floor(data.length)) : Math.random()*(Math.floor(data.length)))];
 const float = (min, max, rng) => (rng) ? rng()*(max-min)+min : Math.random()*(max-min)+min;
+function order(data, rng) {
+  var ret = []; data = data.slice();
+  do {
+    let index = Math.floor((rng) ? rng()*(Math.floor(data.length)) : Math.random()*(Math.floor(data.length)));
+    ret.push(data[index]);
+    data.splice(index, 1);
+  } while(data.length > 0);
+  return ret;
+}
 function prng(seed) {
   for(var i = 0, h = 1779033703 ^ seed.length; i < seed.length; i++) {
     h = Math.imul(h ^ seed.charCodeAt(i), 3432918353);
@@ -1205,7 +1214,7 @@ async function rvi_signal(rv) {
 }
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
-  random: { range, pick, float, prng },
+  random: { range, pick, float, order, prng },
   rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
   ema, macd, lsma, don, ichimoku, bands, bandwidth, median, keltner,
   std, cor, dif, hull, mfi, roc, kst, obv, vwap, mom, mom_osc, ha, ren,
