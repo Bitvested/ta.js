@@ -132,6 +132,7 @@ const ta = require('ta.js');
 - [Pick Random](#pick)
 - [Random Range](#range)
 - [Random Float](#float)
+- [Random Order](#order)
 #### Chart Types
 - [Heikin Ashi](#ha)
 - [Renko](#ren)
@@ -1052,6 +1053,14 @@ var prng = ta.random.prng('abcdefg');
 ta.random.float(min, max, prng); // default number generator = Math.random
 // output (float)
 // 2.6741029617842287
+```
+#### <a id="order"></a>Random Order
+```javascript
+var data = ['a','b','c','d','e'];
+var prng = ta.random.prng('abcdefg');
+ta.random.order(data, prng); // default number generator = Math.random
+// output (array)
+// ['e', 'c', 'b', 'd', 'a'];
 ```
 ### Chart Types
 #### <a id="ha"></a>Heikin Ashi
