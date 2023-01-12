@@ -606,7 +606,7 @@ await ta.divergence(data1, data2);
 // output (array)
 // 1 = RSI is in divergence
 // 0 = RSI is not in divergence
-// [1, 1, 0, 1, 0] (better to quantify if needed)
+// [0, 0, 1, 1, 0, 1] (better to quantify if needed)
 ```
 ### Oscillators
 #### <a id="gator"></a>Alligator Oscillator
