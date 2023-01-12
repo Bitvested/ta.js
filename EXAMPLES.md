@@ -593,6 +593,8 @@ var rsi_length = 5;
 var rsi_function = ta.wrsi; // default (the tradingview rsi indicator)
 await ta.rsi_divergence(data, rsi_length, rsi_function);
 // output (array)
+// 1 = RSI is in divergence
+// 0 = RSI is not in divergence
 // [0, 0, 1, 0, 1, 0] (better to quantify if needed)
 ```
 ### Oscillators
