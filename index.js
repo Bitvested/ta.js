@@ -1225,6 +1225,18 @@ async function rsi_divergence(data, length, rs) {
   }
   return out;
 }
+async function divergence(data1, data2) {
+  if(data1.length > data2.length) data1.splice(0,data1.length-data2.length)
+  if(data2.length > data1.length) data1.splice(0,data2.length-data1.length)
+  for(var i = 1, out = []; i < data.length; i++) {
+    if((data1[i] > data1[i-1] && data2[i] < data2[i-1]) || (data1[i] < data1[i-1] && data2[i] > data2[i-1])) {
+      out.push(1);
+    } else {
+      out.push(0);
+    }
+  }
+  return out;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, order, prng },
@@ -1239,5 +1251,5 @@ module.exports = {
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
   macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations, martingale,
   antimartingale, mse, cum, vwwma, elderray, hv, pvalue, rvi, rvi_signal,
-  rsi_divergence
+  rsi_divergence, divergence
 }
