@@ -1212,6 +1212,19 @@ async function rvi_signal(rv) {
   }
   return sig;
 }
+async function rsi_divergence(data, length, rs) {
+  if(!rs) rs = module.exports.wrsi;
+  var rd = await rs(data, length), out = [];
+  data = await module.exports.mom(data.slice(length-1, data.length), 2);
+  for(var i = 0; i < data.length; i++) {
+    if((data[i] > 0 && rd[i] < 0) || (data[i] < 0 && rd[i] > 0)) {
+      out.push(1);
+    } else {
+      out.push(0);
+    }
+  }
+  return out;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, order, prng },
@@ -1225,5 +1238,6 @@ module.exports = {
   avgwin, avgloss, fisher, cross, se, kelly, normalize_pair, normalize_from,
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
   macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations, martingale,
-  antimartingale, mse, cum, vwwma, elderray, hv, pvalue, rvi, rvi_signal
+  antimartingale, mse, cum, vwwma, elderray, hv, pvalue, rvi, rvi_signal,
+  rsi_divergence
 }
