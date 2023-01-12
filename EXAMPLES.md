@@ -73,6 +73,7 @@ const ta = require('ta.js');
 - [Historical Volatility](#hv)
 - [Relative Vigor Index](#rvi)
 - [Relative Vigor Index Signal](#rvi_signal)
+- [RSI Divergence](#rsi_divergence)
 #### Oscillators
 - [Alligator Oscillator](#gator)
 - [Chande Momentum Oscillator](#mom_osc)
@@ -583,6 +584,15 @@ var rvi = [0.29,0.21,0.15,0.16,0.09,0.05]; // requires at least 4 values
 await ta.rvi_signal(rvi);
 // output (array)
 // [0.20,0.15,0.12]
+```
+#### <a id="rsi_divergence"></a>RSI Divergence
+```javascript
+var data = [74,83,66,78,69,70,84,73,74,73,83];
+var rsi_length = 5;
+var rsi_function = ta.wrsi; // default (the tradingview rsi indicator)
+await ta.rsi_divergence(data, rsi_length, rsi_function);
+// output (array)
+// [0, 0, 1, 0, 1, 0] (better to quantify if needed)
 ```
 ### Oscillators
 #### <a id="gator"></a>Alligator Oscillator
