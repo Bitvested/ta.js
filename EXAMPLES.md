@@ -586,6 +586,7 @@ await ta.rvi_signal(rvi);
 // [0.20,0.15,0.12]
 ```
 #### <a id="rsi_divergence"></a>RSI Divergence
+Experimental function: https://github.com/Bitvested/ta.js/issues/18
 ```javascript
 var data = [74,83,66,78,69,70,84,73,74,73,83];
 var rsi_length = 5;
