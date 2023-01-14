@@ -1237,6 +1237,17 @@ async function divergence(data1, data2) {
   }
   return out;
 }
+async function times_up(data, len) {
+  var out = [];
+  for(var i = len; i < data.length; i++) {
+    var up = true;
+    for(var x = i-len+1; x < i; x++) {
+      if(data[i-1] > data[i]) up = false;
+    }
+    out.push(up);
+  }
+  return out;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, order, prng },
