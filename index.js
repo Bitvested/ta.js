@@ -1240,9 +1240,12 @@ async function divergence(data1, data2) {
 async function times_up(data, len) {
   var out = [];
   for(var i = len; i < data.length; i++) {
-    var up = true;
+    var up = 1;
     for(var x = i-len+1; x < i; x++) {
-      if(data[i-1] > data[i]) up = false;
+      if(data[i-1] > data[i]) {
+        up = 0;
+        break;
+      }
     }
     out.push(up);
   }
@@ -1251,9 +1254,12 @@ async function times_up(data, len) {
 async function times_down(data, len) {
   var out = [];
   for(var i = len; i < data.length; i++) {
-    var dn = true;
+    var dn = 1;
     for(var x = i-len+1; x < i; x++) {
-      if(data[i-1] < data[i]) dn = false;
+      if(data[i-1] < data[i]) {
+        dn = 0;
+        break;
+      }
     }
     out.push(dn);
   }
