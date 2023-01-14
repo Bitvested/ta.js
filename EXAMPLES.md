@@ -140,6 +140,8 @@ const ta = require('ta.js');
 - [Renko](#ren)
 #### Miscellaneous
 - [Fibonacci Sequence](#fibnumbers)
+- [Times Up](#times_up)
+- [Times Down](#times_dn)
 #### Experimental
 - [Support Line](#sup)
 - [Resistance Line](#res)
@@ -1110,6 +1112,14 @@ ta.fibnumbers;
 // output (array)
 // [0, 1, 1, 2, 3, 5, 8...];
 ```
+#### <a id="times_up"></a>Times Up
+```javascript
+var data = [5,6,7,8,7,6,5];
+var length = 3;
+await ta.times_up(data, length)
+```
+#### <a id="times_dn"></a>Times Down
+
 ### Experimental Functions
 #### <a id="sup"></a>Support Line
 ```javascript
