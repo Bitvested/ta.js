@@ -1116,10 +1116,18 @@ ta.fibnumbers;
 ```javascript
 var data = [5,6,7,8,7,6,5];
 var length = 3;
-await ta.times_up(data, length)
+await ta.times_up(data, length);
+// output (array)
+// [1, 0, 0, 0]
 ```
 #### <a id="times_dn"></a>Times Down
-
+```javascript
+var data = [5,6,7,8,7,6,5];
+var length = 3;
+await ta.times_down(data, length);
+// output (array)
+// [0, 1, 1, 1]
+```
 ### Experimental Functions
 #### <a id="sup"></a>Support Line
 ```javascript
