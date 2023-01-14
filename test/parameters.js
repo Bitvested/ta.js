@@ -105,4 +105,5 @@ module.exports = {
   'rsi_divergence': {in:[[74,83,66,78,69,70,84,73,74,73,83],5], out: [0,0,1,0,1,0]},
   'divergence': {in:[[48,34,43,54,56,64,43],[76,74,43,55,34,32,45,47]], out: [0, 0, 1, 1, 0, 1]},
   'times_up': {in:[[5,6,7,8,7,6,5],3], out: [true, false, false, false]},
+  'times_down': {in: [[5,6,7,8,7,6,5],3], out: [false, true, true, true]}
 }
