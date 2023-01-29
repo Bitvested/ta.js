@@ -752,8 +752,8 @@ async function recent_low(data, lb=25) {
   }
   return {index: lindex, value: lowest};
 }
-async function support(d, hl=recent_low(d)) {
-  hl = await hl;
+async function support(d, hl) {
+  hl = (!hl) await recent_low(d) : hl;
   var index2, findex, lowform = hl.value;
   do {
     for(var i = hl.index; i < d.length; i++) {
