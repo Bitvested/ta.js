@@ -230,7 +230,7 @@ function ac(data, len1=5, len2=35) {
   for(var i in a) acr.push(a[i]-sm[i]);
   return acr;
 }
-const fib = async(start, end) => [start, (end-start)*.236+start, (end-start)*.382+start, (end-start)*.5+start, (end-start)*.618+start, (end-start)*.786+start, end, (end-start)*1.618+start, (end-start)*2.618+start, (end-start)*3.618+start, (end-start)*4.236+start];
+const fib = (start, end) => [start, (end-start)*.236+start, (end-start)*.382+start, (end-start)*.5+start, (end-start)*.618+start, (end-start)*.786+start, end, (end-start)*1.618+start, (end-start)*2.618+start, (end-start)*3.618+start, (end-start)*4.236+start];
 function pr(data, length=14) {
   for(var i = length, n = []; i <= data.length; i++) {
     var pl = data.slice(i-length,i), highd = Math.max.apply(null, pl), lowd = Math.min.apply(null, pl);
@@ -541,9 +541,9 @@ function cor(data1, data2) {
   sx /= n, sy /= n, sx = Math.sqrt(sx), sy = Math.sqrt(sy);
   return (sumavg / (n * sx * sy));
 }
-const dif = async(n,o) => (n-o) / o;
-const log = async(d) => d.map(x=>Math.log(x));
-const exp = async(d) => d.map(x=>Math.exp(x));
+const dif = (n,o) => (n-o) / o;
+const log = (d) => d.map(x=>Math.log(x));
+const exp = (d) => d.map(x=>Math.exp(x));
 function drawdown(d) {
   for(var y = 1, max = d[0], min = d[0], big = 0; y < d.length; y++) {
     if(d[y] > max) {
@@ -753,7 +753,7 @@ function recent_low(data, lb=25) {
   return {index: lindex, value: lowest};
 }
 function support(d, hl) {
-  hl = (!hl) recent_low(d) : hl;
+  hl = (!hl) ? recent_low(d) : hl;
   var index2, findex, lowform = hl.value;
   do {
     for(var i = hl.index; i < d.length; i++) {
@@ -773,8 +773,8 @@ function support(d, hl) {
     }
     if(hl.index == d.length-1) findex = true;
   } while(!findex);
-  if(index2 == d.length-1 || hl.index == d.length-1) return {calculate: async(pos) => hl.value, slope: 0, lowest: hl.value, index: hl.index};
-  return {calculate: async(pos) => pos*lowform+hl.value, slope: lowform, lowest: hl.value, index: hl.index};
+  if(index2 == d.length-1 || hl.index == d.length-1) return {calculate: (pos) => hl.value, slope: 0, lowest: hl.value, index: hl.index};
+  return {calculate: (pos) => pos*lowform+hl.value, slope: lowform, lowest: hl.value, index: hl.index};
 }
 function resistance(d, hl) {
   hl = (!hl) ? recent_high(d) : hl;
@@ -797,8 +797,8 @@ function resistance(d, hl) {
     }
     if(hl.index == d.length-1) findex = true;
   } while(!findex);
-  if(index2 == d.length-1 || hl.index == d.length-1) return {calculate: async(pos) => hl.value, slope: 0, highest: hl.value, index: hl.index};
-  return {calculate: async(pos) => pos*-highform+hl.value, slope: highform, highest: hl.value, index: hl.index};
+  if(index2 == d.length-1 || hl.index == d.length-1) return {calculate: (pos) => hl.value, slope: 0, highest: hl.value, index: hl.index};
+  return {calculate: (pos) => pos*-highform+hl.value, slope: highform, highest: hl.value, index: hl.index};
 }
 function fisher(data, len) {
   var out = [], fish = 0, v1 = 0;
@@ -884,7 +884,7 @@ function halftrend(data, atrlen, amplitude, deviation) {
   }
   return out;
 }
-const sum = async(data) => data.reduce((a,b) => a+b);
+const sum = (data) => data.reduce((a,b) => a+b);
 function covariance(data1, data2, length) {
   var out = [], x_mean = module.exports.sma(data1, data1.length),
       y_mean = module.exports.sma(data2, data2.length);
@@ -1127,7 +1127,7 @@ function cwma(data, weights) {
   return ma;
 }
 const fibnumbers = [0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987, 1597, 2584, 4181];
-const permutations = async(data) => data.reduce((a,b) => a * b);
+const permutations = (data) => data.reduce((a,b) => a * b);
 function mse(data1, data2) {
   for(var i = 0, err = 0; i < data1.length; i++) err += Math.pow((data2[i] - data1[i]), 2);
   return err / data1.length;
