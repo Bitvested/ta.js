@@ -1265,6 +1265,36 @@ function times_down(data, len) {
   }
   return out;
 }
+function divergence_state(data1, data2, length, lb, threshold_ex=0.03, threshold_nm=0.01) { // [close]
+  if(data1.length > data2.length) data1.splice(0,data1.length-data2.length);
+  if(data2.length > data1.length) data2.splice(0,data2.length-data1.length);
+  for(var i = length, out = []; i < data1.length; i++) {
+    var pl1 = data1.slice(i-length,i+1);
+    var support1 = support(pl1, recent_low(pl1, lb));
+    var support1_delta = support1.slope / support1.lowest;
+    var resistance1 = resistance(pl1, recent_high(pl1, lb));
+    var resistance1_delta = resistance1.slope / resistance1.highest;
+    var pl2 = data2.slice(i-length,i+1);
+    var support2 = support(pl2, recent_low(pl2, lb));
+    var support2_delta = support2.slope / support2.lowest;
+    var resistance2 = resistance(pl2, recent_high(pl2, lb));
+    var resistance2_delta = resistance2.slope / resistance2.highest;
+    if((data1[i] > data1[i-1] && data2[i] < data2[i-1]) || (data1[i] < data1[i-1] && data2[i] > data2[i-1])) {
+      var obj = [];
+      if(resistance1_delta < -threshold_ex && resistance2_delta > -threshold_nm) obj.push('exaggerated_bearish');
+      if(support1_delta < threshold_nm && support2_delta > threshold_ex) obj.push('exaggerated_bullish');
+      if(resistance1_delta < -threshold_nm && resistance2_delta < threshold_nm) obj.push('hidden_bearish');
+      if(support1_delta > threshold_nm && support2_delta < -threshold_nm) obj.push('hidden_bullish');
+      if(resistance1_delta > threshold_nm && resistance2_delta < -threshold_nm) obj.push('regular_bearish');
+      if(support1_delta < -threshold_nm && support2_delta > threshold_nm) obj.push('regular_bullish');
+      if(obj.length <= 0) obj.push('divergence')
+      out.push(obj);
+    } else {
+      out.push(['convergence'])
+    }
+  }
+  return out;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, order, prng },
@@ -1279,5 +1309,5 @@ module.exports = {
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
   macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations, martingale,
   antimartingale, mse, cum, vwwma, elderray, hv, pvalue, rvi, rvi_signal,
-  rsi_divergence, divergence, times_up, times_down
+  rsi_divergence, divergence, times_up, times_down, divergence_state
 }
