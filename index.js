@@ -1265,7 +1265,7 @@ function times_down(data, len) {
   }
   return out;
 }
-function divergence_state(data1, data2, length, lb, threshold_ex=0.03, threshold_nm=0.01) { // [close]
+function divergence_state(data1, data2, length, lb, smoother=1, threshold_ex=0.03, threshold_nm=0.01) { // [close]
   if(data1.length > data2.length) data1.splice(0,data1.length-data2.length);
   if(data2.length > data1.length) data2.splice(0,data2.length-data1.length);
   for(var i = length, out = []; i < data1.length; i++) {
@@ -1279,7 +1279,7 @@ function divergence_state(data1, data2, length, lb, threshold_ex=0.03, threshold
     var support2_delta = support2.slope / support2.lowest;
     var resistance2 = resistance(pl2, recent_high(pl2, lb));
     var resistance2_delta = resistance2.slope / resistance2.highest;
-    if((data1[i] > data1[i-1] && data2[i] < data2[i-1]) || (data1[i] < data1[i-1] && data2[i] > data2[i-1])) {
+    if((data1[i] > data1[i-smoother] && data2[i] < data2[i-smoother]) || (data1[i] < data1[i-smoother] && data2[i] > data2[i-smoother])) {
       var obj = [];
       if(resistance1_delta < -threshold_ex && resistance2_delta > -threshold_nm) obj.push('exaggerated_bearish');
       if(support1_delta < threshold_nm && support2_delta > threshold_ex) obj.push('exaggerated_bullish');
