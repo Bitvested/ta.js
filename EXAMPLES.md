@@ -1164,12 +1164,14 @@ var data1 = [48,34,43,54,56,64,43,51,52,53,55,51,48,45,40,42,44,45];
 var data2 = [76,74,43,55,34,32,45,47,48,53,54,54,50,52,49,47,48,46];
 var length = 12; // array length to check
 var lookback = 3; // lookback length to check for recent_low / recent_high (please check function code for more info)
+var smoother = 1; // smooth divergence lookback period
 var threshold_exaggerated = 0.03; // percentual change threshold for 'exaggerated' divergence
 var threshold_normal = 0.01; // percentual change threshold for 'normal' and 'hidden' divergence
-ta.divergence_state(data1, data2, length, lookback, threshold_exaggerated, threshold_normal);
+ta.divergence_state(data1, data2, length, lookback, smoother, threshold_exaggerated, threshold_normal);
 // output (array of arrays)
 // [['convergence'],['divergence'],['convergence'],['divergence'],['convergence'],['exaggerated_bearish']]
 // it is possible for multiple states to exist at once
+// possible states are: exaggerated_bearish, exaggerated_bullish, hidden_bearish, hidden_bullish, regular_bearish, regular_bullish and convergence
 ```
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
