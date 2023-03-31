@@ -106,6 +106,7 @@ const ta = require('ta.js');
 - [Martingale](#martin)
 - [Anti-Martingale](#amartin)
 - [Permutations](#perm)
+- [Expected Trails](#expected_trails)
 - [Winratio](#winratio)
 - [Average Win](#avgwin)
 - [Average Loss](#avgloss)
@@ -869,6 +870,13 @@ var data = [10,10,10];
 ta.permutations(data);
 // output (int)
 // 1000
+```
+#### <a id="expected_trails"></a>Expected Trails
+```javascript
+var samples = 100;
+ta.expected_trails(samples);
+// output (int)
+// 519
 ```
 #### <a id="winratio"></a>Winratio
 ```javascript
