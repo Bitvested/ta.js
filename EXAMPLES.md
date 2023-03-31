@@ -109,6 +109,8 @@ const ta = require('ta.js');
 - [Winratio](#winratio)
 - [Average Win](#avgwin)
 - [Average Loss](#avgloss)
+- [Return Positive](#return_positive)
+- [Return Negative](#return_negative)
 - [Drawdown](#drawdown)
 - [Median](#median)
 - [Recent High](#rh)
@@ -888,6 +890,20 @@ var data = [0.01, 0.02, -0.01, -0.03, -0.015, 0.005];
 ta.avgloss(data);
 // output (float)
 // -0.018
+```
+#### <a id="return_positive"></a>Return Positive
+```javascript
+var data = [0.02,0.01,-0.03,-0.01,0.005];
+ta.return_positive(data);
+// output (array)
+// [0.02,0.01,0.005]
+```
+#### <a id="return_negative"></a>Return Negative
+```javascript
+var data = [0.02,0.01,-0.03,-0.01,0.005];
+ta.return_negative(data);
+// output (array)
+// [-0.03,-0.01]
 ```
 #### <a id="drawdown"></a>Drawdown
 ```javascript
