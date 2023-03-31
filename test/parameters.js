@@ -106,5 +106,7 @@ module.exports = {
   'divergence': {in:[[48,34,43,54,56,64,43],[76,74,43,55,34,32,45,47]], out: [0, 0, 1, 1, 0, 1]},
   'times_up': {in:[[5,6,7,8,7,6,5],3], out: [1, 0, 0, 0]},
   'times_down': {in: [[5,6,7,8,7,6,5],3], out: [0, 0, 0, 1]},
-  'divergence_state': {in: [[48,34,43,54,56,64,43,51,52,53,55,51,48,45,40,42,44,45],[76,74,43,55,34,32,45,47,48,53,54,54,50,52,49,47,48,46],12,3], out:[['convergence'],['divergence'],['convergence'],['divergence'],['convergence'],['exaggerated_bearish']]}
+  'divergence_state': {in: [[48,34,43,54,56,64,43,51,52,53,55,51,48,45,40,42,44,45],[76,74,43,55,34,32,45,47,48,53,54,54,50,52,49,47,48,46],12,3], out:[['convergence'],['divergence'],['convergence'],['divergence'],['convergence'],['exaggerated_bearish']]},
+  'return_negative': {in: [[0.02,0.01,-0.03,-0.01,0.005]], out: [-0.03,-0.01]},
+  'return_positive': {in: [[0.02,0.01,-0.03,-0.01,0.005]], out: [0.02,0.01,0.005]}
 }
