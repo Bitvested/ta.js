@@ -1307,6 +1307,10 @@ function return_positive(data) {
   }
   return out;
 }
+function expected_trails(n) {
+  for(var i = 1, sum = 0; i <= n; i++) sum += 1 / i;
+  return Math.ceil(n * sum);
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, order, prng },
@@ -1322,5 +1326,5 @@ module.exports = {
   macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations, martingale,
   antimartingale, mse, cum, vwwma, elderray, hv, pvalue, rvi, rvi_signal,
   rsi_divergence, divergence, times_up, times_down, divergence_state,
-  return_negative, return_positive
+  return_negative, return_positive, expected_trails
 }
