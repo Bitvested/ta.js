@@ -1295,6 +1295,18 @@ function divergence_state(data1, data2, length, lb, threshold_ex=0.03, threshold
   }
   return out;
 }
+function return_negative(data) {
+  for(var i = 0, out = []; i < data.length; i++) {
+    if(data[i] < 0) out.push(data[i]);
+  }
+  return out;
+}
+function return_positive(data) {
+  for(var i = 0, out = []; i < data.length; i++) {
+    if(data[i] > 0) out.push(data[i]);
+  }
+  return out;
+}
 module.exports = {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, order, prng },
@@ -1309,5 +1321,6 @@ module.exports = {
   ar, zscore, log, exp, halftrend, sum, covariance, zigzag, psar, macd_signal,
   macd_bars, fibbands, supertrend, cwma, fibnumbers, permutations, martingale,
   antimartingale, mse, cum, vwwma, elderray, hv, pvalue, rvi, rvi_signal,
-  rsi_divergence, divergence, times_up, times_down, divergence_state
+  rsi_divergence, divergence, times_up, times_down, divergence_state,
+  return_negative, return_positive
 }
