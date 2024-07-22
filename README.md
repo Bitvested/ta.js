@@ -142,16 +142,16 @@ https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md
 - [Random Float](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#float)
 - [Random Order](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#order)
 #### Chart Types
-- [Heikin Ashi](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.mdha)
-- [Renko](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.mdren)
+- [Heikin Ashi](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#ha)
+- [Renko](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#ren)
 #### Miscellaneous
-- [Fibonacci Sequence](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.mdfibnumbers)
-- [Times Up](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.mdtimes_up)
-- [Times Down](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.mdtimes_dn)
+- [Fibonacci Sequence](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#fibnumbers)
+- [Times Up](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#times_up)
+- [Times Down](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#times_dn)
 #### Experimental
-- [Support Line](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.mdsup)
-- [Resistance Line](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.mdres)
-- [Divergence State](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.mddivergence_state)
+- [Support Line](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#sup)
+- [Resistance Line](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#res)
+- [Divergence State](https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md#divergence_state)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
