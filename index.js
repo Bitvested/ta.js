@@ -1,3 +1,4 @@
+const registry = require('./src/_registry.js');
 const multi = (typeof process === 'object' && Number(process.versions.node.split('.')[0]) >= 12) ? require('./multi/multi.js') : undefined;
 function median(data, length=data.length) {
   for(var i = length, med = []; i <= data.length; i++) {
@@ -1313,7 +1314,7 @@ function expected_trails(n) {
   for(var i = 1, sum = 0; i <= n; i++) sum += 1 / i;
   return Math.ceil(n * sum);
 }
-module.exports = {
+Object.assign(registry, {
   aroon: { up: aroon_up, down: aroon_down, osc: aroon_osc},
   random: { range, pick, float, order, prng },
   rsi, tsi, fi, pr, stoch, atr, sma, smma, wma, vwma, ao, asi,
@@ -1329,4 +1330,5 @@ module.exports = {
   antimartingale, mse, cum, vwwma, elderray, hv, pvalue, rvi, rvi_signal,
   rsi_divergence, divergence, times_up, times_down, divergence_state,
   return_negative, return_positive, expected_trails
-}
+});
+module.exports = registry;
