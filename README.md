@@ -6,21 +6,55 @@ ta.js is a JavaScript module for dealing with financial technical analysis.
 **A react compatible version of this package is available here:**
 https://github.com/Bitvested/ta.web
 
-#### NPM
-Use the package manager npm to install ta.js.
+## Install
 
+#### NPM
 ```bash
-npm install ta.js --save
+npm install ta.js
 ```
 
 #### CDN
+Three browser bundles are shipped. Pick whichever fits your setup:
+
 ```html
+<!-- IIFE bundle (recommended) — exposes `window.ta` -->
+<script src="https://unpkg.com/ta.js/ta.iife.min.js"></script>
+<script>
+  ta.sma([1,2,3,4,5,6,10], 6);     // [3.5, 5]
+  ta.aroon.up([[10,7],[12,9],[14,11],[13,10],[15,12]], 4);
+</script>
+
+<!-- ES module (for <script type="module"> and modern bundlers) -->
+<script type="module">
+  import { sma, rsi } from 'https://unpkg.com/ta.js/ta.esm.js';
+  sma([1,2,3,4,5,6,10], 6);
+</script>
+
+<!-- Legacy bundle (top-level function globals; kept for backward compatibility) -->
 <script src="https://unpkg.com/ta.js/ta.min.js"></script>
 ```
 
 ## Usage
+
+#### CommonJS (Node)
 ```javascript
 const ta = require('ta.js');
+ta.sma([1,2,3,4,5,6,10], 6);         // [3.5, 5]
+ta.aroon.up([[10,7],[12,9],[14,11],[13,10],[15,12]], 4);
+```
+
+#### ES modules
+```javascript
+import { sma, rsi, aroon } from 'ta.js/ta.esm.js';
+sma([1,2,3,4,5,6,10], 6);
+```
+
+#### Browser
+```html
+<script src="https://unpkg.com/ta.js/ta.iife.min.js"></script>
+<script>
+  ta.sma([1,2,3,4,5,6,10], 6);
+</script>
 ```
 
 ## Examples

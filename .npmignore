@@ -1,3 +1,29 @@
+# Scratch / WIP
 _experimental.js
 _todo.js
 _ideas.txt
+
+# Local-only agent + editor files
+CLAUDE.md
+.claude/
+.vscode/
+.cursor/
+.cursorrules
+.github/copilot-instructions.md
+AGENTS.md
+GEMINI.md
+
+# Local-only design docs and plans (generated during development)
+docs/
+
+# Build tooling inputs not needed at runtime
+scripts/
+.gitattributes
+
+# CI / dev config that isn't needed by consumers
+.github/
+.git/
+.npmrc
+
+# Note: test/ is kept in the published package to preserve continuity with
+# previous versions (<= 1.16.3), which shipped tests + fixtures.
