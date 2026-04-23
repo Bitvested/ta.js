@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "node ./test/test.js",
-    "benchmark": "node ./test/benchmark.js"
+    "benchmark": "node ./test/benchmark.js",
+    "build": "node ./scripts/build.js",
+    "verify-bundle": "node ./scripts/build.js --check"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.2"
   },
   "repository": {
     "type": "git",
