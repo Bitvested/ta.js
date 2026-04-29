@@ -1,0 +1,19 @@
+{
+  "name": "ta.js-bench",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Comparative benchmarks for ta.js vs other JS TA libraries. Standalone sub-package: its devDependencies do NOT pollute the parent ta.js package.",
+  "scripts": {
+    "bench": "node run.js",
+    "bench:json": "node run.js --json",
+    "bench:md": "node run.js --md",
+    "bench:coverage": "node coverage-report.js",
+    "bench:coverage:write": "node coverage-report.js --md"
+  },
+  "devDependencies": {
+    "@debut/indicators": "^1.3.16",
+    "technicalindicators": "^3.1.0",
+    "trading-signals": "^7.0.0",
+    "tulind": "^0.8.20"
+  }
+}
