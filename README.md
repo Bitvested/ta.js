@@ -8,8 +8,13 @@ A powerful, lightweight JavaScript library for Technical Analysis and financial 
 
 #### NOTE
 
-**A react compatible version of this package is available here:**  
-https://github.com/Bitvested/ta.web
+**ta.js works in React out of the box** — pure JavaScript, zero runtime dependencies, side-effect-free exports. Import from the ESM bundle and call the functions:
+
+```javascript
+import { sma, rsi } from 'ta.js/ta.esm.js';
+```
+
+The only Node-only feature is `ta.multi.sim` (Monte Carlo via `worker_threads`); the build pipeline aliases it to a browser stub so `ta.multi` is `undefined` in browser bundles rather than crashing.
 
 ## Install
 
@@ -74,19 +79,19 @@ ta.js v2.0 is the fastest pure-JS technical-analysis library at production data 
 Headline indicators at **100,000 bars** (ops/sec, higher is better):
 
 | indicator | ta.js | next-best | margin |
-|---|---:|---|---:|
-| sma    | **2,290** | `@debut/indicators` 779   | 2.94× |
-| ema    | **1,870** | `trading-signals` 1,480   | 1.26× |
-| rsi    | **1,340** | `@debut/indicators` 373   | 3.59× |
-| macd   | **606**   | `trading-signals` 337     | 1.80× |
-| bbands | **1,140** | `@debut/indicators` 370   | 3.08× |
-| atr    | **1,380** | `@debut/indicators` 1,000 | 1.38× |
-| stoch  | **303**   | `@debut/indicators` 241   | 1.26× |
-| vwap   | **1,220** | `technicalindicators` 400 | 3.05× |
+| --- | --- | --- | --- |
+| sma | **2,290** | `@debut/indicators` 779 | 2.94× |
+| ema | **1,870** | `trading-signals` 1,480 | 1.26× |
+| rsi | **1,340** | `@debut/indicators` 373 | 3.59× |
+| macd | **606** | `trading-signals` 337 | 1.80× |
+| bbands | **1,140** | `@debut/indicators` 370 | 3.08× |
+| atr | **1,380** | `@debut/indicators` 1,000 | 1.38× |
+| stoch | **303** | `@debut/indicators` 241 | 1.26× |
+| vwap | **1,220** | `technicalindicators` 400 | 3.05× |
 
 Measured on Apple M3 / Darwin 25.3.0 arm64 / Node v25.1.0 against `technicalindicators` 3.1.0, `trading-signals` 7.4.3, `@debut/indicators` 1.3.22, and `tulind` 0.8.20. Full per-case tables across 1k / 10k / 100k bar inputs are in [BENCHMARKS.md](https://github.com/Bitvested/ta.js/blob/main/BENCHMARKS.md). Reproduce on your hardware with:
 
-```sh
+```
 cd bench
 npm install
 npm run bench:md   # regenerates BENCHMARKS.md + bench/results.json
