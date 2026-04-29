@@ -37,6 +37,12 @@ const ta = require('ta.js');
 - [Hyperbolic Weighted Moving Average](#hwma)
 - [Kaufman Adaptive Moving Average](#kama)
 - [Custom Weighted Moving Average](#cwma)
+- [Double Exponential Moving Average](#dema)
+- [Triple Exponential Moving Average](#tema)
+- [Triangular Moving Average](#trima)
+- [Tilson T3 Moving Average](#t3)
+- [Zero-Lag Exponential Moving Average](#zlema)
+- [Variable Index Dynamic Average](#vidya)
 #### Indicators
 - [Moving Average Convergence / Divergence](#macd)
 - [MACD Signal](#macd_signal)
@@ -75,6 +81,29 @@ const ta = require('ta.js');
 - [Relative Vigor Index Signal](#rvi_signal)
 - [RSI Divergence](#rsi_divergence)
 - [Divergence](#divergence)
+- [TRIX](#trix)
+- [Accumulation/Distribution Line](#adl)
+- [Commodity Channel Index](#cci)
+- [Plus Directional Movement](#pdm)
+- [Minus Directional Movement](#mdm)
+- [Plus Directional Indicator](#pdi)
+- [Minus Directional Indicator](#mdi)
+- [Directional Movement Index](#dx)
+- [Average Directional Index](#adx)
+- [Average Directional Index Rating](#adxr)
+- [Stochastic RSI](#stoch_rsi)
+- [Percentage Price Oscillator](#ppo)
+- [Absolute Price Oscillator](#apo)
+- [Chaikin Money Flow](#cmf)
+- [Negative Volume Index](#nvi)
+- [Positive Volume Index](#pvi)
+- [Ease Of Movement](#emv)
+- [Normalized Average True Range](#natr)
+- [Detrended Price Oscillator](#dpo)
+- [Mass Index](#mass)
+- [Ulcer Index](#ulcer)
+- [Vortex Indicator](#vortex)
+- [KDJ Indicator](#kdj)
 #### Oscillators
 - [Alligator Oscillator](#gator)
 - [Chande Momentum Oscillator](#mom_osc)
@@ -83,6 +112,8 @@ const ta = require('ta.js');
 - [Awesome Oscillator](#ao)
 - [Accelerator Oscillator](#ac)
 - [Fisher Transform](#fish)
+- [Ultimate Oscillator](#ult)
+- [Klinger Volume Oscillator](#kvo)
 #### Bands
 - [Bollinger Bands](#bands)
 - [Keltner Channels](#kelt)
@@ -92,6 +123,11 @@ const ta = require('ta.js');
 #### Statistics
 - [Sum](#sum)
 - [Standard Deviation](#std)
+- [Standard Deviation Series](#std_series)
+- [Linear Regression Slope](#lr_slope)
+- [Linear Regression Intercept](#lr_intercept)
+- [Linear Regression Angle](#lr_angle)
+- [Time Series Forecast](#tsf)
 - [Variance](#variance)
 - [Normal CDF](#ncdf)
 - [Inverse Normal Distribution](#normsinv)
@@ -164,7 +200,7 @@ var data = [1, 2, 3, 4, 5, 6, 10];
 var length = 5; // default = 14
 ta.smma(data, length);
 // output (array)
-// [3.4, 4.92]
+// [3, 3.6, 4.88]
 ```
 #### <a id="wma"></a>Weighted Moving Average (WMA)
 ```javascript
@@ -256,6 +292,57 @@ ta.cwma(data, weights);
 // output (array)
 // [68.26315789473684, 68.52631578947368]
 ```
+#### <a id="dema"></a>Double Exponential Moving Average (DEMA)
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 10];
+var length = 3; // default = 30
+ta.dema(data, length);
+// output (array)
+// [5, 6, 9.25]
+```
+#### <a id="tema"></a>Triple Exponential Moving Average (TEMA)
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 10, 8, 11];
+var length = 3; // default = 30
+ta.tema(data, length);
+// output (array)
+// [9.5, 8.5, 10.71875]
+```
+#### <a id="trima"></a>Triangular Moving Average (TRIMA)
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 7];
+var length = 5; // default = 30
+ta.trima(data, length);
+// output (array)
+// [3, 4, 5]
+```
+#### <a id="t3"></a>Tilson T3 Moving Average
+```javascript
+var data = [1,2,3,4,5,6,7,8,9,10,11,12];
+var length = 2;       // default = 5
+var vfactor = 0.7;    // default = 0.7
+ta.t3(data, length, vfactor);
+// output (array)
+// [6.55, 7.55, 8.55, 9.55, 10.55, 11.55]
+```
+#### <a id="zlema"></a>Zero-Lag Exponential Moving Average (ZLEMA)
+```javascript
+var data = [10, 11, 9, 12, 8, 13, 7];
+var length = 4; // default = 14
+ta.zlema(data, length);
+// output (array)
+// [10, 10.8, 9.28, 11.568, 8.5408, 12.32448, 7.794688]
+```
+#### <a id="vidya"></a>Variable Index Dynamic Average (VIDYA)
+```javascript
+var data = [2, 4, 3, 6, 5, 7, 8, 6, 9, 10];
+var shortLength = 2;  // default = 2
+var longLength = 5;   // default = 5
+var alpha = 0.2;      // default = 0.2
+ta.vidya(data, shortLength, longLength, alpha);
+// output (array)
+// [6, 5.929, 6.081, 6.192, 6.155, 6.758, 6.987, ...]
+```
 ### Indicators
 #### <a id="macd"></a>Moving Average Convergence / Divergence (MACD)
 ```javascript
@@ -288,11 +375,12 @@ ta.macd_bars(data, length1, length2, signal_length);
 ```
 #### <a id="rsi"></a>Relative Strength Index (RSI)
 ```javascript
-var data = [1, 2, 3, 4, 5, 6, 7, 5];
+// canonical Wilder smoothing (TA-Lib RSI)
+var data = [1, 2, 3, 4, 5, 6, 7, 5, 6, 4];
 var length = 6; // default = 14
 ta.rsi(data, length);
 // output (array)
-// [100.0, 100.0, 66.667]
+// [100, 71.4286, 75.6098, 55.9567]
 ```
 #### <a id="wrsi"></a>Wilder's Relative Strength Index
 ```javascript
@@ -365,9 +453,8 @@ var length = 2; // default = 14
 var smoothd = 1; // default = 3
 var smoothk = 1; // default = 3
 ta.stoch(data, length, smoothd, smoothk);
-// output (array)
-// [[66.667, 66.667], [33.336, 33.336]]
-// [kline, dline]
+// output (array of [%K, %D])
+// [[50, 50], [66.667, 66.667], [33.333, 33.333]]
 ```
 #### <a id="fib"></a>Fibonacci Retracement
 ```javascript
@@ -614,6 +701,202 @@ ta.divergence(data1, data2);
 // 0 = RSI is not in divergence
 // [0, 0, 1, 1, 0, 1] (better to quantify if needed)
 ```
+#### <a id="trix"></a>TRIX
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 10, 8, 11];
+var length = 3; // default = 30
+ta.trix(data, length);
+// output (array, % rate of change of triple-smoothed EMA)
+// [29.41176470588235, 23.295454545454547]
+```
+#### <a id="adl"></a>Accumulation/Distribution Line
+```javascript
+// data is an array of [high, close, low, volume] candles
+var data = [[6,3,2,100],[7,5,4,200],[8,6,5,150],[7,5,4,180]];
+ta.adl(data);
+// output (array, cumulative)
+// [-50, -116.6666, -166.6666, -226.6666]
+```
+#### <a id="cci"></a>Commodity Channel Index
+```javascript
+// data is an array of [high, close, low] candles
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10]];
+var length = 3; // default = 20
+ta.cci(data, length);
+// output (array)
+// [0, 100.00000000000001, 0]
+```
+#### <a id="pdm"></a>Plus Directional Movement (+DM)
+```javascript
+// data is an array of [high, close, low] candles
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10],[14,13,12]];
+var length = 2; // default = 14
+ta.pdm(data, length);
+// output (array, smoothed +DM via Wilder)
+// [1, 1.5, 0.75, 1.375]
+```
+#### <a id="mdm"></a>Minus Directional Movement (-DM)
+```javascript
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10],[14,13,12]];
+var length = 2; // default = 14
+ta.mdm(data, length);
+// output (array, smoothed -DM via Wilder)
+// [0.5, 0.25, 0.625, 0.3125]
+```
+#### <a id="pdi"></a>Plus Directional Indicator (+DI)
+```javascript
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10],[14,13,12]];
+var length = 2; // default = 14
+ta.pdi(data, length);
+// output (array, %)
+// [40, 54.5454, 31.5789, 51.1627]
+```
+#### <a id="mdi"></a>Minus Directional Indicator (-DI)
+```javascript
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10],[14,13,12]];
+var length = 2; // default = 14
+ta.mdi(data, length);
+// output (array, %)
+// [20, 9.0909, 26.3157, 11.6279]
+```
+#### <a id="dx"></a>Directional Movement Index (DX)
+```javascript
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10],[14,13,12]];
+var length = 2; // default = 14
+ta.dx(data, length);
+// output (array)
+// [33.3333, 71.4285, 9.0909, 62.9629]
+```
+#### <a id="adx"></a>Average Directional Index (ADX)
+```javascript
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10],[14,13,12]];
+var length = 2; // default = 14
+ta.adx(data, length);
+// output (array, Wilder-smoothed DX)
+// [52.3809, 30.7359, 46.8494]
+```
+#### <a id="adxr"></a>Average Directional Index Rating (ADXR)
+```javascript
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10],[14,13,12]];
+var length = 2; // default = 14
+ta.adxr(data, length);
+// output (array, (ADX + ADX_lookback) / 2)
+// [41.5584, 38.7926]
+```
+#### <a id="stoch_rsi"></a>Stochastic RSI
+```javascript
+var data = [10, 11, 12, 11, 10, 11, 12];
+var rsiLength = 2;    // default = 14
+var stochLength = 2;  // default = 14
+var smoothK = 2;      // default = 3
+var smoothD = 2;      // default = 3
+ta.stoch_rsi(data, rsiLength, stochLength, smoothK, smoothD);
+// output (array of [%K, %D])
+// [[50, 25], [100, 75]]
+```
+#### <a id="ppo"></a>Percentage Price Oscillator (PPO)
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 14];
+var fast = 3; // default = 12
+var slow = 6; // default = 26
+ta.ppo(data, fast, slow);
+// output (array, %)
+// [42.857142857142854, 46.15384615384615]
+```
+#### <a id="apo"></a>Absolute Price Oscillator (APO)
+```javascript
+var data = [1, 2, 3, 4, 5, 6, 14];
+var fast = 3; // default = 12
+var slow = 6; // default = 26
+ta.apo(data, fast, slow);
+// output (array)
+// [1.5, 3]
+```
+#### <a id="cmf"></a>Chaikin Money Flow
+```javascript
+// data is an array of [high, close, low, volume] candles
+var data = [[6,3,2,100],[7,5,4,200],[8,6,5,150],[7,5,4,180],[9,8,7,120],[8,6,5,90]];
+var length = 3; // default = 20
+ta.cmf(data, length);
+// output (array)
+// [-0.3703, -0.3333, -0.2444, -0.2307]
+```
+#### <a id="nvi"></a>Negative Volume Index
+```javascript
+// data is an array of [close, volume] pairs
+var data = [[9,100],[10,150],[11,200],[12,180],[11,120],[13,90]];
+ta.nvi(data);
+// output (array, seeded at 1000)
+// [1000, 1000, 1000, 1090.909, 1000, 1181.818]
+```
+#### <a id="pvi"></a>Positive Volume Index
+```javascript
+var data = [[9,100],[10,150],[11,200],[12,180],[11,120],[13,90]];
+ta.pvi(data);
+// output (array, seeded at 1000)
+// [1000, 1111.111, 1222.222, 1222.222, 1222.222, 1222.222]
+```
+#### <a id="emv"></a>Ease Of Movement
+```javascript
+// data is an array of [high, low, volume] candles
+var data = [[10,8,100],[11,9,150],[12,10,200],[13,11,180],[12,10,120],[14,12,90]];
+ta.emv(data);
+// output (array)
+// [133.333, 100, 111.111, -166.666, 444.444]
+```
+#### <a id="natr"></a>Normalized Average True Range
+```javascript
+// data is an array of [high, close, low] candles
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10],[14,13,12]];
+var length = 2; // default = 14
+ta.natr(data, length);
+// output (array, ATR / close × 100)
+// [22.7272, 22.5, 21.875, 21.0227, 20.4327]
+```
+#### <a id="dpo"></a>Detrended Price Oscillator
+```javascript
+var data = [9, 10, 11, 12, 11, 13, 12, 14, 13, 15];
+var length = 4; // default = 21
+ta.dpo(data, length);
+// output (array)
+// [-1.5, -1, -0.75, 0, -1.5, 0, -1.5]
+```
+#### <a id="mass"></a>Mass Index
+```javascript
+// data is an array of [high, low] candles
+var data = [[10,8],[12,10],[14,12],[13,11],[15,13],[17,15],[16,14],[18,16],[20,18],[19,17],[21,19],[23,21],[22,20],[24,22],[26,24]];
+var length = 25; // default = 25 — example uses default-equivalent setup
+ta.mass(data, length);
+// output (array)
+```
+#### <a id="ulcer"></a>Ulcer Index
+```javascript
+var data = [10, 12, 11, 8, 9, 7, 11, 13];
+var length = 3; // default = 14
+ta.ulcer(data, length);
+// output (array)
+// [4.811, 19.837, 22.443, 25.4, 16.577, 12.83]
+```
+#### <a id="vortex"></a>Vortex Indicator
+```javascript
+// data is an array of [high, close, low] candles
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[15,14,13]];
+var length = 2; // default = 14
+ta.vortex(data, length);
+// output (array of [+VI, -VI])
+// [[1, 0.6], [1, 0.6], [1.3333, 0]]
+```
+#### <a id="kdj"></a>KDJ Indicator
+```javascript
+// data is an array of [high, close, low] candles
+var data = [[3,2,1],[2,2,1],[4,3,1],[2,2,1]];
+var length = 2;     // default = 9
+var smoothK = 1;    // default = 3
+var smoothD = 1;    // default = 3
+ta.kdj(data, length, smoothK, smoothD);
+// output (array of [%K, %D, %J])
+// [[50, 50, 50], [66.667, 66.667, 66.667], [33.333, 33.333, 33.333]]
+```
 ### Oscillators
 #### <a id="gator"></a>Alligator Oscillator
 ```javascript
@@ -679,6 +962,27 @@ var length = 9;
 ta.fisher(data, length);
 // output (array)
 // [[-0.318, -0.11], [-0.449, -0.318], [-0.616, -0.449]] // [fisher, trigger]
+```
+#### <a id="ult"></a>Ultimate Oscillator
+```javascript
+// data is an array of [high, close, low] candles
+var data = [[10,9,8],[12,11,10],[11,10,9],[13,12,11],[12,11,10],[14,13,12]];
+var p1 = 2;  // default = 7
+var p2 = 3;  // default = 14
+var p3 = 4;  // default = 28
+ta.ult(data, p1, p2, p3);
+// output (array)
+// [59.1836, 60.7142]
+```
+#### <a id="kvo"></a>Klinger Volume Oscillator
+```javascript
+// data is an array of [high, close, low, volume] candles
+var data = [[10,9,8,100],[11,10,9,150],[12,11,10,200],[13,12,11,180],[12,11,10,120],[14,13,12,90]];
+var fast = 3;  // default = 34
+var slow = 5;  // default = 55
+ta.kvo(data, fast, slow);
+// output (array)
+// [0, 1111.111, 1685.185, 95.679, -450.103]
 ```
 ### Bands
 #### <a id="bands"></a>Bollinger Bands
@@ -922,11 +1226,12 @@ ta.drawdown(data);
 ```
 #### <a id="median"></a>Median
 ```javascript
+// even-window median = mean of two middle sorted values
 var data = [4, 6, 3, 1, 2, 5];
 var length = 4; // default = data.length
 ta.median(data, length);
 // output (array)
-// [3, 2, 2]
+// [3.5, 2.5, 2.5]
 ```
 #### <a id="rh"></a>Recent High
 ```javascript
@@ -1069,6 +1374,48 @@ var length = 4;
 ta.cum(data, length);
 // output (array)
 // [20, 27]
+```
+#### <a id="std_series"></a>Standard Deviation Series
+```javascript
+// rolling-window companion to ta.std (which returns a single scalar)
+var data = [1, 2, 3, 4, 5];
+var length = 3;
+ta.std_series(data, length);
+// output (array)
+// [0.8164965809277260, 0.8164965809277260, 0.8164965809277260]
+```
+#### <a id="lr_slope"></a>Linear Regression Slope
+```javascript
+var data = [5, 6, 6, 3, 4, 6, 7];
+var length = 6;
+ta.lr_slope(data, length);
+// output (array)
+// [-0.1142857142857143, 0.1714285714285714]
+```
+#### <a id="lr_intercept"></a>Linear Regression Intercept
+```javascript
+var data = [5, 6, 6, 3, 4, 6, 7];
+var length = 6;
+ta.lr_intercept(data, length);
+// output (array)
+// [5.285714285714286, 4.904761904761904]
+```
+#### <a id="lr_angle"></a>Linear Regression Angle
+```javascript
+var data = [5, 6, 6, 3, 4, 6, 7];
+var length = 6;
+ta.lr_angle(data, length);
+// output (array, degrees)
+// [-6.5198, 9.7275]
+```
+#### <a id="tsf"></a>Time Series Forecast
+```javascript
+// next-bar projection from the rolling linear regression
+var data = [5, 6, 6, 3, 4, 6, 7];
+var length = 6;
+ta.tsf(data, length);
+// output (array)
+// [4.6, 5.9333]
 ```
 ### Random Functions
 #### <a id="prng"></a>Pseudo Random Number Generator

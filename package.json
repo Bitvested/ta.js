@@ -1,13 +1,14 @@
 {
   "name": "ta.js",
-  "version": "1.17.0",
+  "version": "2.0.0",
   "description": "Financial Technical Analysis in JavaScript",
   "main": "index.js",
   "scripts": {
-    "test": "node ./test/test.js",
+    "test": "npm run verify-zero-deps && node --test 'test/*.test.js'",
     "benchmark": "node ./test/benchmark.js",
     "build": "node ./scripts/build.js",
-    "verify-bundle": "node ./scripts/build.js --check"
+    "verify-bundle": "node ./scripts/build.js --check",
+    "verify-zero-deps": "node -e \"const p=require('./package.json'); const d=p.dependencies||{}; const n=Object.keys(d).length; if(n){console.error('runtime dependencies must stay empty for v2.0; found:',d); process.exit(1)} else {console.log('zero runtime deps: ok')}\""
   },
   "devDependencies": {
     "esbuild": "^0.24.2"

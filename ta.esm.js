@@ -35,13 +35,17 @@ var require_registry = __commonJS({
 // src/moving-averages/sma.js
 var require_sma = __commonJS({
   "src/moving-averages/sma.js"(exports, module) {
-    var ta = require_registry();
     function sma2(data, length = 14) {
-      for (var i = length, sma3 = []; i <= data.length; i++) {
-        var avg = ta.sum(data.slice(i - length, i));
-        sma3.push(avg / length);
+      const n = data.length;
+      if (n < length) return [];
+      let sum2 = 0;
+      for (let i = 0; i < length; i++) sum2 += data[i];
+      const out = [sum2 / length];
+      for (let i = length; i < n; i++) {
+        sum2 += data[i] - data[i - length];
+        out.push(sum2 / length);
       }
-      return sma3;
+      return out;
     }
     module.exports = sma2;
   }
@@ -50,19 +54,18 @@ var require_sma = __commonJS({
 // src/moving-averages/smma.js
 var require_smma = __commonJS({
   "src/moving-averages/smma.js"(exports, module) {
-    var ta = require_registry();
     function smma2(data, length = 14) {
-      for (var i = length, smma3 = []; i <= data.length; i++) {
-        var pl = data.slice(i - length, i), average = 0;
-        for (var q in pl) average += pl[q];
-        if (smma3.length <= 0) {
-          smma3.push(average / length);
-        } else {
-          smma3.push((average - smma3[smma3.length - 1]) / length);
-        }
+      const n = data.length;
+      if (n < length) return [];
+      let seed = 0;
+      for (let i = 0; i < length; i++) seed += data[i];
+      let prev = seed / length;
+      const out = [prev];
+      for (let i = length; i < n; i++) {
+        prev = prev + (data[i] - prev) / length;
+        out.push(prev);
       }
-      smma3.splice(0, 1);
-      return smma3;
+      return out;
     }
     module.exports = smma2;
   }
@@ -71,15 +74,20 @@ var require_smma = __commonJS({
 // src/moving-averages/wma.js
 var require_wma = __commonJS({
   "src/moving-averages/wma.js"(exports, module) {
-    var ta = require_registry();
     function wma2(data, length = 14) {
-      for (var i = 1, weight = 0, wma3 = []; i <= length; i++) weight += i;
-      for (var i = length; i <= data.length; i++) {
-        var pl = data.slice(i - length, i), average = 0;
-        for (var q in pl) average += pl[q] * (Number(q) + 1) / weight;
-        wma3.push(average);
+      const n = data.length;
+      if (n < length) return [];
+      let weight = 0;
+      for (let i = 1; i <= length; i++) weight += i;
+      const out = [];
+      for (let i = length; i <= n; i++) {
+        let sum2 = 0;
+        for (let q = 0; q < length; q++) {
+          sum2 += data[i - length + q] * (q + 1);
+        }
+        out.push(sum2 / weight);
       }
-      return wma3;
+      return out;
     }
     module.exports = wma2;
   }
@@ -88,18 +96,19 @@ var require_wma = __commonJS({
 // src/moving-averages/ema.js
 var require_ema = __commonJS({
   "src/moving-averages/ema.js"(exports, module) {
-    var ta = require_registry();
     function ema2(data, length = 12) {
-      for (var i = length, ema3 = [], weight = 2 / (length + 1); i <= data.length; i++) {
-        if (ema3.length > 0) {
-          ema3.push((data[i - 1] - ema3[ema3.length - 1]) * weight + ema3[ema3.length - 1]);
-          continue;
-        }
-        var pl = data.slice(i - length, i), average = 0;
-        for (var q in pl) average += pl[q];
-        ema3.push(average / length);
+      const n = data.length;
+      if (n < length) return [];
+      const weight = 2 / (length + 1);
+      let seed = 0;
+      for (let i = 0; i < length; i++) seed += data[i];
+      let prev = seed / length;
+      const out = [prev];
+      for (let i = length; i < n; i++) {
+        prev = (data[i] - prev) * weight + prev;
+        out.push(prev);
       }
-      return ema3;
+      return out;
     }
     module.exports = ema2;
   }
@@ -110,17 +119,27 @@ var require_hull = __commonJS({
   "src/moving-averages/hull.js"(exports, module) {
     var ta = require_registry();
     function hull2(data, length = 14) {
-      var pl = [], hma = [], ewma = ta.wma(data, length), sqn = Math.round(Math.sqrt(length)), first = ta.wma(data, Math.round(length / 2));
-      first.splice(0, first.length - ewma.length);
-      for (var i in ewma) {
-        pl.push(first[i] * 2 - ewma[i]);
-        if (pl.length >= sqn) {
-          var h = ta.wma(pl, sqn);
-          hma.push(h[0]);
-          pl.splice(0, 1);
-        }
+      const ewma = ta.wma(data, length);
+      const first = ta.wma(data, Math.round(length / 2));
+      const off = first.length - ewma.length;
+      const sqn = Math.round(Math.sqrt(length));
+      const m = ewma.length;
+      if (m < sqn) return [];
+      const d = new Float64Array(m);
+      for (let i = 0; i < m; i++) d[i] = first[i + off] * 2 - ewma[i];
+      const weight = sqn * (sqn + 1) / 2;
+      let S = 0, T = 0;
+      for (let i = 0; i < sqn; i++) {
+        S += d[i] * (i + 1);
+        T += d[i];
       }
-      return hma;
+      const out = [S / weight];
+      for (let i = sqn; i < m; i++) {
+        S = S + d[i] * sqn - T;
+        T = T + d[i] - d[i - sqn];
+        out.push(S / weight);
+      }
+      return out;
     }
     module.exports = hull2;
   }
@@ -147,19 +166,22 @@ var require_lsma = __commonJS({
 // src/moving-averages/vwma.js
 var require_vwma = __commonJS({
   "src/moving-averages/vwma.js"(exports, module) {
-    var ta = require_registry();
     function vwma2(data, length = 20) {
-      data = data.map((x) => [x[0] * x[1], x[1]]);
-      for (var i = length, vwma3 = []; i <= data.length; i++) {
-        var pl = data.slice(i - length, i);
-        var totalv = 0, totalp = 0;
-        for (var o = 0; o < pl.length; o++) {
-          totalv += pl[o][1];
-          totalp += pl[o][0];
-        }
-        vwma3.push(totalp / totalv);
+      const n = data.length;
+      if (n < length) return [];
+      let sumPV = 0, sumV = 0;
+      for (let i = 0; i < length; i++) {
+        sumPV += data[i][0] * data[i][1];
+        sumV += data[i][1];
       }
-      return vwma3;
+      const out = [sumPV / sumV];
+      for (let i = length; i < n; i++) {
+        const o = i - length;
+        sumPV += data[i][0] * data[i][1] - data[o][0] * data[o][1];
+        sumV += data[i][1] - data[o][1];
+        out.push(sumPV / sumV);
+      }
+      return out;
     }
     module.exports = vwma2;
   }
@@ -295,6 +317,154 @@ var require_cwma = __commonJS({
   }
 });
 
+// src/moving-averages/dema.js
+var require_dema = __commonJS({
+  "src/moving-averages/dema.js"(exports, module) {
+    function dema2(data, length = 30) {
+      const n = data.length;
+      if (n < 2 * length - 1) return [];
+      const alpha = 2 / (length + 1);
+      let sum2 = 0;
+      for (let i = 0; i < length; i++) sum2 += data[i];
+      let e1 = sum2 / length;
+      let sumE1 = e1;
+      for (let i = length; i < 2 * length - 1; i++) {
+        e1 = (data[i] - e1) * alpha + e1;
+        sumE1 += e1;
+      }
+      let e2 = sumE1 / length;
+      const out = new Array(n - 2 * length + 2);
+      out[0] = 2 * e1 - e2;
+      for (let i = 2 * length - 1; i < n; i++) {
+        e1 = (data[i] - e1) * alpha + e1;
+        e2 = (e1 - e2) * alpha + e2;
+        out[i - 2 * length + 2] = 2 * e1 - e2;
+      }
+      return out;
+    }
+    module.exports = dema2;
+  }
+});
+
+// src/moving-averages/tema.js
+var require_tema = __commonJS({
+  "src/moving-averages/tema.js"(exports, module) {
+    var ta = require_registry();
+    function tema2(data, length = 30) {
+      const e1 = ta.ema(data, length);
+      if (e1.length < length) return [];
+      const e2 = ta.ema(e1, length);
+      if (e2.length < length) return [];
+      const e3 = ta.ema(e2, length);
+      const off1 = e1.length - e3.length;
+      const off2 = e2.length - e3.length;
+      const out = new Array(e3.length);
+      for (let i = 0; i < e3.length; i++) {
+        out[i] = 3 * e1[i + off1] - 3 * e2[i + off2] + e3[i];
+      }
+      return out;
+    }
+    module.exports = tema2;
+  }
+});
+
+// src/moving-averages/trima.js
+var require_trima = __commonJS({
+  "src/moving-averages/trima.js"(exports, module) {
+    var ta = require_registry();
+    function trima2(data, length = 30) {
+      let nInner, nOuter;
+      if (length % 2 === 0) {
+        nInner = length / 2 + 1;
+        nOuter = length / 2;
+      } else {
+        nInner = nOuter = (length + 1) / 2;
+      }
+      return ta.sma(ta.sma(data, nInner), nOuter);
+    }
+    module.exports = trima2;
+  }
+});
+
+// src/moving-averages/t3.js
+var require_t3 = __commonJS({
+  "src/moving-averages/t3.js"(exports, module) {
+    var ta = require_registry();
+    function t32(data, length = 5, vfactor = 0.7) {
+      const e1 = ta.ema(data, length);
+      if (e1.length < length) return [];
+      const e2 = ta.ema(e1, length);
+      if (e2.length < length) return [];
+      const e3 = ta.ema(e2, length);
+      if (e3.length < length) return [];
+      const e4 = ta.ema(e3, length);
+      if (e4.length < length) return [];
+      const e5 = ta.ema(e4, length);
+      if (e5.length < length) return [];
+      const e6 = ta.ema(e5, length);
+      const v2 = vfactor * vfactor;
+      const v3 = v2 * vfactor;
+      const c1 = -v3;
+      const c2 = 3 * v2 + 3 * v3;
+      const c3 = -6 * v2 - 3 * vfactor - 3 * v3;
+      const c4 = 1 + 3 * vfactor + v3 + 3 * v2;
+      const o3 = e3.length - e6.length;
+      const o4 = e4.length - e6.length;
+      const o5 = e5.length - e6.length;
+      const out = new Array(e6.length);
+      for (let i = 0; i < e6.length; i++) {
+        out[i] = c1 * e6[i] + c2 * e5[i + o5] + c3 * e4[i + o4] + c4 * e3[i + o3];
+      }
+      return out;
+    }
+    module.exports = t32;
+  }
+});
+
+// src/moving-averages/zlema.js
+var require_zlema = __commonJS({
+  "src/moving-averages/zlema.js"(exports, module) {
+    function zlema2(data, length = 14) {
+      const n = data.length;
+      if (n === 0) return [];
+      const lag = Math.floor((length - 1) / 2);
+      const alpha = 2 / (length + 1);
+      let prev = data[0];
+      const out = new Array(n);
+      out[0] = prev;
+      for (let i = 1; i < n; i++) {
+        const adj = i >= lag ? 2 * data[i] - data[i - lag] : data[i];
+        prev = alpha * adj + (1 - alpha) * prev;
+        out[i] = prev;
+      }
+      return out;
+    }
+    module.exports = zlema2;
+  }
+});
+
+// src/moving-averages/vidya.js
+var require_vidya = __commonJS({
+  "src/moving-averages/vidya.js"(exports, module) {
+    var ta = require_registry();
+    function vidya2(data, shortLength = 2, longLength = 5, alpha = 0.2) {
+      const n = data.length;
+      if (n < longLength) return [];
+      let prev = data[longLength - 2];
+      const out = [prev];
+      for (let i = longLength - 1; i < n; i++) {
+        const sShort = ta.std(data.slice(i - shortLength + 1, i + 1), shortLength);
+        const sLong = ta.std(data.slice(i - longLength + 1, i + 1), longLength);
+        const k = sLong === 0 ? 0 : sShort / sLong;
+        prev = alpha * k * data[i] + (1 - alpha * k) * prev;
+        out.push(prev);
+      }
+      return out;
+    }
+    module.exports = vidya2;
+  }
+});
+
 // src/indicators/macd.js
 var require_macd = __commonJS({
   "src/indicators/macd.js"(exports, module) {
@@ -339,20 +509,30 @@ var require_macd_bars = __commonJS({
 // src/indicators/rsi.js
 var require_rsi = __commonJS({
   "src/indicators/rsi.js"(exports, module) {
-    var ta = require_registry();
     function rsi2(data, length = 14) {
-      for (var i = length - 1, gain = 0, loss = 0, arrsi = [], pl = data.slice(0, length - 1); i < data.length; i++, gain = 0, loss = 0) {
-        pl.push(data[i]);
-        for (var q = 1; q < pl.length; q++) if (pl[q] - pl[q - 1] < 0) {
-          loss += Math.abs(pl[q] - pl[q - 1]);
-        } else {
-          gain += pl[q] - pl[q - 1];
-        }
-        var rsi3 = 100 - 100 / (1 + gain / length / (loss / length));
-        arrsi.push(rsi3);
-        pl.splice(0, 1);
+      const n = data.length;
+      if (n <= length) return [];
+      let gain = 0, loss = 0;
+      for (let i = 1; i <= length; i++) {
+        const d = data[i] - data[i - 1];
+        if (d > 0) gain += d;
+        else loss -= d;
       }
-      return arrsi;
+      let avgG = gain / length;
+      let avgL = loss / length;
+      const out = [rsiVal(avgG, avgL)];
+      for (let i = length + 1; i < n; i++) {
+        const d = data[i] - data[i - 1];
+        avgG = (avgG * (length - 1) + (d > 0 ? d : 0)) / length;
+        avgL = (avgL * (length - 1) + (d < 0 ? -d : 0)) / length;
+        out.push(rsiVal(avgG, avgL));
+      }
+      return out;
+    }
+    function rsiVal(g, l) {
+      if (g === 0 && l === 0) return NaN;
+      if (l === 0) return 100;
+      return 100 - 100 / (1 + g / l);
     }
     module.exports = rsi2;
   }
@@ -363,14 +543,7 @@ var require_wrsi = __commonJS({
   "src/indicators/wrsi.js"(exports, module) {
     var ta = require_registry();
     function wrsi2(data, length = 14) {
-      for (var i = 1, arrsi = [], u = [], d = []; i < data.length; i++) if (data[i] - data[i - 1] < 0) {
-        d.push(Math.abs(data[i] - data[i - 1])), u.push(0);
-      } else {
-        d.push(0), u.push(data[i] - data[i - 1]);
-      }
-      d = ta.wsma(d, length), u = ta.wsma(u, length);
-      for (var i in d) arrsi.push(100 - 100 / (1 + u[i] / d[i]));
-      return arrsi;
+      return ta.rsi(data, length);
     }
     module.exports = wrsi2;
   }
@@ -463,13 +636,20 @@ var require_alligator = __commonJS({
 // src/indicators/pr.js
 var require_pr = __commonJS({
   "src/indicators/pr.js"(exports, module) {
-    var ta = require_registry();
     function pr2(data, length = 14) {
-      for (var i = length, n = []; i <= data.length; i++) {
-        var pl = data.slice(i - length, i), highd = Math.max.apply(null, pl), lowd = Math.min.apply(null, pl);
-        n.push((highd - data[i - 1]) / (highd - lowd) * -100);
+      const n = data.length;
+      if (n < length) return [];
+      const out = [];
+      for (let i = length; i <= n; i++) {
+        let hi = -Infinity, lo = Infinity;
+        for (let j = i - length; j < i; j++) {
+          if (data[j] > hi) hi = data[j];
+          if (data[j] < lo) lo = data[j];
+        }
+        const range = hi - lo;
+        out.push(range === 0 ? NaN : (hi - data[i - 1]) / range * -100);
       }
-      return n;
+      return out;
     }
     module.exports = pr2;
   }
@@ -478,29 +658,58 @@ var require_pr = __commonJS({
 // src/indicators/stoch.js
 var require_stoch = __commonJS({
   "src/indicators/stoch.js"(exports, module) {
-    var ta = require_registry();
     function stoch2(data, length = 14, smoothd = 3, smoothk = 3) {
       if (length < smoothd) [length, smoothd] = [smoothd, length];
       if (smoothk > smoothd) [smoothk, smoothd] = [smoothd, smoothk];
-      for (var i = 0, stoch3 = [], high = [], low = [], ka = []; i < data.length; i++) {
-        high.push(data[i][0]), low.push(data[i][2]);
-        if (high.length >= length) {
-          var highd = Math.max.apply(null, high), lowd = Math.min.apply(null, low), k = 100 * (data[i][1] - lowd) / (highd - lowd);
-          ka.push(k);
+      const n = data.length;
+      const out = [];
+      if (n < length) return out;
+      const qHi = new Int32Array(n);
+      let qHiH = 0, qHiT = 0;
+      const qLo = new Int32Array(n);
+      let qLoH = 0, qLoT = 0;
+      const rawBuf = new Float64Array(smoothk);
+      const smBuf = new Float64Array(smoothd);
+      let rawSum = 0, smSum = 0;
+      let rawCount = 0, smCount = 0;
+      let rawIdx = 0, smIdx = 0;
+      for (let i = 0; i < n; i++) {
+        const hi = data[i][0], lo = data[i][2];
+        while (qHiT > qHiH && data[qHi[qHiT - 1]][0] <= hi) qHiT--;
+        qHi[qHiT++] = i;
+        if (qHi[qHiH] <= i - length) qHiH++;
+        while (qLoT > qLoH && data[qLo[qLoT - 1]][2] >= lo) qLoT--;
+        qLo[qLoT++] = i;
+        if (qLo[qLoH] <= i - length) qLoH++;
+        if (i < length - 1) continue;
+        const highd = data[qHi[qHiH]][0];
+        const lowd = data[qLo[qLoH]][2];
+        const range = highd - lowd;
+        const rawK = range === 0 ? NaN : 100 * (data[i][1] - lowd) / range;
+        if (rawCount < smoothk) {
+          rawBuf[rawIdx] = rawK;
+          rawSum += rawK;
+          rawCount++;
+        } else {
+          rawSum += rawK - rawBuf[rawIdx];
+          rawBuf[rawIdx] = rawK;
         }
-        if (smoothk > 0 && ka.length > smoothk) {
-          var smoothedk = ta.sma(ka, smoothk);
-          ka.push(smoothedk[smoothedk.length - 1]);
+        rawIdx = (rawIdx + 1) % smoothk;
+        if (rawCount < smoothk) continue;
+        const smK = rawSum / smoothk;
+        if (smCount < smoothd) {
+          smBuf[smIdx] = smK;
+          smSum += smK;
+          smCount++;
+        } else {
+          smSum += smK - smBuf[smIdx];
+          smBuf[smIdx] = smK;
         }
-        if (ka.length - smoothk >= smoothd) {
-          var d = ta.sma(ka, smoothd);
-          stoch3.push([k, d[d.length - 1]]);
-          high.splice(0, 1);
-          low.splice(0, 1);
-          ka.splice(0, 1);
-        }
+        smIdx = (smIdx + 1) % smoothd;
+        if (smCount < smoothd) continue;
+        out.push([smK, smSum / smoothd]);
       }
-      return stoch3;
+      return out;
     }
     module.exports = stoch2;
   }
@@ -529,20 +738,35 @@ var require_bandwidth = __commonJS({
 // src/indicators/ichimoku.js
 var require_ichimoku = __commonJS({
   "src/indicators/ichimoku.js"(exports, module) {
-    var ta = require_registry();
     function ichimoku2(data, length1 = 9, length2 = 26, length3 = 52, length4 = 26) {
-      for (var i = 0, pl = [], cloud = [], place = []; i < data.length; i++) {
-        pl.push(data[i]);
-        if (pl.length >= length3) {
-          var highs = [], lows = [];
-          for (var a in pl) highs.push(pl[a][0]), lows.push(pl[a][2]);
-          var tsen = (Math.max.apply(null, highs.slice(highs.length - length1, highs.length)) + Math.min.apply(null, lows.slice(lows.length - length1, lows.length))) / 2, ksen = (Math.max.apply(null, highs.slice(highs.length - length2, highs.length)) + Math.min.apply(null, lows.slice(lows.length - length2, lows.length))) / 2, senka = data[i][1] + ksen, senkb = (Math.max.apply(null, highs.slice(highs.length - length3, highs.length)) + Math.min.apply(null, lows.slice(lows.length - length2, lows.length))) / 2;
-          chik = data[i][1];
-          place.push([tsen, ksen, senka, senkb, chik]);
-          pl.splice(0, 1);
+      const n = data.length;
+      if (n < length3) return [];
+      const place = [];
+      for (let i = length3 - 1; i < n; i++) {
+        let h1 = -Infinity, l1 = Infinity;
+        for (let j = i - length1 + 1; j <= i; j++) {
+          if (data[j][0] > h1) h1 = data[j][0];
+          if (data[j][2] < l1) l1 = data[j][2];
         }
+        let h2 = -Infinity, l2 = Infinity;
+        for (let j = i - length2 + 1; j <= i; j++) {
+          if (data[j][0] > h2) h2 = data[j][0];
+          if (data[j][2] < l2) l2 = data[j][2];
+        }
+        let h3 = -Infinity, l3 = Infinity;
+        for (let j = i - length3 + 1; j <= i; j++) {
+          if (data[j][0] > h3) h3 = data[j][0];
+          if (data[j][2] < l3) l3 = data[j][2];
+        }
+        const tsen = (h1 + l1) / 2;
+        const ksen = (h2 + l2) / 2;
+        const senka = data[i][1] + ksen;
+        const senkb = (h3 + l3) / 2;
+        const chik = data[i][1];
+        place.push([tsen, ksen, senka, senkb, chik]);
       }
-      for (var i = length4; i < place.length - length4; i++) {
+      const cloud = [];
+      for (let i = length4; i < place.length - length4; i++) {
         cloud.push([place[i][0], place[i][1], place[i + length4][2], place[i + length4][3], place[i - length4][4]]);
       }
       return cloud;
@@ -554,13 +778,23 @@ var require_ichimoku = __commonJS({
 // src/indicators/atr.js
 var require_atr = __commonJS({
   "src/indicators/atr.js"(exports, module) {
-    var ta = require_registry();
     function atr2(data, length = 14) {
-      for (var i = 1, atr3 = [data[0][0] - data[0][2]]; i < data.length; i++) {
-        var t0 = Math.max(data[i][0] - data[i - 1][1], data[i][2] - data[i - 1][1], data[i][0] - data[i][2]);
-        atr3.push((atr3[atr3.length - 1] * (length - 1) + t0) / length);
+      const n = data.length;
+      if (n < length) return [];
+      let prev = data[0][0] - data[0][2];
+      const out = [];
+      if (length === 1) out.push(prev);
+      for (let i = 1; i < n; i++) {
+        const cprev = data[i - 1][1];
+        const tr = Math.max(
+          data[i][0] - data[i][2],
+          Math.abs(data[i][0] - cprev),
+          Math.abs(data[i][2] - cprev)
+        );
+        prev = (prev * (length - 1) + tr) / length;
+        if (i >= length - 1) out.push(prev);
       }
-      return atr3;
+      return out;
     }
     module.exports = atr2;
   }
@@ -569,13 +803,46 @@ var require_atr = __commonJS({
 // src/indicators/mfi.js
 var require_mfi = __commonJS({
   "src/indicators/mfi.js"(exports, module) {
-    var ta = require_registry();
     function mfi2(data, length = 14) {
-      for (var i = length, mfi3 = [], n = data.map((x) => x[1]), p = data.map((x) => x[0]), pos = 0, neg = 0; i <= data.length; i++, pos = 0, neg = 0) {
-        for (var q = i - length; q < i; q++) pos += p[q], neg += n[q];
-        mfi3.push(100 - 100 / (1 + pos / neg));
+      const n = data.length;
+      if (n <= length) return [];
+      const pos = new Array(n);
+      const neg = new Array(n);
+      pos[0] = 0;
+      neg[0] = 0;
+      let prevTp = (data[0][0] + data[0][1] + data[0][2]) / 3;
+      for (let i = 1; i < n; i++) {
+        const tp = (data[i][0] + data[i][1] + data[i][2]) / 3;
+        const flow = tp * data[i][3];
+        if (tp > prevTp) {
+          pos[i] = flow;
+          neg[i] = 0;
+        } else if (tp < prevTp) {
+          pos[i] = 0;
+          neg[i] = flow;
+        } else {
+          pos[i] = 0;
+          neg[i] = 0;
+        }
+        prevTp = tp;
       }
-      return mfi3;
+      let sumPos = 0, sumNeg = 0;
+      for (let i = 1; i <= length; i++) {
+        sumPos += pos[i];
+        sumNeg += neg[i];
+      }
+      const out = [mfiVal(sumPos, sumNeg)];
+      for (let i = length + 1; i < n; i++) {
+        sumPos += pos[i] - pos[i - length];
+        sumNeg += neg[i] - neg[i - length];
+        out.push(mfiVal(sumPos, sumNeg));
+      }
+      return out;
+    }
+    function mfiVal(p, n) {
+      if (p === 0 && n === 0) return NaN;
+      if (n === 0) return 100;
+      return 100 * p / (p + n);
     }
     module.exports = mfi2;
   }
@@ -584,10 +851,15 @@ var require_mfi = __commonJS({
 // src/indicators/roc.js
 var require_roc = __commonJS({
   "src/indicators/roc.js"(exports, module) {
-    var ta = require_registry();
     function roc2(data, length = 14) {
-      for (var i = length, roc3 = []; i <= data.length; i++) roc3.push((data[i - 1] - data[i - length]) / data[i - length]);
-      return roc3;
+      const n = data.length;
+      if (n <= length) return [];
+      const out = [];
+      for (let i = length; i <= n; i++) {
+        const ref = data[i - length];
+        out.push(ref === 0 ? NaN : (data[i - 1] - ref) / ref * 100);
+      }
+      return out;
     }
     module.exports = roc2;
   }
@@ -616,18 +888,22 @@ var require_kst = __commonJS({
   "src/indicators/kst.js"(exports, module) {
     var ta = require_registry();
     function kst2(data, r1 = 10, r2 = 15, r3 = 20, r4 = 30, s1 = 10, s2 = 10, s3 = 10, s4 = 15, sig = 9) {
-      for (var ks = [], fs = [], ms = Math.max(r1, r2, r3, r4) + Math.max(s1, s2, s3, s4), i = ms; i <= data.length; i++) {
-        var pl = data.slice(i - ms, i), rcma1 = ta.roc(pl, r1), rcma2 = ta.roc(pl, r2), rcma3 = ta.roc(pl, r3), rcma4 = ta.roc(pl, r4);
-        rcma1 = ta.sma(rcma1, s1);
-        rcma2 = ta.sma(rcma2, s2);
-        rcma3 = ta.sma(rcma3, s3);
-        rcma4 = ta.sma(rcma4, s4);
-        ks.push(rcma1[rcma1.length - 1] + rcma2[rcma2.length - 1] + rcma3[rcma3.length - 1] + rcma4[rcma4.length - 1]);
+      const r1s = ta.sma(ta.roc(data, r1), s1);
+      const r2s = ta.sma(ta.roc(data, r2), s2);
+      const r3s = ta.sma(ta.roc(data, r3), s3);
+      const r4s = ta.sma(ta.roc(data, r4), s4);
+      const len = Math.min(r1s.length, r2s.length, r3s.length, r4s.length) - 1;
+      if (len <= 0) return [];
+      const off1 = r1s.length - len, off2 = r2s.length - len, off3 = r3s.length - len, off4 = r4s.length - len;
+      const ks = new Array(len);
+      for (let i = 0; i < len; i++) {
+        ks[i] = r1s[i + off1] + r2s[i + off2] + r3s[i + off3] + r4s[i + off4];
       }
-      var sl = ta.sma(ks, sig);
-      ks.splice(0, ks.length - sl.length);
-      for (var i in sl) fs.push([ks[i], sl[i]]);
-      return fs;
+      const sl = ta.sma(ks, sig);
+      const tail = ks.length - sl.length;
+      const out = new Array(sl.length);
+      for (let i = 0; i < sl.length; i++) out[i] = [ks[i + tail], sl[i]];
+      return out;
     }
     module.exports = kst2;
   }
@@ -652,15 +928,22 @@ var require_obv = __commonJS({
 // src/indicators/vwap.js
 var require_vwap = __commonJS({
   "src/indicators/vwap.js"(exports, module) {
-    var ta = require_registry();
     function vwap2(data, length = data.length) {
-      data = data.map((x) => [x[0] * x[1], x[1]]);
-      for (var i = length, vwap3 = []; i <= data.length; i++) {
-        var pl = data.slice(i - length, i), totalv = 0, totalp = 0;
-        for (var o = 0; o < pl.length; o++) totalv += pl[o][1], totalp += pl[o][0];
-        vwap3.push(totalp / totalv);
+      const n = data.length;
+      if (n < length) return [];
+      let sumPV = 0, sumV = 0;
+      for (let i = 0; i < length; i++) {
+        sumPV += data[i][0] * data[i][1];
+        sumV += data[i][1];
       }
-      return vwap3;
+      const out = [sumPV / sumV];
+      for (let i = length; i < n; i++) {
+        const o = i - length;
+        sumPV += data[i][0] * data[i][1] - data[o][0] * data[o][1];
+        sumV += data[i][1] - data[o][1];
+        out.push(sumPV / sumV);
+      }
+      return out;
     }
     module.exports = vwap2;
   }
@@ -669,15 +952,21 @@ var require_vwap = __commonJS({
 // src/indicators/fractals.js
 var require_fractals = __commonJS({
   "src/indicators/fractals.js"(exports, module) {
-    var ta = require_registry();
     function fractals2(data, price = false) {
-      var fractals3 = !price ? [[false, false], [false, false]] : [[-1, -1], [-1, -1]];
-      for (var i = 2; i < data.length - 2; i++) {
-        var up = data[i - 2][0] < data[i][0] && data[i - 1][0] < data[i][0] && data[i][0] > data[i + 1][0] && data[i][0] > data[i + 2][0] ? !price ? true : data[i][0] : !price ? false : -1, down = data[i - 2][1] > data[i][1] && data[i - 1][1] > data[i][1] && data[i][1] < data[i + 1][1] && data[i][1] < data[i + 2][1] ? !price ? true : data[i][1] : !price ? false : -1;
-        fractals3.push([up, down]);
+      const padBool = [false, false];
+      const padPrice = [-1, -1];
+      const out = [price ? padPrice : padBool, price ? padPrice : padBool];
+      for (let i = 2; i < data.length - 2; i++) {
+        const isUp = data[i - 2][0] < data[i][0] && data[i - 1][0] < data[i][0] && data[i][0] > data[i + 1][0] && data[i][0] > data[i + 2][0];
+        const isDown = data[i - 2][1] > data[i][1] && data[i - 1][1] > data[i][1] && data[i][1] < data[i + 1][1] && data[i][1] < data[i + 2][1];
+        if (price) {
+          out.push([isUp ? data[i][0] : -1, isDown ? data[i][1] : -1]);
+        } else {
+          out.push([isUp, isDown]);
+        }
       }
-      !price ? fractals3.push([false, false], [false, false]) : fractals3.push([[-1, -1], [-1, -1]]);
-      return fractals3;
+      out.push(price ? padPrice : padBool, price ? padPrice : padBool);
+      return out;
     }
     module.exports = fractals2;
   }
@@ -687,16 +976,17 @@ var require_fractals = __commonJS({
 var require_cross = __commonJS({
   "src/indicators/cross.js"(exports, module) {
     function cross2(d1, d2) {
-      d1.splice(0, d1.length - d2.length);
-      var cross3 = d1[0] > d2[0], indexes = [];
-      for (var i = 0; i < d1.length; i++) {
-        if (d1[i] < d2[i] && cross3) {
+      if (d1.length > d2.length) d1 = d1.slice(d1.length - d2.length);
+      let crossed = d1[0] > d2[0];
+      const indexes = [];
+      for (let i = 0; i < d1.length; i++) {
+        if (d1[i] < d2[i] && crossed) {
           indexes.push({ index: i, cross: false });
-          cross3 = false;
+          crossed = false;
         }
-        if (d1[i] > d2[i] && !cross3) {
+        if (d1[i] > d2[i] && !crossed) {
           indexes.push({ index: i, cross: true });
-          cross3 = true;
+          crossed = true;
         }
       }
       return indexes;
@@ -708,12 +998,16 @@ var require_cross = __commonJS({
 // src/indicators/mom.js
 var require_mom = __commonJS({
   "src/indicators/mom.js"(exports, module) {
-    var ta = require_registry();
-    function mom2(data, length = 10, p) {
-      for (var i = length - 1, mom3 = []; i < data.length; i++) {
-        p ? mom3.push(data[i] / data[i - (length - 1)] * 100) : mom3.push(data[i] - data[i - (length - 1)]);
+    function mom2(data, length = 10, percent = false) {
+      const n = data.length;
+      if (n < length) return [];
+      const out = [];
+      for (let i = length - 1; i < n; i++) {
+        const ref = data[i - (length - 1)];
+        if (percent) out.push(ref === 0 ? NaN : data[i] / ref * 100);
+        else out.push(data[i] - ref);
       }
-      return mom3;
+      return out;
     }
     module.exports = mom2;
   }
@@ -771,41 +1065,40 @@ var require_halftrend = __commonJS({
 // src/indicators/zigzag.js
 var require_zigzag = __commonJS({
   "src/indicators/zigzag.js"(exports, module) {
-    var ta = require_registry();
     function zigzag2(data, perc = 0.05) {
-      var indexes = [], min = Infinity, max = -Infinity, lmin = false, lmax = false, final = [];
+      const indexes = [];
+      let min = Infinity, max = -Infinity, lmin = false, lmax = false;
       if (Array.isArray(data[0])) {
-        for (var i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
           if (lmin) {
             if (indexes[indexes.length - 1].value >= data[i][1]) {
               indexes[indexes.length - 1].value = data[i][1];
               indexes[indexes.length - 1].index = i;
             }
             if (min >= data[i][1]) min = data[i][1];
-            var hdif = (data[i][0] - min) / min;
-            if (hdif > perc) {
+            if ((data[i][0] - min) / min > perc) {
               indexes.push({ index: i, value: data[i][0] });
               lmax = true;
               lmin = false;
-              min = Infinity;
+              max = data[i][0];
             }
           } else if (lmax) {
             if (indexes[indexes.length - 1].value <= data[i][0]) {
               indexes[indexes.length - 1].value = data[i][0];
               indexes[indexes.length - 1].index = i;
             }
-            if (max <= data[i][1]) max = data[i][1];
-            var ldif = (max - data[i][1]) / data[i][1];
-            if (ldif > perc) {
+            if (max <= data[i][0]) max = data[i][0];
+            if ((max - data[i][1]) / data[i][1] > perc) {
               indexes.push({ index: i, value: data[i][1] });
               lmin = true;
               lmax = false;
-              max = -Infinity;
+              min = data[i][1];
             }
           } else {
             if (min >= data[i][1]) min = data[i][1];
             if (max <= data[i][0]) max = data[i][0];
-            var hdif = (data[i][0] - min) / min, ldif = (max - data[i][1]) / max;
+            const hdif = (data[i][0] - min) / min;
+            const ldif = (max - data[i][1]) / max;
             if (ldif > perc && hdif < perc) {
               lmin = true;
               indexes.push({ index: 0, value: data[0][0] });
@@ -814,33 +1107,30 @@ var require_zigzag = __commonJS({
               lmax = true;
               indexes.push({ index: 0, value: data[0][1] });
               indexes.push({ index: i, value: data[i][0] });
+            } else if (ldif > hdif) {
+              lmin = true;
+              indexes.push({ index: 0, value: data[0][0] });
+              indexes.push({ index: i, value: data[i][1] });
             } else {
-              if (ldif > hdif) {
-                lmin = true;
-                indexes.push({ index: 0, value: data[0][0] });
-                indexes.push({ index: i, value: data[i][1] });
-              } else {
-                lmax = true;
-                indexes.push({ index: 0, value: data[0][1] });
-                indexes.push({ index: i, value: data[i][0] });
-              }
+              lmax = true;
+              indexes.push({ index: 0, value: data[0][1] });
+              indexes.push({ index: i, value: data[i][0] });
             }
           }
         }
       } else {
-        for (var i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
           if (lmin) {
             if (indexes[indexes.length - 1].value >= data[i]) {
               indexes[indexes.length - 1].value = data[i];
               indexes[indexes.length - 1].index = i;
             }
             if (min >= data[i]) min = data[i];
-            var hdif = (data[i] - min) / min;
-            if (hdif > perc) {
+            if ((data[i] - min) / min > perc) {
               indexes.push({ index: i, value: data[i] });
               lmax = true;
               lmin = false;
-              min = Infinity;
+              max = data[i];
             }
           } else if (lmax) {
             if (indexes[indexes.length - 1].value <= data[i]) {
@@ -848,17 +1138,17 @@ var require_zigzag = __commonJS({
               indexes[indexes.length - 1].index = i;
             }
             if (max <= data[i]) max = data[i];
-            var ldif = (max - data[i]) / data[i];
-            if (ldif > perc) {
+            if ((max - data[i]) / data[i] > perc) {
               indexes.push({ index: i, value: data[i] });
               lmin = true;
               lmax = false;
-              max = -Infinity;
+              min = data[i];
             }
           } else {
             if (min >= data[i]) min = data[i];
             if (max <= data[i]) max = data[i];
-            var hdif = (data[i] - min) / min, ldif = (max - data[i]) / max;
+            const hdif = (data[i] - min) / min;
+            const ldif = (max - data[i]) / max;
             if (ldif > perc && hdif < perc) {
               lmin = true;
               indexes.push({ index: 0, value: data[0] });
@@ -867,24 +1157,24 @@ var require_zigzag = __commonJS({
               lmax = true;
               indexes.push({ index: 0, value: data[0] });
               indexes.push({ index: i, value: data[i] });
+            } else if (ldif > hdif) {
+              lmin = true;
+              indexes.push({ index: 0, value: data[0] });
+              indexes.push({ index: i, value: data[i] });
             } else {
-              if (ldif > hdif) {
-                lmin = true;
-                indexes.push({ index: 0, value: data[0] });
-                indexes.push({ index: i, value: data[i] });
-              } else {
-                lmax = true;
-                indexes.push({ index: 0, value: data[0] });
-                indexes.push({ index: i, value: data[i] });
-              }
+              lmax = true;
+              indexes.push({ index: 0, value: data[0] });
+              indexes.push({ index: i, value: data[i] });
             }
           }
         }
       }
-      final = [indexes[0].value];
-      for (var i = 1; i < indexes.length; i++) {
-        var len = indexes[i].index - indexes[i - 1].index, delta = (indexes[i].value - indexes[i - 1].value) / len;
-        for (var x = 1; x <= len; x++) final.push(x * delta + indexes[i - 1].value);
+      if (indexes.length === 0) return [];
+      const final = [indexes[0].value];
+      for (let i = 1; i < indexes.length; i++) {
+        const len = indexes[i].index - indexes[i - 1].index;
+        const delta = (indexes[i].value - indexes[i - 1].value) / len;
+        for (let x = 1; x <= len; x++) final.push(x * delta + indexes[i - 1].value);
       }
       return final;
     }
@@ -909,7 +1199,7 @@ var require_psar = __commonJS({
         } else {
           sar = Math.max(sar, furthest[0], prev[0]);
           if (data[i][1] < extreme) {
-            extreme = data[i][0];
+            extreme = data[i][1];
             accel = Math.min(accel + step, max);
           }
         }
@@ -934,10 +1224,14 @@ var require_supertrend = __commonJS({
   "src/indicators/supertrend.js"(exports, module) {
     var ta = require_registry();
     function supertrend2(data, length = 20, multiplier = 3) {
-      for (var i = length - 1, atr2 = ta.atr(data, length), trend = []; i < data.length; i++) {
-        trend.push([(data[i][0] + data[i][2]) / 2 + multiplier * atr2[i], (data[i][0] + data[i][2]) / 2 - multiplier * atr2[i]]);
+      const atrArr = ta.atr(data, length);
+      const out = [];
+      for (let i = 0; i < atrArr.length; i++) {
+        const bar = i + length - 1;
+        const mid = (data[bar][0] + data[bar][2]) / 2;
+        out.push([mid + multiplier * atrArr[i], mid - multiplier * atrArr[i]]);
       }
-      return trend;
+      return out;
     }
     module.exports = supertrend2;
   }
@@ -948,11 +1242,20 @@ var require_elderray = __commonJS({
   "src/indicators/elderray.js"(exports, module) {
     var ta = require_registry();
     function elderray2(data, length = 13) {
-      for (var i = length, eld = []; i <= data.length; i++) {
-        var pl = data.slice(i - length, i), low = Math.min.apply(void 0, pl), high = Math.max.apply(void 0, pl), em = ta.ema(pl, pl.length);
-        eld.push([high - em[0], low - em[0]]);
+      const n = data.length;
+      if (n < length) return [];
+      const out = [];
+      for (let i = length; i <= n; i++) {
+        let hi = -Infinity, lo = Infinity, sum2 = 0;
+        for (let j = i - length; j < i; j++) {
+          if (data[j] > hi) hi = data[j];
+          if (data[j] < lo) lo = data[j];
+          sum2 += data[j];
+        }
+        const mean = sum2 / length;
+        out.push([hi - mean, lo - mean]);
       }
-      return eld;
+      return out;
     }
     module.exports = elderray2;
   }
@@ -961,13 +1264,28 @@ var require_elderray = __commonJS({
 // src/indicators/hv.js
 var require_hv = __commonJS({
   "src/indicators/hv.js"(exports, module) {
-    var ta = require_registry();
     function hv2(data, length = 10) {
-      for (var i = length, hv3 = []; i <= data.length; i++) {
-        var ss = ta.ssd(data.slice(i - length, i)), vari = ss / length;
-        hv3.push(Math.sqrt(vari));
+      const n = data.length;
+      if (n < length) return [];
+      let sumX = 0, sumX2 = 0;
+      for (let i = 0; i < length; i++) {
+        sumX += data[i];
+        sumX2 += data[i] * data[i];
       }
-      return hv3;
+      const out = [];
+      pushHv(out, sumX, sumX2, length);
+      for (let i = length; i < n; i++) {
+        const incoming = data[i], outgoing = data[i - length];
+        sumX += incoming - outgoing;
+        sumX2 += incoming * incoming - outgoing * outgoing;
+        pushHv(out, sumX, sumX2, length);
+      }
+      return out;
+    }
+    function pushHv(out, sumX, sumX2, length) {
+      const mean = sumX / length;
+      const v = sumX2 / length - mean * mean;
+      out.push(Math.sqrt(v > 0 ? v : 0));
     }
     module.exports = hv2;
   }
@@ -1032,18 +1350,564 @@ var require_rsi_divergence = __commonJS({
 var require_divergence = __commonJS({
   "src/indicators/divergence.js"(exports, module) {
     function divergence2(data1, data2) {
-      if (data1.length > data2.length) data1.splice(0, data1.length - data2.length);
-      if (data2.length > data1.length) data2.splice(0, data2.length - data1.length);
-      for (var i = 1, out = []; i < data1.length; i++) {
-        if (data1[i] > data1[i - 1] && data2[i] < data2[i - 1] || data1[i] < data1[i - 1] && data2[i] > data2[i - 1]) {
-          out.push(1);
-        } else {
-          out.push(0);
-        }
+      if (data1.length > data2.length) data1 = data1.slice(data1.length - data2.length);
+      if (data2.length > data1.length) data2 = data2.slice(data2.length - data1.length);
+      const out = [];
+      for (let i = 1; i < data1.length; i++) {
+        const up1 = data1[i] > data1[i - 1], dn1 = data1[i] < data1[i - 1];
+        const up2 = data2[i] > data2[i - 1], dn2 = data2[i] < data2[i - 1];
+        out.push(up1 && dn2 || dn1 && up2 ? 1 : 0);
       }
       return out;
     }
     module.exports = divergence2;
+  }
+});
+
+// src/indicators/trix.js
+var require_trix = __commonJS({
+  "src/indicators/trix.js"(exports, module) {
+    var ta = require_registry();
+    function trix2(data, length = 30) {
+      const e1 = ta.ema(data, length);
+      if (e1.length < length) return [];
+      const e2 = ta.ema(e1, length);
+      if (e2.length < length) return [];
+      const e3 = ta.ema(e2, length);
+      if (e3.length < 2) return [];
+      const out = new Array(e3.length - 1);
+      for (let i = 1; i < e3.length; i++) {
+        const prev = e3[i - 1];
+        out[i - 1] = prev === 0 ? NaN : 100 * (e3[i] - prev) / prev;
+      }
+      return out;
+    }
+    module.exports = trix2;
+  }
+});
+
+// src/indicators/adl.js
+var require_adl = __commonJS({
+  "src/indicators/adl.js"(exports, module) {
+    function adl2(data) {
+      const n = data.length;
+      if (n === 0) return [];
+      const out = new Array(n);
+      let acc = 0;
+      for (let i = 0; i < n; i++) {
+        const h = data[i][0], c = data[i][1], l = data[i][2], v = data[i][3];
+        const range = h - l;
+        const mfm = range === 0 ? 0 : (c - l - (h - c)) / range;
+        acc += mfm * v;
+        out[i] = acc;
+      }
+      return out;
+    }
+    module.exports = adl2;
+  }
+});
+
+// src/indicators/cci.js
+var require_cci = __commonJS({
+  "src/indicators/cci.js"(exports, module) {
+    function cci2(data, length = 20) {
+      const n = data.length;
+      if (n < length) return [];
+      const tp = new Array(n);
+      for (let i = 0; i < n; i++) tp[i] = (data[i][0] + data[i][1] + data[i][2]) / 3;
+      const out = new Array(n - length + 1);
+      for (let i = length; i <= n; i++) {
+        let sum2 = 0;
+        for (let j = i - length; j < i; j++) sum2 += tp[j];
+        const sma2 = sum2 / length;
+        let mad2 = 0;
+        for (let j = i - length; j < i; j++) mad2 += Math.abs(tp[j] - sma2);
+        mad2 /= length;
+        out[i - length] = mad2 === 0 ? NaN : (tp[i - 1] - sma2) / (0.015 * mad2);
+      }
+      return out;
+    }
+    module.exports = cci2;
+  }
+});
+
+// src/indicators/pdm.js
+var require_pdm = __commonJS({
+  "src/indicators/pdm.js"(exports, module) {
+    function pdm2(data, length = 14) {
+      const n = data.length;
+      if (n < length + 1) return [];
+      let sum2 = 0;
+      for (let i = 1; i <= length; i++) {
+        const up = data[i][0] - data[i - 1][0];
+        const dn = data[i - 1][2] - data[i][2];
+        if (up > dn && up > 0) sum2 += up;
+      }
+      let prev = sum2 / length;
+      const out = new Array(n - length);
+      out[0] = prev;
+      for (let i = length + 1; i < n; i++) {
+        const up = data[i][0] - data[i - 1][0];
+        const dn = data[i - 1][2] - data[i][2];
+        const dm = up > dn && up > 0 ? up : 0;
+        prev = (prev * (length - 1) + dm) / length;
+        out[i - length] = prev;
+      }
+      return out;
+    }
+    module.exports = pdm2;
+  }
+});
+
+// src/indicators/mdm.js
+var require_mdm = __commonJS({
+  "src/indicators/mdm.js"(exports, module) {
+    function mdm2(data, length = 14) {
+      const n = data.length;
+      if (n < length + 1) return [];
+      let sum2 = 0;
+      for (let i = 1; i <= length; i++) {
+        const up = data[i][0] - data[i - 1][0];
+        const dn = data[i - 1][2] - data[i][2];
+        if (dn > up && dn > 0) sum2 += dn;
+      }
+      let prev = sum2 / length;
+      const out = new Array(n - length);
+      out[0] = prev;
+      for (let i = length + 1; i < n; i++) {
+        const up = data[i][0] - data[i - 1][0];
+        const dn = data[i - 1][2] - data[i][2];
+        const dm = dn > up && dn > 0 ? dn : 0;
+        prev = (prev * (length - 1) + dm) / length;
+        out[i - length] = prev;
+      }
+      return out;
+    }
+    module.exports = mdm2;
+  }
+});
+
+// src/indicators/pdi.js
+var require_pdi = __commonJS({
+  "src/indicators/pdi.js"(exports, module) {
+    function pdi2(data, length = 14) {
+      const n = data.length;
+      if (n < length + 1) return [];
+      let sumDm = 0, sumTr = 0;
+      for (let i = 1; i <= length; i++) {
+        const h = data[i][0], l = data[i][2], cprev = data[i - 1][1];
+        const up = data[i][0] - data[i - 1][0];
+        const dn = data[i - 1][2] - data[i][2];
+        if (up > dn && up > 0) sumDm += up;
+        sumTr += Math.max(h - l, Math.abs(h - cprev), Math.abs(l - cprev));
+      }
+      let dm = sumDm / length, tr = sumTr / length;
+      const out = new Array(n - length);
+      out[0] = tr === 0 ? NaN : 100 * dm / tr;
+      for (let i = length + 1; i < n; i++) {
+        const h = data[i][0], l = data[i][2], cprev = data[i - 1][1];
+        const up = data[i][0] - data[i - 1][0];
+        const dn = data[i - 1][2] - data[i][2];
+        const curDm = up > dn && up > 0 ? up : 0;
+        const curTr = Math.max(h - l, Math.abs(h - cprev), Math.abs(l - cprev));
+        dm = (dm * (length - 1) + curDm) / length;
+        tr = (tr * (length - 1) + curTr) / length;
+        out[i - length] = tr === 0 ? NaN : 100 * dm / tr;
+      }
+      return out;
+    }
+    module.exports = pdi2;
+  }
+});
+
+// src/indicators/mdi.js
+var require_mdi = __commonJS({
+  "src/indicators/mdi.js"(exports, module) {
+    function mdi2(data, length = 14) {
+      const n = data.length;
+      if (n < length + 1) return [];
+      let sumDm = 0, sumTr = 0;
+      for (let i = 1; i <= length; i++) {
+        const h = data[i][0], l = data[i][2], cprev = data[i - 1][1];
+        const up = data[i][0] - data[i - 1][0];
+        const dn = data[i - 1][2] - data[i][2];
+        if (dn > up && dn > 0) sumDm += dn;
+        sumTr += Math.max(h - l, Math.abs(h - cprev), Math.abs(l - cprev));
+      }
+      let dm = sumDm / length, tr = sumTr / length;
+      const out = new Array(n - length);
+      out[0] = tr === 0 ? NaN : 100 * dm / tr;
+      for (let i = length + 1; i < n; i++) {
+        const h = data[i][0], l = data[i][2], cprev = data[i - 1][1];
+        const up = data[i][0] - data[i - 1][0];
+        const dn = data[i - 1][2] - data[i][2];
+        const curDm = dn > up && dn > 0 ? dn : 0;
+        const curTr = Math.max(h - l, Math.abs(h - cprev), Math.abs(l - cprev));
+        dm = (dm * (length - 1) + curDm) / length;
+        tr = (tr * (length - 1) + curTr) / length;
+        out[i - length] = tr === 0 ? NaN : 100 * dm / tr;
+      }
+      return out;
+    }
+    module.exports = mdi2;
+  }
+});
+
+// src/indicators/dx.js
+var require_dx = __commonJS({
+  "src/indicators/dx.js"(exports, module) {
+    var ta = require_registry();
+    function dx2(data, length = 14) {
+      const p = ta.pdi(data, length);
+      const m = ta.mdi(data, length);
+      const out = new Array(p.length);
+      for (let i = 0; i < p.length; i++) {
+        const sum2 = p[i] + m[i];
+        out[i] = sum2 === 0 ? NaN : 100 * Math.abs(p[i] - m[i]) / sum2;
+      }
+      return out;
+    }
+    module.exports = dx2;
+  }
+});
+
+// src/indicators/adx.js
+var require_adx = __commonJS({
+  "src/indicators/adx.js"(exports, module) {
+    var ta = require_registry();
+    function adx2(data, length = 14) {
+      const d = ta.dx(data, length);
+      if (d.length < length) return [];
+      let sum2 = 0;
+      for (let i = 0; i < length; i++) sum2 += d[i];
+      let prev = sum2 / length;
+      const out = new Array(d.length - length + 1);
+      out[0] = prev;
+      for (let i = length; i < d.length; i++) {
+        prev = (prev * (length - 1) + d[i]) / length;
+        out[i - length + 1] = prev;
+      }
+      return out;
+    }
+    module.exports = adx2;
+  }
+});
+
+// src/indicators/adxr.js
+var require_adxr = __commonJS({
+  "src/indicators/adxr.js"(exports, module) {
+    var ta = require_registry();
+    function adxr2(data, length = 14) {
+      const a = ta.adx(data, length);
+      if (a.length < length) return [];
+      const out = new Array(a.length - length + 1);
+      for (let i = length - 1; i < a.length; i++) {
+        out[i - length + 1] = (a[i] + a[i - length + 1]) / 2;
+      }
+      return out;
+    }
+    module.exports = adxr2;
+  }
+});
+
+// src/indicators/stoch-rsi.js
+var require_stoch_rsi = __commonJS({
+  "src/indicators/stoch-rsi.js"(exports, module) {
+    var ta = require_registry();
+    function stoch_rsi2(data, rsiLength = 14, stochLength = 14, smoothK = 3, smoothD = 3) {
+      const r = ta.rsi(data, rsiLength);
+      if (r.length < stochLength) return [];
+      const rawK = new Array(r.length - stochLength + 1);
+      for (let i = stochLength; i <= r.length; i++) {
+        let lo = Infinity, hi = -Infinity;
+        for (let j = i - stochLength; j < i; j++) {
+          if (r[j] > hi) hi = r[j];
+          if (r[j] < lo) lo = r[j];
+        }
+        const range = hi - lo;
+        rawK[i - stochLength] = range === 0 ? NaN : 100 * (r[i - 1] - lo) / range;
+      }
+      const fastK = ta.sma(rawK, smoothK);
+      const fastD = ta.sma(fastK, smoothD);
+      if (fastD.length === 0) return [];
+      const offset = fastK.length - fastD.length;
+      const out = new Array(fastD.length);
+      for (let i = 0; i < fastD.length; i++) {
+        out[i] = [fastK[i + offset], fastD[i]];
+      }
+      return out;
+    }
+    module.exports = stoch_rsi2;
+  }
+});
+
+// src/indicators/ppo.js
+var require_ppo = __commonJS({
+  "src/indicators/ppo.js"(exports, module) {
+    var ta = require_registry();
+    function ppo2(data, length1 = 12, length2 = 26) {
+      if (length1 > length2) [length1, length2] = [length2, length1];
+      const eb = ta.ema(data, length2);
+      const m = ta.macd(data, length1, length2);
+      const out = new Array(m.length);
+      for (let i = 0; i < m.length; i++) {
+        out[i] = eb[i] === 0 ? NaN : 100 * m[i] / eb[i];
+      }
+      return out;
+    }
+    module.exports = ppo2;
+  }
+});
+
+// src/indicators/apo.js
+var require_apo = __commonJS({
+  "src/indicators/apo.js"(exports, module) {
+    var ta = require_registry();
+    function apo2(data, length1 = 12, length2 = 26) {
+      return ta.macd(data, length1, length2);
+    }
+    module.exports = apo2;
+  }
+});
+
+// src/indicators/cmf.js
+var require_cmf = __commonJS({
+  "src/indicators/cmf.js"(exports, module) {
+    function cmf2(data, length = 20) {
+      const n = data.length;
+      if (n < length) return [];
+      const mfv = new Array(n);
+      for (let i = 0; i < n; i++) {
+        const h = data[i][0], c = data[i][1], l = data[i][2], v = data[i][3];
+        const range = h - l;
+        mfv[i] = range === 0 ? 0 : (c - l - (h - c)) / range * v;
+      }
+      let sM = 0, sV = 0;
+      for (let i = 0; i < length; i++) {
+        sM += mfv[i];
+        sV += data[i][3];
+      }
+      const out = new Array(n - length + 1);
+      out[0] = sV === 0 ? NaN : sM / sV;
+      for (let i = length; i < n; i++) {
+        sM += mfv[i] - mfv[i - length];
+        sV += data[i][3] - data[i - length][3];
+        out[i - length + 1] = sV === 0 ? NaN : sM / sV;
+      }
+      return out;
+    }
+    module.exports = cmf2;
+  }
+});
+
+// src/indicators/nvi.js
+var require_nvi = __commonJS({
+  "src/indicators/nvi.js"(exports, module) {
+    function nvi2(data) {
+      const n = data.length;
+      if (n === 0) return [];
+      const out = new Array(n);
+      out[0] = 1e3;
+      for (let i = 1; i < n; i++) {
+        const cprev = data[i - 1][0];
+        if (data[i][1] < data[i - 1][1] && cprev !== 0) {
+          out[i] = out[i - 1] * data[i][0] / cprev;
+        } else {
+          out[i] = out[i - 1];
+        }
+      }
+      return out;
+    }
+    module.exports = nvi2;
+  }
+});
+
+// src/indicators/pvi.js
+var require_pvi = __commonJS({
+  "src/indicators/pvi.js"(exports, module) {
+    function pvi2(data) {
+      const n = data.length;
+      if (n === 0) return [];
+      const out = new Array(n);
+      out[0] = 1e3;
+      for (let i = 1; i < n; i++) {
+        const cprev = data[i - 1][0];
+        if (data[i][1] > data[i - 1][1] && cprev !== 0) {
+          out[i] = out[i - 1] * data[i][0] / cprev;
+        } else {
+          out[i] = out[i - 1];
+        }
+      }
+      return out;
+    }
+    module.exports = pvi2;
+  }
+});
+
+// src/indicators/emv.js
+var require_emv = __commonJS({
+  "src/indicators/emv.js"(exports, module) {
+    function emv2(data) {
+      const n = data.length;
+      if (n < 2) return [];
+      const out = new Array(n - 1);
+      for (let i = 1; i < n; i++) {
+        const h = data[i][0], l = data[i][1], v = data[i][2];
+        const hp = data[i - 1][0], lp = data[i - 1][1];
+        const move = (h + l) / 2 - (hp + lp) / 2;
+        const range = h - l;
+        out[i - 1] = range === 0 || v === 0 ? NaN : move * range * 1e4 / v;
+      }
+      return out;
+    }
+    module.exports = emv2;
+  }
+});
+
+// src/indicators/natr.js
+var require_natr = __commonJS({
+  "src/indicators/natr.js"(exports, module) {
+    var ta = require_registry();
+    function natr2(data, length = 14) {
+      const a = ta.atr(data, length);
+      if (a.length === 0) return [];
+      const out = new Array(a.length);
+      for (let i = 0; i < a.length; i++) {
+        const c = data[i + length - 1][1];
+        out[i] = c === 0 ? NaN : 100 * a[i] / c;
+      }
+      return out;
+    }
+    module.exports = natr2;
+  }
+});
+
+// src/indicators/dpo.js
+var require_dpo = __commonJS({
+  "src/indicators/dpo.js"(exports, module) {
+    var ta = require_registry();
+    function dpo2(data, length = 21) {
+      const sma2 = ta.sma(data, length);
+      if (sma2.length === 0) return [];
+      const dataOff = length - 2 - Math.floor(length / 2);
+      const out = new Array(sma2.length);
+      for (let i = 0; i < sma2.length; i++) {
+        out[i] = data[i + dataOff] - sma2[i];
+      }
+      return out;
+    }
+    module.exports = dpo2;
+  }
+});
+
+// src/indicators/mass.js
+var require_mass = __commonJS({
+  "src/indicators/mass.js"(exports, module) {
+    var ta = require_registry();
+    function mass2(data, length = 25) {
+      const n = data.length;
+      const range = new Array(n);
+      for (let i = 0; i < n; i++) range[i] = data[i][0] - data[i][1];
+      const e1 = ta.ema(range, 9);
+      if (e1.length < 9) return [];
+      const e2 = ta.ema(e1, 9);
+      if (e2.length < length) return [];
+      const offset = e1.length - e2.length;
+      const ratio = new Array(e2.length);
+      for (let i = 0; i < e2.length; i++) {
+        ratio[i] = e2[i] === 0 ? NaN : e1[i + offset] / e2[i];
+      }
+      let sum2 = 0;
+      for (let i = 0; i < length; i++) sum2 += ratio[i];
+      const out = new Array(ratio.length - length + 1);
+      out[0] = sum2;
+      for (let i = length; i < ratio.length; i++) {
+        sum2 += ratio[i] - ratio[i - length];
+        out[i - length + 1] = sum2;
+      }
+      return out;
+    }
+    module.exports = mass2;
+  }
+});
+
+// src/indicators/ulcer.js
+var require_ulcer = __commonJS({
+  "src/indicators/ulcer.js"(exports, module) {
+    function ulcer2(data, length = 14) {
+      const n = data.length;
+      if (n < length) return [];
+      const dd = new Array(n);
+      for (let i = 0; i < n; i++) {
+        let hi = -Infinity;
+        const start = i - length + 1 > 0 ? i - length + 1 : 0;
+        for (let j = start; j <= i; j++) if (data[j] > hi) hi = data[j];
+        dd[i] = hi === 0 ? 0 : 100 * (data[i] - hi) / hi;
+      }
+      let sum2 = 0;
+      for (let i = 0; i < length; i++) sum2 += dd[i] * dd[i];
+      const out = new Array(n - length + 1);
+      out[0] = Math.sqrt(sum2 / length);
+      for (let i = length; i < n; i++) {
+        sum2 += dd[i] * dd[i] - dd[i - length] * dd[i - length];
+        out[i - length + 1] = Math.sqrt(sum2 / length);
+      }
+      return out;
+    }
+    module.exports = ulcer2;
+  }
+});
+
+// src/indicators/vortex.js
+var require_vortex = __commonJS({
+  "src/indicators/vortex.js"(exports, module) {
+    function vortex2(data, length = 14) {
+      const n = data.length;
+      if (n < length + 1) return [];
+      const vmp = new Array(n);
+      const vmn = new Array(n);
+      const tr = new Array(n);
+      for (let i = 1; i < n; i++) {
+        const h = data[i][0], l = data[i][2], cprev = data[i - 1][1];
+        const hprev = data[i - 1][0], lprev = data[i - 1][2];
+        vmp[i] = Math.abs(h - lprev);
+        vmn[i] = Math.abs(l - hprev);
+        tr[i] = Math.max(h - l, Math.abs(h - cprev), Math.abs(l - cprev));
+      }
+      let sP = 0, sN = 0, sT = 0;
+      for (let i = 1; i <= length; i++) {
+        sP += vmp[i];
+        sN += vmn[i];
+        sT += tr[i];
+      }
+      const out = new Array(n - length);
+      out[0] = [sT === 0 ? NaN : sP / sT, sT === 0 ? NaN : sN / sT];
+      for (let i = length + 1; i < n; i++) {
+        sP += vmp[i] - vmp[i - length];
+        sN += vmn[i] - vmn[i - length];
+        sT += tr[i] - tr[i - length];
+        out[i - length] = [sT === 0 ? NaN : sP / sT, sT === 0 ? NaN : sN / sT];
+      }
+      return out;
+    }
+    module.exports = vortex2;
+  }
+});
+
+// src/indicators/kdj.js
+var require_kdj = __commonJS({
+  "src/indicators/kdj.js"(exports, module) {
+    var ta = require_registry();
+    function kdj2(data, length = 9, smoothK = 3, smoothD = 3) {
+      const s = ta.stoch(data, length, smoothK, smoothD);
+      const out = new Array(s.length);
+      for (let i = 0; i < s.length; i++) {
+        const k = s[i][0], d = s[i][1];
+        out[i] = [k, d, 3 * k - 2 * d];
+      }
+      return out;
+    }
+    module.exports = kdj2;
   }
 });
 
@@ -1065,14 +1929,21 @@ var require_gator = __commonJS({
 // src/oscillators/mom-osc.js
 var require_mom_osc = __commonJS({
   "src/oscillators/mom-osc.js"(exports, module) {
-    var ta = require_registry();
     function mom_osc2(data, length = 10) {
-      length++;
-      for (var i = length, osc = [], sumh = 0, suml = 0; i <= data.length; i++, sumh = 0, suml = 0) {
-        for (var a = 1; a < length; a++) data[i - length + (a - 1)] < data[i - length + a] ? sumh += data[i - length + a] : suml += data[i - length + a];
-        osc.push((sumh - suml) / (sumh + suml) * 100);
+      const n = data.length;
+      if (n <= length) return [];
+      const out = [];
+      for (let i = length; i < n; i++) {
+        let sumh = 0, suml = 0;
+        for (let j = i - length + 1; j <= i; j++) {
+          const d = data[j] - data[j - 1];
+          if (d > 0) sumh += d;
+          else if (d < 0) suml -= d;
+        }
+        const denom = sumh + suml;
+        out.push(denom === 0 ? NaN : (sumh - suml) / denom * 100);
       }
-      return osc;
+      return out;
     }
     module.exports = mom_osc2;
   }
@@ -1083,18 +1954,19 @@ var require_chaikin_osc = __commonJS({
   "src/oscillators/chaikin-osc.js"(exports, module) {
     var ta = require_registry();
     function chaikin_osc2(data, ema1 = 3, ema2 = 10) {
-      for (var i = 0, cha = [], adl = []; i < data.length; i++) {
-        var mfm = (data[i][1] - data[i][2] - (data[i][0] - data[i][1])) / (data[i][0] - data[i][2]);
-        isNaN(mfm) ? adl.push(0) : adl.push(mfm * data[i][3]);
+      const adl2 = new Array(data.length);
+      for (let i = 0; i < data.length; i++) {
+        const range = data[i][0] - data[i][2];
+        const mfm = range === 0 ? NaN : (data[i][1] - data[i][2] - (data[i][0] - data[i][1])) / range;
+        adl2[i] = mfm * data[i][3];
       }
-      var ef = ta.ema(adl, ema1), es = ta.ema(adl, ema2);
-      if (ef.length > es.length) {
-        ef.splice(0, ef.length - es.length);
-      } else {
-        es.splice(0, es.length - ef.length);
-      }
-      for (var i = 0; i < ef.length; i++) cha.push(ef[i] - es[i]);
-      return cha;
+      let ef = ta.ema(adl2, ema1);
+      let es = ta.ema(adl2, ema2);
+      if (ef.length > es.length) ef = ef.slice(ef.length - es.length);
+      else if (es.length > ef.length) es = es.slice(es.length - ef.length);
+      const out = new Array(ef.length);
+      for (let i = 0; i < ef.length; i++) out[i] = ef[i] - es[i];
+      return out;
     }
     module.exports = chaikin_osc2;
   }
@@ -1103,15 +1975,22 @@ var require_chaikin_osc = __commonJS({
 // src/oscillators/ao.js
 var require_ao = __commonJS({
   "src/oscillators/ao.js"(exports, module) {
-    var ta = require_registry();
     function ao2(data, length1 = 5, length2 = 35) {
-      data = data.map((x) => (x[0] + x[1]) / 2);
-      for (var i = length2, a = []; i <= data.length; i++) {
-        var pl = data.slice(i - length2, i);
-        var f = ta.sma(pl, length1), s = ta.sma(pl, length2);
-        a.push(f[f.length - 1] - s[s.length - 1]);
+      const n = data.length;
+      if (n < length2) return [];
+      const m = new Float64Array(n);
+      for (let i = 0; i < n; i++) m[i] = (data[i][0] + data[i][1]) / 2;
+      let sumSlow = 0;
+      for (let i = 0; i < length2; i++) sumSlow += m[i];
+      let sumFast = 0;
+      for (let i = length2 - length1; i < length2; i++) sumFast += m[i];
+      const out = [sumFast / length1 - sumSlow / length2];
+      for (let i = length2; i < n; i++) {
+        sumSlow += m[i] - m[i - length2];
+        sumFast += m[i] - m[i - length1];
+        out.push(sumFast / length1 - sumSlow / length2);
       }
-      return a;
+      return out;
     }
     module.exports = ao2;
   }
@@ -1138,39 +2017,153 @@ var require_ac = __commonJS({
 // src/oscillators/fisher.js
 var require_fisher = __commonJS({
   "src/oscillators/fisher.js"(exports, module) {
-    var ta = require_registry();
     function fisher2(data, len) {
-      var out = [], fish = 0, v1 = 0;
-      for (var i = len; i <= data.length; i++) {
-        var pl = data.slice(i - len, i), pf = fish, mn = Math.min.apply(null, pl), v1 = 0.33 * 2 * ((data[i - 1] - mn) / (Math.max.apply(null, pl) - mn) - 0.5) + 0.67 * v1;
+      const n = data.length;
+      if (n < len) return [];
+      const out = [];
+      let fish = 0, v1 = 0;
+      for (let i = len; i <= n; i++) {
+        let mn = Infinity, mx = -Infinity;
+        for (let j = i - len; j < i; j++) {
+          if (data[j] < mn) mn = data[j];
+          if (data[j] > mx) mx = data[j];
+        }
+        const range = mx - mn;
+        const norm = range === 0 ? 0 : (data[i - 1] - mn) / range - 0.5;
+        v1 = 0.33 * 2 * norm + 0.67 * v1;
         if (v1 > 0.99) v1 = 0.999;
         if (v1 < -0.99) v1 = -0.999;
+        const pf = fish;
         fish = 0.5 * Math.log((1 + v1) / (1 - v1)) + 0.5 * pf;
         out.push([fish, pf]);
       }
-      return out.slice(1, out.length);
+      return out;
     }
     module.exports = fisher2;
+  }
+});
+
+// src/oscillators/ult.js
+var require_ult = __commonJS({
+  "src/oscillators/ult.js"(exports, module) {
+    function ult2(data, p1 = 7, p2 = 14, p3 = 28) {
+      const n = data.length;
+      const need = Math.max(p1, p2, p3);
+      if (n - 1 < need) return [];
+      const bp = new Array(n);
+      const tr = new Array(n);
+      for (let i = 1; i < n; i++) {
+        const h = data[i][0], c = data[i][1], l = data[i][2];
+        const cprev = data[i - 1][1];
+        const lo = Math.min(l, cprev);
+        bp[i] = c - lo;
+        tr[i] = Math.max(h, cprev) - lo;
+      }
+      let sBp1 = 0, sTr1 = 0, sBp2 = 0, sTr2 = 0, sBp3 = 0, sTr3 = 0;
+      for (let i = need - p1 + 1; i <= need; i++) {
+        sBp1 += bp[i];
+        sTr1 += tr[i];
+      }
+      for (let i = need - p2 + 1; i <= need; i++) {
+        sBp2 += bp[i];
+        sTr2 += tr[i];
+      }
+      for (let i = need - p3 + 1; i <= need; i++) {
+        sBp3 += bp[i];
+        sTr3 += tr[i];
+      }
+      const out = [ultVal(sBp1, sTr1, sBp2, sTr2, sBp3, sTr3)];
+      for (let i = need + 1; i < n; i++) {
+        sBp1 += bp[i] - bp[i - p1];
+        sTr1 += tr[i] - tr[i - p1];
+        sBp2 += bp[i] - bp[i - p2];
+        sTr2 += tr[i] - tr[i - p2];
+        sBp3 += bp[i] - bp[i - p3];
+        sTr3 += tr[i] - tr[i - p3];
+        out.push(ultVal(sBp1, sTr1, sBp2, sTr2, sBp3, sTr3));
+      }
+      return out;
+    }
+    function ultVal(sBp1, sTr1, sBp2, sTr2, sBp3, sTr3) {
+      const a1 = sTr1 === 0 ? NaN : sBp1 / sTr1;
+      const a2 = sTr2 === 0 ? NaN : sBp2 / sTr2;
+      const a3 = sTr3 === 0 ? NaN : sBp3 / sTr3;
+      return 100 * (4 * a1 + 2 * a2 + a3) / 7;
+    }
+    module.exports = ult2;
+  }
+});
+
+// src/oscillators/kvo.js
+var require_kvo = __commonJS({
+  "src/oscillators/kvo.js"(exports, module) {
+    function kvo2(data, fast = 34, slow = 55) {
+      const n = data.length;
+      if (n <= 1) return [];
+      const aF = 2 / (fast + 1);
+      const aS = 2 / (slow + 1);
+      let prevHlc = data[0][0] + data[0][1] + data[0][2];
+      let trend = -1;
+      let cm = 0;
+      let emaFast = 0, emaSlow = 0;
+      const out = new Array(n - 1);
+      for (let i = 1; i < n; i++) {
+        const h = data[i][0], c = data[i][1], l = data[i][2], v = data[i][3];
+        const hlc = h + c + l;
+        const dm = h - l;
+        if (hlc > prevHlc && trend !== 1) {
+          trend = 1;
+          cm = data[i - 1][0] - data[i - 1][2];
+        } else if (hlc < prevHlc && trend !== 0) {
+          trend = 0;
+          cm = data[i - 1][0] - data[i - 1][2];
+        }
+        cm += dm;
+        const sign = trend === 0 ? -1 : 1;
+        const vf = cm === 0 ? 0 : v * Math.abs(2 * dm / cm - 1) * 100 * sign;
+        if (i === 1) {
+          emaFast = vf;
+          emaSlow = vf;
+        } else {
+          emaFast = (vf - emaFast) * aF + emaFast;
+          emaSlow = (vf - emaSlow) * aS + emaSlow;
+        }
+        out[i - 1] = emaFast - emaSlow;
+        prevHlc = hlc;
+      }
+      return out;
+    }
+    module.exports = kvo2;
   }
 });
 
 // src/bands/bands.js
 var require_bands = __commonJS({
   "src/bands/bands.js"(exports, module) {
-    var ta = require_registry();
     function bands2(data, length = 14, deviations = 1) {
-      for (var i = 0, pl = [], deviation = [], boll = [], sma2 = ta.sma(data, length); i < data.length; i++) {
-        pl.push(data[i]);
-        if (pl.length >= length) {
-          var devi = ta.std(pl, length);
-          deviation.push(devi);
-          pl.splice(0, 1);
-        }
+      const n = data.length;
+      if (n < length) return [];
+      const out = [];
+      let sumX = 0, sumX2 = 0;
+      for (let i = 0; i < length; i++) {
+        sumX += data[i];
+        sumX2 += data[i] * data[i];
       }
-      for (var i = 0; i < sma2.length; i++) {
-        boll.push([sma2[i] + deviation[i] * deviations, sma2[i], sma2[i] - deviation[i] * deviations]);
+      pushBand(out, sumX, sumX2, length, deviations);
+      for (let i = length; i < n; i++) {
+        const incoming = data[i];
+        const outgoing = data[i - length];
+        sumX += incoming - outgoing;
+        sumX2 += incoming * incoming - outgoing * outgoing;
+        pushBand(out, sumX, sumX2, length, deviations);
       }
-      return boll;
+      return out;
+    }
+    function pushBand(out, sumX, sumX2, length, deviations) {
+      const mean = sumX / length;
+      const v = sumX2 / length - mean * mean;
+      const std2 = Math.sqrt(v > 0 ? v : 0);
+      out.push([mean + std2 * deviations, mean, mean - std2 * deviations]);
     }
     module.exports = bands2;
   }
@@ -1181,12 +2174,15 @@ var require_keltner = __commonJS({
   "src/bands/keltner.js"(exports, module) {
     var ta = require_registry();
     function keltner2(data, length = 14, devi = 1) {
-      var closing = [], atr2 = ta.atr(data, length), kma, kelt = [];
-      for (var i in data) closing.push((data[i][0] + data[i][1] + data[i][2]) / 3);
-      kma = ta.sma(closing, length);
-      atr2.splice(0, length - 1);
-      for (var i = 0; i < kma.length; i++) kelt.push([kma[i] + atr2[i] * devi, kma[i], kma[i] - atr2[i] * devi]);
-      return kelt;
+      const closing = new Array(data.length);
+      for (let i = 0; i < data.length; i++) closing[i] = (data[i][0] + data[i][1] + data[i][2]) / 3;
+      const kma = ta.sma(closing, length);
+      const atrArr = ta.atr(data, length);
+      const out = [];
+      for (let i = 0; i < kma.length; i++) {
+        out.push([kma[i] + atrArr[i] * devi, kma[i], kma[i] - atrArr[i] * devi]);
+      }
+      return out;
     }
     module.exports = keltner2;
   }
@@ -1195,15 +2191,19 @@ var require_keltner = __commonJS({
 // src/bands/don.js
 var require_don = __commonJS({
   "src/bands/don.js"(exports, module) {
-    var ta = require_registry();
     function don2(data, length = 20) {
-      for (var i = length, channel = []; i <= data.length; i++) {
-        var pl = data.slice(i - length, i), highs = [], lows = [];
-        for (var h in pl) highs.push(pl[h][0]), lows.push(pl[h][1]);
-        var max = Math.max.apply(null, highs.slice()), min = Math.min.apply(null, lows.slice());
-        channel.push([max, (max + min) / 2, min]);
+      const n = data.length;
+      if (n < length) return [];
+      const out = [];
+      for (let i = length; i <= n; i++) {
+        let hi = -Infinity, lo = Infinity;
+        for (let j = i - length; j < i; j++) {
+          if (data[j][0] > hi) hi = data[j][0];
+          if (data[j][1] < lo) lo = data[j][1];
+        }
+        out.push([hi, (hi + lo) / 2, lo]);
       }
-      return channel;
+      return out;
     }
     module.exports = don2;
   }
@@ -1250,8 +2250,11 @@ var require_envelope = __commonJS({
 // src/statistics/sum.js
 var require_sum = __commonJS({
   "src/statistics/sum.js"(exports, module) {
-    var ta = require_registry();
-    var sum2 = (data) => data.reduce((a, b) => a + b);
+    function sum2(data) {
+      let s = 0;
+      for (let i = 0; i < data.length; i++) s += data[i];
+      return s;
+    }
     module.exports = sum2;
   }
 });
@@ -1259,13 +2262,133 @@ var require_sum = __commonJS({
 // src/statistics/std.js
 var require_std = __commonJS({
   "src/statistics/std.js"(exports, module) {
-    var ta = require_registry();
     function std2(data, length = data.length) {
-      if (length < data.length) data.splice(0, data.length - length);
-      var mean = data.reduce((a, b) => a + b) / length;
-      return Math.sqrt(data.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / length);
+      const n = data.length;
+      const start = length < n ? n - length : 0;
+      let sum2 = 0;
+      for (let i = start; i < n; i++) sum2 += data[i];
+      const mean = sum2 / length;
+      let sq = 0;
+      for (let i = start; i < n; i++) {
+        const d = data[i] - mean;
+        sq += d * d;
+      }
+      return Math.sqrt(sq / length);
     }
     module.exports = std2;
+  }
+});
+
+// src/statistics/std_series.js
+var require_std_series = __commonJS({
+  "src/statistics/std_series.js"(exports, module) {
+    function std_series2(data, length) {
+      const n = data.length;
+      if (n < length) return [];
+      let sumX = 0, sumX2 = 0;
+      for (let i = 0; i < length; i++) {
+        sumX += data[i];
+        sumX2 += data[i] * data[i];
+      }
+      const out = [pushStd(sumX, sumX2, length)];
+      for (let i = length; i < n; i++) {
+        const incoming = data[i], outgoing = data[i - length];
+        sumX += incoming - outgoing;
+        sumX2 += incoming * incoming - outgoing * outgoing;
+        out.push(pushStd(sumX, sumX2, length));
+      }
+      return out;
+    }
+    function pushStd(sumX, sumX2, length) {
+      const mean = sumX / length;
+      const v = sumX2 / length - mean * mean;
+      return Math.sqrt(v > 0 ? v : 0);
+    }
+    module.exports = std_series2;
+  }
+});
+
+// src/_lr-helpers.js
+var require_lr_helpers = __commonJS({
+  "src/_lr-helpers.js"(exports, module) {
+    function lrWindows(data, length) {
+      const n = data.length;
+      if (n < length) return [];
+      const sumX = (length - 1) * length / 2;
+      const sumX2 = (length - 1) * length * (2 * length - 1) / 6;
+      const denom = length * sumX2 - sumX * sumX;
+      const out = new Array(n - length + 1);
+      for (let i = length; i <= n; i++) {
+        let sumY = 0, sumXY = 0;
+        for (let q = 0; q < length; q++) {
+          const y = data[i - length + q];
+          sumY += y;
+          sumXY += y * q;
+        }
+        const m = denom === 0 ? NaN : (length * sumXY - sumX * sumY) / denom;
+        const b = (sumY - m * sumX) / length;
+        out[i - length] = [m, b];
+      }
+      return out;
+    }
+    module.exports = { lrWindows };
+  }
+});
+
+// src/statistics/lr-slope.js
+var require_lr_slope = __commonJS({
+  "src/statistics/lr-slope.js"(exports, module) {
+    var { lrWindows } = require_lr_helpers();
+    function lr_slope2(data, length = 14) {
+      const w = lrWindows(data, length);
+      const out = new Array(w.length);
+      for (let i = 0; i < w.length; i++) out[i] = w[i][0];
+      return out;
+    }
+    module.exports = lr_slope2;
+  }
+});
+
+// src/statistics/lr-intercept.js
+var require_lr_intercept = __commonJS({
+  "src/statistics/lr-intercept.js"(exports, module) {
+    var { lrWindows } = require_lr_helpers();
+    function lr_intercept2(data, length = 14) {
+      const w = lrWindows(data, length);
+      const out = new Array(w.length);
+      for (let i = 0; i < w.length; i++) out[i] = w[i][1];
+      return out;
+    }
+    module.exports = lr_intercept2;
+  }
+});
+
+// src/statistics/lr-angle.js
+var require_lr_angle = __commonJS({
+  "src/statistics/lr-angle.js"(exports, module) {
+    var { lrWindows } = require_lr_helpers();
+    var RAD_TO_DEG = 180 / Math.PI;
+    function lr_angle2(data, length = 14) {
+      const w = lrWindows(data, length);
+      const out = new Array(w.length);
+      for (let i = 0; i < w.length; i++) out[i] = Math.atan(w[i][0]) * RAD_TO_DEG;
+      return out;
+    }
+    module.exports = lr_angle2;
+  }
+});
+
+// src/statistics/tsf.js
+var require_tsf = __commonJS({
+  "src/statistics/tsf.js"(exports, module) {
+    var { lrWindows } = require_lr_helpers();
+    function tsf2(data, length = 14) {
+      const w = lrWindows(data, length);
+      const out = new Array(w.length);
+      for (let i = 0; i < w.length; i++) out[i] = w[i][0] * length + w[i][1];
+      return out;
+    }
+    module.exports = tsf2;
   }
 });
 
@@ -1345,11 +2468,14 @@ var require_sim = __commonJS({
 // src/statistics/percentile.js
 var require_percentile = __commonJS({
   "src/statistics/percentile.js"(exports, module) {
-    var ta = require_registry();
     function percentile2(data, perc) {
-      for (var i = 0, final = []; i < data[0].length; i++) {
-        data.sort((a, b) => a[i] - b[i]);
-        final.push(data[Math.round((data.length - 1) * perc)][i]);
+      const cols = data[0].length;
+      const final = [];
+      for (let i = 0; i < cols; i++) {
+        const col = new Array(data.length);
+        for (let r = 0; r < data.length; r++) col[r] = data[r][i];
+        col.sort((a, b) => a - b);
+        final.push(col[Math.round((col.length - 1) * perc)]);
       }
       return final;
     }
@@ -1398,7 +2524,7 @@ var require_covariance = __commonJS({
 // src/statistics/dif.js
 var require_dif = __commonJS({
   "src/statistics/dif.js"(exports, module) {
-    var dif2 = (n, o) => (n - o) / o;
+    var dif2 = (n, o) => o === 0 ? NaN : (n - o) / o;
     module.exports = dif2;
   }
 });
@@ -1439,8 +2565,8 @@ var require_kelly = __commonJS({
   "src/statistics/kelly.js"(exports, module) {
     var ta = require_registry();
     function kelly2(data) {
-      var exp2 = ta.er(data) + 1, winr = ta.winratio(data);
-      if (isNaN(exp2)) exp2 = 1;
+      const exp2 = ta.er(data) + 1;
+      const winr = ta.winratio(data);
       return winr - (1 - winr) / exp2;
     }
     module.exports = kelly2;
@@ -1597,14 +2723,17 @@ var require_drawdown = __commonJS({
 // src/statistics/median.js
 var require_median = __commonJS({
   "src/statistics/median.js"(exports, module) {
-    var ta = require_registry();
     function median2(data, length = data.length) {
-      for (var i = length, med = []; i <= data.length; i++) {
-        var pl = data.slice(i - length, i);
+      const n = data.length;
+      if (n < length) return [];
+      const out = [];
+      for (let i = length; i <= n; i++) {
+        const pl = data.slice(i - length, i);
         pl.sort((a, b) => a - b);
-        med.push(pl[Math.round(pl.length / 2) - 1]);
+        const half = length >> 1;
+        out.push(length % 2 === 1 ? pl[half] : (pl[half - 1] + pl[half]) / 2);
       }
-      return med;
+      return out;
     }
     module.exports = median2;
   }
@@ -1840,35 +2969,37 @@ var require_pvalue = __commonJS({
 // src/statistics/kmeans.js
 var require_kmeans = __commonJS({
   "src/statistics/kmeans.js"(exports, module) {
-    var ta = require_registry();
     function kmeans2(data, clusters) {
-      var means = [], centers = [], old = [], n, changed = false, init = Math.round(data.length / (clusters + 1));
-      for (var i = 0; i < clusters; i++) centers[i] = data[init * (i + 1)];
-      do {
-        for (var i = 0; i < clusters; i++) means[i] = [];
-        for (var x = 0; x < data.length; x++) {
-          var range = -1, oldrange = -1;
-          for (var y = 0; y < clusters; y++) {
-            var r = Math.abs(centers[y] - data[x]);
-            if (oldrange === -1) {
-              oldrange = r;
-              n = y;
-            } else if (r <= oldrange) {
-              oldrange = r;
+      const init = Math.round(data.length / (clusters + 1));
+      const centers = [];
+      for (let i = 0; i < clusters; i++) centers[i] = data[init * (i + 1)];
+      let means = Array.from({ length: clusters }, () => []);
+      let changed = true;
+      while (changed) {
+        changed = false;
+        means = Array.from({ length: clusters }, () => []);
+        for (let x = 0; x < data.length; x++) {
+          let n = 0, best = Math.abs(centers[0] - data[x]);
+          for (let y = 1; y < clusters; y++) {
+            const r = Math.abs(centers[y] - data[x]);
+            if (r <= best) {
+              best = r;
               n = y;
             }
           }
           means[n].push(data[x]);
         }
-        old = centers;
-        for (var x = 0; x < clusters; x++) {
-          var sm = 0;
-          for (var y = 0; y < means[x].length; y++) sm += means[x][y];
-          var m = sm / means[n].length;
-          centers[x] = m;
+        for (let x = 0; x < clusters; x++) {
+          if (means[x].length === 0) continue;
+          let sum2 = 0;
+          for (let y = 0; y < means[x].length; y++) sum2 += means[x][y];
+          const m = sum2 / means[x].length;
+          if (m !== centers[x]) {
+            centers[x] = m;
+            changed = true;
+          }
         }
-        for (var x = 0; x < clusters; x++) if (centers[x] !== old[x]) changed = true;
-      } while (changed);
+      }
       return means;
     }
     module.exports = kmeans2;
@@ -2100,14 +3231,21 @@ var require_divergence_state = __commonJS({
 // src/indicators/aroon-up.js
 var require_aroon_up = __commonJS({
   "src/indicators/aroon-up.js"(exports, module) {
-    var ta = require_registry();
     function aroon_up(data, length = 10) {
-      for (var i = length, aroon2 = []; i <= data.length; i++) {
-        var pl = data.slice(i - length, i), hl = pl.slice();
-        hl.sort((a, b) => a - b);
-        aroon2.push(100 * (length - 1 - pl.reverse().findIndex((x) => x === hl[length - 1])) / (length - 1));
+      const n = data.length;
+      if (n < length) return [];
+      const out = [];
+      for (let i = length; i <= n; i++) {
+        let hi = -Infinity, hiIdx = i - length;
+        for (let j = i - length; j < i; j++) {
+          if (data[j] >= hi) {
+            hi = data[j];
+            hiIdx = j;
+          }
+        }
+        out.push(100 * (hiIdx - (i - length)) / (length - 1));
       }
-      return aroon2;
+      return out;
     }
     module.exports = aroon_up;
   }
@@ -2116,14 +3254,21 @@ var require_aroon_up = __commonJS({
 // src/indicators/aroon-down.js
 var require_aroon_down = __commonJS({
   "src/indicators/aroon-down.js"(exports, module) {
-    var ta = require_registry();
     function aroon_down(data, length = 10) {
-      for (var i = length, aroon2 = []; i <= data.length; i++) {
-        var pl = data.slice(i - length, i), hl = pl.slice();
-        hl.sort((a, b) => a - b);
-        aroon2.push(100 * (length - 1 - pl.reverse().findIndex((x) => x === hl[0])) / (length - 1));
+      const n = data.length;
+      if (n < length) return [];
+      const out = [];
+      for (let i = length; i <= n; i++) {
+        let lo = Infinity, loIdx = i - length;
+        for (let j = i - length; j < i; j++) {
+          if (data[j] <= lo) {
+            lo = data[j];
+            loIdx = j;
+          }
+        }
+        out.push(100 * (loIdx - (i - length)) / (length - 1));
       }
-      return aroon2;
+      return out;
     }
     module.exports = aroon_down;
   }
@@ -2232,6 +3377,12 @@ var require_index = __commonJS({
       hwma: require_hwma(),
       kama: require_kama(),
       cwma: require_cwma(),
+      dema: require_dema(),
+      tema: require_tema(),
+      trima: require_trima(),
+      t3: require_t3(),
+      zlema: require_zlema(),
+      vidya: require_vidya(),
       // indicators
       macd: require_macd(),
       macd_signal: require_macd_signal(),
@@ -2268,6 +3419,29 @@ var require_index = __commonJS({
       rvi_signal: require_rvi_signal(),
       rsi_divergence: require_rsi_divergence(),
       divergence: require_divergence(),
+      trix: require_trix(),
+      adl: require_adl(),
+      cci: require_cci(),
+      pdm: require_pdm(),
+      mdm: require_mdm(),
+      pdi: require_pdi(),
+      mdi: require_mdi(),
+      dx: require_dx(),
+      adx: require_adx(),
+      adxr: require_adxr(),
+      stoch_rsi: require_stoch_rsi(),
+      ppo: require_ppo(),
+      apo: require_apo(),
+      cmf: require_cmf(),
+      nvi: require_nvi(),
+      pvi: require_pvi(),
+      emv: require_emv(),
+      natr: require_natr(),
+      dpo: require_dpo(),
+      mass: require_mass(),
+      ulcer: require_ulcer(),
+      vortex: require_vortex(),
+      kdj: require_kdj(),
       // oscillators
       gator: require_gator(),
       mom_osc: require_mom_osc(),
@@ -2275,6 +3449,8 @@ var require_index = __commonJS({
       ao: require_ao(),
       ac: require_ac(),
       fisher: require_fisher(),
+      ult: require_ult(),
+      kvo: require_kvo(),
       // bands
       bands: require_bands(),
       keltner: require_keltner(),
@@ -2284,6 +3460,11 @@ var require_index = __commonJS({
       // statistics
       sum: require_sum(),
       std: require_std(),
+      std_series: require_std_series(),
+      lr_slope: require_lr_slope(),
+      lr_intercept: require_lr_intercept(),
+      lr_angle: require_lr_angle(),
+      tsf: require_tsf(),
       variance: require_variance(),
       ncdf: require_ncdf(),
       normsinv: require_normsinv(),
@@ -2371,6 +3552,12 @@ var pwma = import_ta.default["pwma"];
 var hwma = import_ta.default["hwma"];
 var kama = import_ta.default["kama"];
 var cwma = import_ta.default["cwma"];
+var dema = import_ta.default["dema"];
+var tema = import_ta.default["tema"];
+var trima = import_ta.default["trima"];
+var t3 = import_ta.default["t3"];
+var zlema = import_ta.default["zlema"];
+var vidya = import_ta.default["vidya"];
 var macd = import_ta.default["macd"];
 var macd_signal = import_ta.default["macd_signal"];
 var macd_bars = import_ta.default["macd_bars"];
@@ -2406,12 +3593,37 @@ var rvi = import_ta.default["rvi"];
 var rvi_signal = import_ta.default["rvi_signal"];
 var rsi_divergence = import_ta.default["rsi_divergence"];
 var divergence = import_ta.default["divergence"];
+var trix = import_ta.default["trix"];
+var adl = import_ta.default["adl"];
+var cci = import_ta.default["cci"];
+var pdm = import_ta.default["pdm"];
+var mdm = import_ta.default["mdm"];
+var pdi = import_ta.default["pdi"];
+var mdi = import_ta.default["mdi"];
+var dx = import_ta.default["dx"];
+var adx = import_ta.default["adx"];
+var adxr = import_ta.default["adxr"];
+var stoch_rsi = import_ta.default["stoch_rsi"];
+var ppo = import_ta.default["ppo"];
+var apo = import_ta.default["apo"];
+var cmf = import_ta.default["cmf"];
+var nvi = import_ta.default["nvi"];
+var pvi = import_ta.default["pvi"];
+var emv = import_ta.default["emv"];
+var natr = import_ta.default["natr"];
+var dpo = import_ta.default["dpo"];
+var mass = import_ta.default["mass"];
+var ulcer = import_ta.default["ulcer"];
+var vortex = import_ta.default["vortex"];
+var kdj = import_ta.default["kdj"];
 var gator = import_ta.default["gator"];
 var mom_osc = import_ta.default["mom_osc"];
 var chaikin_osc = import_ta.default["chaikin_osc"];
 var ao = import_ta.default["ao"];
 var ac = import_ta.default["ac"];
 var fisher = import_ta.default["fisher"];
+var ult = import_ta.default["ult"];
+var kvo = import_ta.default["kvo"];
 var bands = import_ta.default["bands"];
 var keltner = import_ta.default["keltner"];
 var don = import_ta.default["don"];
@@ -2419,6 +3631,11 @@ var fibbands = import_ta.default["fibbands"];
 var envelope = import_ta.default["envelope"];
 var sum = import_ta.default["sum"];
 var std = import_ta.default["std"];
+var std_series = import_ta.default["std_series"];
+var lr_slope = import_ta.default["lr_slope"];
+var lr_intercept = import_ta.default["lr_intercept"];
+var lr_angle = import_ta.default["lr_angle"];
+var tsf = import_ta.default["tsf"];
 var variance = import_ta.default["variance"];
 var ncdf = import_ta.default["ncdf"];
 var normsinv = import_ta.default["normsinv"];
@@ -2474,9 +3691,13 @@ var esm_entry_virtual_default = import_ta.default;
 export {
   aad,
   ac,
+  adl,
+  adx,
+  adxr,
   alligator,
   antimartingale,
   ao,
+  apo,
   ar,
   aroon,
   asi,
@@ -2486,7 +3707,9 @@ export {
   bands,
   bandwidth,
   bop,
+  cci,
   chaikin_osc,
+  cmf,
   cop,
   cor,
   covariance,
@@ -2494,14 +3717,18 @@ export {
   cum,
   cwma,
   esm_entry_virtual_default as default,
+  dema,
   denormalize,
   dif,
   divergence,
   divergence_state,
   don,
+  dpo,
   drawdown,
+  dx,
   elderray,
   ema,
+  emv,
   envelope,
   er,
   exp,
@@ -2520,34 +3747,48 @@ export {
   hwma,
   ichimoku,
   kama,
+  kdj,
   kelly,
   keltner,
   kmeans,
   kst,
+  kvo,
   log,
+  lr_angle,
+  lr_intercept,
+  lr_slope,
   lsma,
   macd,
   macd_bars,
   macd_signal,
   mad,
   martingale,
+  mass,
+  mdi,
+  mdm,
   median,
   mfi,
   mom,
   mom_osc,
   mse,
   multi,
+  natr,
   ncdf,
   normalize,
   normalize_from,
   normalize_pair,
   normsinv,
+  nvi,
   obv,
+  pdi,
+  pdm,
   percentile,
   permutations,
+  ppo,
   pr,
   psar,
   pvalue,
+  pvi,
   pwma,
   random,
   recent_high,
@@ -2568,14 +3809,25 @@ export {
   ssd,
   standardize,
   std,
+  std_series,
   stoch,
+  stoch_rsi,
   sum,
   supertrend,
   support,
+  t3,
+  tema,
   times_down,
   times_up,
+  trima,
+  trix,
+  tsf,
   tsi,
+  ulcer,
+  ult,
   variance,
+  vidya,
+  vortex,
   vwap,
   vwma,
   vwwma,
@@ -2584,5 +3836,6 @@ export {
   wrsi,
   wsma,
   zigzag,
+  zlema,
   zscore
 };
