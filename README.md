@@ -67,6 +67,33 @@ sma([1,2,3,4,5,6,10], 6);
 </script>
 ```
 
+## Performance
+
+ta.js v2.0 is the fastest pure-JS technical-analysis library at production data sizes. Across 67 cross-library benchmark cases at 100k bars, **ta.js wins 66**, typically by 2-3× over the next-best competitor and ~10× over `tulind`'s native C bindings (JS↔C marshaling overhead overwhelms the native-math advantage at every size we tested).
+
+Headline indicators at **100,000 bars** (ops/sec, higher is better):
+
+| indicator | ta.js | next-best | margin |
+|---|---:|---|---:|
+| sma    | **2,290** | `@debut/indicators` 779   | 2.94× |
+| ema    | **1,870** | `trading-signals` 1,480   | 1.26× |
+| rsi    | **1,340** | `@debut/indicators` 373   | 3.59× |
+| macd   | **606**   | `trading-signals` 337     | 1.80× |
+| bbands | **1,140** | `@debut/indicators` 370   | 3.08× |
+| atr    | **1,380** | `@debut/indicators` 1,000 | 1.38× |
+| stoch  | **303**   | `@debut/indicators` 241   | 1.26× |
+| vwap   | **1,220** | `technicalindicators` 400 | 3.05× |
+
+Measured on Apple M3 / Darwin 25.3.0 arm64 / Node v25.1.0 against `technicalindicators` 3.1.0, `trading-signals` 7.4.3, `@debut/indicators` 1.3.22, and `tulind` 0.8.20. Full per-case tables across 1k / 10k / 100k bar inputs are in [BENCHMARKS.md](https://github.com/Bitvested/ta.js/blob/main/BENCHMARKS.md). Reproduce on your hardware with:
+
+```sh
+cd bench
+npm install
+npm run bench:md   # regenerates BENCHMARKS.md + bench/results.json
+```
+
+Quote ratios, not absolute ops/sec, when comparing across machines.
+
 ## Examples
 
 https://github.com/Bitvested/ta.js/blob/main/EXAMPLES.md
