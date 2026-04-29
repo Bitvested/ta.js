@@ -1,10 +1,14 @@
-const ta = require('../_registry.js');
 function aroon_down(data, length=10) {
-  for(var i = length, aroon = []; i <= data.length; i++) {
-    var pl = data.slice(i-length,i), hl = pl.slice();
-    hl.sort((a, b) => a-b);
-    aroon.push((100 * (length-1-pl.reverse().findIndex(x => x === hl[0])) / (length-1)));
+  const n = data.length;
+  if (n < length) return [];
+  const out = [];
+  for (let i = length; i <= n; i++) {
+    let lo = Infinity, loIdx = i - length;
+    for (let j = i - length; j < i; j++) {
+      if (data[j] <= lo) { lo = data[j]; loIdx = j; }
+    }
+    out.push(100 * (loIdx - (i - length)) / (length - 1));
   }
-  return aroon;
+  return out;
 }
 module.exports = aroon_down;

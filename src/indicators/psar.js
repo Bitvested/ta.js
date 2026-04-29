@@ -13,7 +13,7 @@ function psar(data, step=0.02, max=0.2) {
     } else {
       sar = Math.max(sar, furthest[0], prev[0]);
       if(data[i][1] < extreme) {
-        extreme = data[i][0];
+        extreme = data[i][1];
         accel = Math.min(accel + step, max);
       }
     }

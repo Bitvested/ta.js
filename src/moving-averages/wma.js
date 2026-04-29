@@ -1,11 +1,16 @@
-const ta = require('../_registry.js');
 function wma(data, length=14) {
-  for(var i = 1, weight = 0, wma = []; i <= length; i++) weight += i;
-  for(var i = length; i <= data.length; i++) {
-    var pl = data.slice(i-length,i), average = 0;
-    for(var q in pl) average += pl[q] * (Number(q)+1) / weight;
-    wma.push(average);
+  const n = data.length;
+  if (n < length) return [];
+  let weight = 0;
+  for (let i = 1; i <= length; i++) weight += i;
+  const out = [];
+  for (let i = length; i <= n; i++) {
+    let sum = 0;
+    for (let q = 0; q < length; q++) {
+      sum += data[i - length + q] * (q + 1);
+    }
+    out.push(sum / weight);
   }
-  return wma;
+  return out;
 }
 module.exports = wma;

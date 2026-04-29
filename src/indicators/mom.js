@@ -1,8 +1,12 @@
-const ta = require('../_registry.js');
-function mom(data, length=10, p) {
-  for(var i = length - 1, mom = []; i < data.length; i++) {
-    (p) ? mom.push(data[i] / data[i - (length - 1)] * 100) : mom.push(data[i] - data[i - (length - 1)])
+function mom(data, length=10, percent=false) {
+  const n = data.length;
+  if (n < length) return [];
+  const out = [];
+  for (let i = length - 1; i < n; i++) {
+    const ref = data[i - (length - 1)];
+    if (percent) out.push(ref === 0 ? NaN : (data[i] / ref) * 100);
+    else out.push(data[i] - ref);
   }
-  return mom;
+  return out;
 }
 module.exports = mom;

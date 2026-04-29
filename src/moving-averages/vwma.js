@@ -1,15 +1,18 @@
-const ta = require('../_registry.js');
 function vwma(data, length=20) {
-  data = data.map(x=>[x[0]*x[1],x[1]]);
-  for(var i = length, vwma = []; i <= data.length; i++) {
-    var pl = data.slice(i-length,i);
-    var totalv = 0, totalp = 0;
-    for(var o = 0; o < pl.length; o++) {
-      totalv += pl[o][1];
-      totalp += pl[o][0];
-    }
-    vwma.push(totalp/totalv);
+  const n = data.length;
+  if (n < length) return [];
+  let sumPV = 0, sumV = 0;
+  for (let i = 0; i < length; i++) {
+    sumPV += data[i][0] * data[i][1];
+    sumV  += data[i][1];
   }
-  return vwma;
+  const out = [sumPV / sumV];
+  for (let i = length; i < n; i++) {
+    const o = i - length;
+    sumPV += data[i][0] * data[i][1] - data[o][0] * data[o][1];
+    sumV  += data[i][1] - data[o][1];
+    out.push(sumPV / sumV);
+  }
+  return out;
 }
 module.exports = vwma;

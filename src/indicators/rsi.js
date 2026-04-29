@@ -1,12 +1,25 @@
-const ta = require('../_registry.js');
 function rsi(data, length=14) {
-  for(var i = length-1,gain=0,loss=0,arrsi = [], pl = data.slice(0,length-1); i < data.length; i++,gain=0,loss=0) {
-    pl.push(data[i]);
-    for(var q = 1; q < pl.length; q++) if(pl[q]-pl[q-1] < 0) {loss+=Math.abs(pl[q]-pl[q-1]);}else{gain+=pl[q]-pl[q-1];}
-    var rsi = 100 - 100 / (1 + ((gain / length) / (loss / length)));
-    arrsi.push(rsi);
-    pl.splice(0,1);
+  const n = data.length;
+  if (n <= length) return [];
+  let gain = 0, loss = 0;
+  for (let i = 1; i <= length; i++) {
+    const d = data[i] - data[i-1];
+    if (d > 0) gain += d; else loss -= d;
   }
-  return arrsi;
+  let avgG = gain / length;
+  let avgL = loss / length;
+  const out = [rsiVal(avgG, avgL)];
+  for (let i = length + 1; i < n; i++) {
+    const d = data[i] - data[i-1];
+    avgG = (avgG * (length - 1) + (d > 0 ? d : 0)) / length;
+    avgL = (avgL * (length - 1) + (d < 0 ? -d : 0)) / length;
+    out.push(rsiVal(avgG, avgL));
+  }
+  return out;
+}
+function rsiVal(g, l) {
+  if (g === 0 && l === 0) return NaN;
+  if (l === 0) return 100;
+  return 100 - 100 / (1 + g / l);
 }
 module.exports = rsi;

@@ -1,14 +1,15 @@
-const ta = require('../_registry.js');
 function ema(data, length=12) {
-  for(var i = length, ema = [], weight = 2 / (length + 1); i <= data.length; i++) {
-    if(ema.length > 0) {
-      ema.push((data[i-1] - ema[ema.length - 1]) * weight + ema[ema.length - 1]);
-      continue;
-    }
-    var pl = data.slice(i-length,i), average = 0;
-    for(var q in pl) average += pl[q];
-    ema.push(average / length);
+  const n = data.length;
+  if (n < length) return [];
+  const weight = 2 / (length + 1);
+  let seed = 0;
+  for (let i = 0; i < length; i++) seed += data[i];
+  let prev = seed / length;
+  const out = [prev];
+  for (let i = length; i < n; i++) {
+    prev = (data[i] - prev) * weight + prev;
+    out.push(prev);
   }
-  return ema;
+  return out;
 }
 module.exports = ema;

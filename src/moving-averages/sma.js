@@ -1,9 +1,13 @@
-const ta = require('../_registry.js');
 function sma(data, length=14) {
-  for(var i = length, sma = []; i <= data.length; i++) {
-    var avg = ta.sum(data.slice(i-length,i));
-    sma.push(avg / length);
+  const n = data.length;
+  if (n < length) return [];
+  let sum = 0;
+  for (let i = 0; i < length; i++) sum += data[i];
+  const out = [sum / length];
+  for (let i = length; i < n; i++) {
+    sum += data[i] - data[i - length];
+    out.push(sum / length);
   }
-  return sma;
+  return out;
 }
 module.exports = sma;

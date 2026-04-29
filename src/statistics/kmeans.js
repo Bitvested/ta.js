@@ -1,32 +1,28 @@
-const ta = require('../_registry.js');
 function kmeans(data, clusters) {
-  var means = [], centers = [], old = [], n, changed = false, init = Math.round(data.length/(clusters+1));
-  for(var i = 0; i < clusters; i++) centers[i] = data[init*(i+1)];
-  do {
-    for(var i = 0; i < clusters; i++) means[i] = [];
-    for(var x = 0; x < data.length; x++) {
-      var range = -1, oldrange = -1;
-      for(var y = 0; y < clusters; y++) {
-        var r = Math.abs(centers[y]-data[x]);
-        if(oldrange === -1) {
-          oldrange = r;
-          n = y;
-        } else if(r <= oldrange) {
-          oldrange = r
-          n = y;
-        }
+  const init = Math.round(data.length / (clusters + 1));
+  const centers = [];
+  for (let i = 0; i < clusters; i++) centers[i] = data[init * (i + 1)];
+  let means = Array.from({ length: clusters }, () => []);
+  let changed = true;
+  while (changed) {
+    changed = false;
+    means = Array.from({ length: clusters }, () => []);
+    for (let x = 0; x < data.length; x++) {
+      let n = 0, best = Math.abs(centers[0] - data[x]);
+      for (let y = 1; y < clusters; y++) {
+        const r = Math.abs(centers[y] - data[x]);
+        if (r <= best) { best = r; n = y; }
       }
       means[n].push(data[x]);
     }
-    old = centers;
-    for(var x = 0; x < clusters; x++) {
-      var sm = 0;
-      for(var y = 0; y < means[x].length; y++) sm += means[x][y];
-      var m = sm / means[n].length;
-      centers[x] = m;
+    for (let x = 0; x < clusters; x++) {
+      if (means[x].length === 0) continue;
+      let sum = 0;
+      for (let y = 0; y < means[x].length; y++) sum += means[x][y];
+      const m = sum / means[x].length;
+      if (m !== centers[x]) { centers[x] = m; changed = true; }
     }
-    for(var x = 0; x < clusters; x++) if(centers[x] !== old[x]) changed = true;
-  } while(changed);
+  }
   return means;
 }
 module.exports = kmeans;

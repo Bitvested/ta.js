@@ -1,16 +1,25 @@
 const ta = require('../_registry.js');
 function hull(data, length=14) {
-  var pl = [], hma = [], ewma = ta.wma(data, length), sqn = Math.round(Math.sqrt(length)),
-      first = ta.wma(data, Math.round(length / 2));
-  first.splice(0, first.length - ewma.length);
-  for(var i in ewma) {
-    pl.push((first[i] * 2) - ewma[i]);
-    if(pl.length >= sqn) {
-      var h = ta.wma(pl, sqn);
-      hma.push(h[0]);
-      pl.splice(0,1);
-    }
+  const ewma = ta.wma(data, length);
+  const first = ta.wma(data, Math.round(length / 2));
+  const off = first.length - ewma.length;
+  const sqn = Math.round(Math.sqrt(length));
+  const m = ewma.length;
+  if (m < sqn) return [];
+  const d = new Float64Array(m);
+  for (let i = 0; i < m; i++) d[i] = first[i + off] * 2 - ewma[i];
+  const weight = sqn * (sqn + 1) / 2;
+  let S = 0, T = 0;
+  for (let i = 0; i < sqn; i++) {
+    S += d[i] * (i + 1);
+    T += d[i];
   }
-  return hma;
+  const out = [S / weight];
+  for (let i = sqn; i < m; i++) {
+    S = S + d[i] * sqn - T;
+    T = T + d[i] - d[i - sqn];
+    out.push(S / weight);
+  }
+  return out;
 }
 module.exports = hull;

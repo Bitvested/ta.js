@@ -1,10 +1,17 @@
-const ta = require('../_registry.js');
 function mom_osc(data, length=10) {
-  length++
-  for(var i = length, osc = [], sumh = 0, suml = 0; i <= data.length; i++, sumh = 0, suml = 0) {
-    for(var a = 1; a < length; a++) (data[i-length+(a-1)] < data[i-length+a]) ? sumh += data[i-length+a] : suml += data[i-length+a];
-    osc.push((sumh - suml) / (sumh + suml) * 100);
+  const n = data.length;
+  if (n <= length) return [];
+  const out = [];
+  for (let i = length; i < n; i++) {
+    let sumh = 0, suml = 0;
+    for (let j = i - length + 1; j <= i; j++) {
+      const d = data[j] - data[j-1];
+      if (d > 0) sumh += d;
+      else if (d < 0) suml -= d;
+    }
+    const denom = sumh + suml;
+    out.push(denom === 0 ? NaN : (sumh - suml) / denom * 100);
   }
-  return osc;
+  return out;
 }
 module.exports = mom_osc;

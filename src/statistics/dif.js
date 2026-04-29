@@ -1,2 +1,2 @@
-const dif = (n,o) => (n-o) / o;
+const dif = (n, o) => o === 0 ? NaN : (n - o) / o;
 module.exports = dif;

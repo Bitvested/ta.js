@@ -1,12 +1,18 @@
 const ta = require('../_registry.js');
 function elderray(data, length=13) {
-  for(var i = length, eld = []; i <= data.length; i++) {
-    var pl = data.slice(i-length,i),
-        low = Math.min.apply(undefined, pl),
-        high = Math.max.apply(undefined, pl),
-        em = ta.ema(pl, pl.length);
-    eld.push([high-em[0],low-em[0]]);
+  const n = data.length;
+  if (n < length) return [];
+  const out = [];
+  for (let i = length; i <= n; i++) {
+    let hi = -Infinity, lo = Infinity, sum = 0;
+    for (let j = i - length; j < i; j++) {
+      if (data[j] > hi) hi = data[j];
+      if (data[j] < lo) lo = data[j];
+      sum += data[j];
+    }
+    const mean = sum / length;
+    out.push([hi - mean, lo - mean]);
   }
-  return eld;
+  return out;
 }
 module.exports = elderray;

@@ -1,20 +1,23 @@
 const ta = require('../_registry.js');
 function kst(data, r1=10, r2=15, r3=20, r4=30, s1=10, s2=10, s3=10, s4=15, sig=9) {
-  for(var ks = [], fs = [], ms = (Math.max(r1, r2, r3, r4) + Math.max(s1, s2, s3, s4)), i = ms; i <= data.length; i++) {
-    var pl = data.slice(i-ms,i),
-        rcma1 = ta.roc(pl, r1),
-        rcma2 = ta.roc(pl, r2),
-        rcma3 = ta.roc(pl, r3),
-        rcma4 = ta.roc(pl, r4);
-        rcma1 = ta.sma(rcma1, s1);
-        rcma2 = ta.sma(rcma2, s2);
-        rcma3 = ta.sma(rcma3, s3);
-        rcma4 = ta.sma(rcma4, s4);
-      ks.push(rcma1[rcma1.length - 1] + rcma2[rcma2.length - 1] + rcma3[rcma3.length - 1] + rcma4[rcma4.length - 1]);
+  const r1s = ta.sma(ta.roc(data, r1), s1);
+  const r2s = ta.sma(ta.roc(data, r2), s2);
+  const r3s = ta.sma(ta.roc(data, r3), s3);
+  const r4s = ta.sma(ta.roc(data, r4), s4);
+  // v1.x kst started at `i = ms` (= max(r)+max(s)), one bar after the canonical
+  // first-valid-bar. Subtract one to preserve that alignment.
+  const len = Math.min(r1s.length, r2s.length, r3s.length, r4s.length) - 1;
+  if (len <= 0) return [];
+  const off1 = r1s.length - len, off2 = r2s.length - len,
+        off3 = r3s.length - len, off4 = r4s.length - len;
+  const ks = new Array(len);
+  for (let i = 0; i < len; i++) {
+    ks[i] = r1s[i + off1] + r2s[i + off2] + r3s[i + off3] + r4s[i + off4];
   }
-  var sl = ta.sma(ks, sig);
-  ks.splice(0, ks.length - sl.length);
-  for(var i in sl) fs.push([ks[i], sl[i]]);
-  return fs;
+  const sl = ta.sma(ks, sig);
+  const tail = ks.length - sl.length;
+  const out = new Array(sl.length);
+  for (let i = 0; i < sl.length; i++) out[i] = [ks[i + tail], sl[i]];
+  return out;
 }
 module.exports = kst;

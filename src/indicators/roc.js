@@ -1,6 +1,11 @@
-const ta = require('../_registry.js');
 function roc(data, length=14) {
-  for(var i = length, roc = []; i <= data.length; i++) roc.push((data[i-1] - data[i-length]) / data[i-length]);
-  return roc;
+  const n = data.length;
+  if (n <= length) return [];
+  const out = [];
+  for (let i = length; i <= n; i++) {
+    const ref = data[i - length];
+    out.push(ref === 0 ? NaN : ((data[i-1] - ref) / ref) * 100);
+  }
+  return out;
 }
 module.exports = roc;

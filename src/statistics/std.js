@@ -1,7 +1,14 @@
-const ta = require('../_registry.js');
 function std(data, length=data.length) {
-  if(length < data.length) data.splice(0,data.length-length);
-  var mean = data.reduce((a, b) => a + b) / length;
-  return Math.sqrt(data.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / length);
+  const n = data.length;
+  const start = length < n ? n - length : 0;
+  let sum = 0;
+  for (let i = start; i < n; i++) sum += data[i];
+  const mean = sum / length;
+  let sq = 0;
+  for (let i = start; i < n; i++) {
+    const d = data[i] - mean;
+    sq += d * d;
+  }
+  return Math.sqrt(sq / length);
 }
 module.exports = std;

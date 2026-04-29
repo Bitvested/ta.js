@@ -1,9 +1,19 @@
-const ta = require('../_registry.js');
 function atr(data, length=14) {
-  for(var i = 1, atr = [data[0][0] - data[0][2]]; i < data.length; i++) {
-    var t0 = Math.max((data[i][0] - data[i - 1][1]), (data[i][2] - data[i - 1][1]), (data[i][0] - data[i][2]));
-    atr.push((atr[atr.length - 1] * (length - 1) + t0) / length);
+  const n = data.length;
+  if (n < length) return [];
+  let prev = data[0][0] - data[0][2];
+  const out = [];
+  if (length === 1) out.push(prev);
+  for (let i = 1; i < n; i++) {
+    const cprev = data[i-1][1];
+    const tr = Math.max(
+      data[i][0] - data[i][2],
+      Math.abs(data[i][0] - cprev),
+      Math.abs(data[i][2] - cprev)
+    );
+    prev = (prev * (length - 1) + tr) / length;
+    if (i >= length - 1) out.push(prev);
   }
-  return atr;
+  return out;
 }
 module.exports = atr;

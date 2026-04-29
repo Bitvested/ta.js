@@ -1,9 +1,16 @@
-const ta = require('../_registry.js');
 function pr(data, length=14) {
-  for(var i = length, n = []; i <= data.length; i++) {
-    var pl = data.slice(i-length,i), highd = Math.max.apply(null, pl), lowd = Math.min.apply(null, pl);
-    n.push((highd - data[i-1]) / (highd - lowd) * -100);
+  const n = data.length;
+  if (n < length) return [];
+  const out = [];
+  for (let i = length; i <= n; i++) {
+    let hi = -Infinity, lo = Infinity;
+    for (let j = i - length; j < i; j++) {
+      if (data[j] > hi) hi = data[j];
+      if (data[j] < lo) lo = data[j];
+    }
+    const range = hi - lo;
+    out.push(range === 0 ? NaN : (hi - data[i-1]) / range * -100);
   }
-  return n;
+  return out;
 }
 module.exports = pr;

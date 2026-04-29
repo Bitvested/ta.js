@@ -1,11 +1,15 @@
-const ta = require('../_registry.js');
 function don(data, length=20) {
-  for(var i = length, channel = []; i <= data.length; i++) {
-    var pl = data.slice(i-length,i), highs = [], lows = [];
-    for(var h in pl) highs.push(pl[h][0]), lows.push(pl[h][1]);
-    var max = Math.max.apply(null, highs.slice()), min = Math.min.apply(null, lows.slice());
-    channel.push([max, (max + min) / 2, min]);
+  const n = data.length;
+  if (n < length) return [];
+  const out = [];
+  for (let i = length; i <= n; i++) {
+    let hi = -Infinity, lo = Infinity;
+    for (let j = i - length; j < i; j++) {
+      if (data[j][0] > hi) hi = data[j][0];
+      if (data[j][1] < lo) lo = data[j][1];
+    }
+    out.push([hi, (hi + lo) / 2, lo]);
   }
-  return channel;
+  return out;
 }
 module.exports = don;

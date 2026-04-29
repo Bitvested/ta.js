@@ -1,16 +1,26 @@
-const ta = require('../_registry.js');
 function bands(data, length=14, deviations=1) {
-  for(var i = 0, pl = [], deviation = [], boll = [], sma = ta.sma(data, length); i < data.length; i++) {
-    pl.push(data[i]);
-    if(pl.length >= length) {
-      var devi = ta.std(pl, length);
-      deviation.push(devi);
-      pl.splice(0, 1);
-    }
+  const n = data.length;
+  if (n < length) return [];
+  const out = [];
+  let sumX = 0, sumX2 = 0;
+  for (let i = 0; i < length; i++) {
+    sumX += data[i];
+    sumX2 += data[i] * data[i];
   }
-  for(var i = 0; i < sma.length; i++) {
-    boll.push([sma[i] + deviation[i] * deviations, sma[i], sma[i] - deviation[i] * deviations]);
+  pushBand(out, sumX, sumX2, length, deviations);
+  for (let i = length; i < n; i++) {
+    const incoming = data[i];
+    const outgoing = data[i - length];
+    sumX += incoming - outgoing;
+    sumX2 += incoming * incoming - outgoing * outgoing;
+    pushBand(out, sumX, sumX2, length, deviations);
   }
-  return boll;
+  return out;
+}
+function pushBand(out, sumX, sumX2, length, deviations) {
+  const mean = sumX / length;
+  const v = sumX2 / length - mean * mean;
+  const std = Math.sqrt(v > 0 ? v : 0);
+  out.push([mean + std * deviations, mean, mean - std * deviations]);
 }
 module.exports = bands;

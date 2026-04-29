@@ -1,8 +1,11 @@
-const ta = require('../_registry.js');
 function percentile(data, perc) {
-  for(var i = 0, final = []; i < data[0].length; i++) {
-    data.sort((a, b) => a[i]-b[i]);
-    final.push(data[Math.round((data.length-1)*perc)][i]);
+  const cols = data[0].length;
+  const final = [];
+  for (let i = 0; i < cols; i++) {
+    const col = new Array(data.length);
+    for (let r = 0; r < data.length; r++) col[r] = data[r][i];
+    col.sort((a, b) => a - b);
+    final.push(col[Math.round((col.length - 1) * perc)]);
   }
   return final;
 }
