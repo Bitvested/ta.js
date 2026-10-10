@@ -435,9 +435,14 @@ var jawshift = 8;
 var teethshift = 5;
 var lipshift = 3;
 ta.alligator(data, jawlength, teethlength, liplength, jawshift, teethshift, lipshift);
-// output (array)
+// output (array), aligned to the input bars
 // [jaw, teeth, lips]
 ```
+One row per input bar, each line displaced right by its own shift, matching
+TradingView's `plot(..., offset = shift)`: row `i` holds the SMMA value computed at
+bar `i - shift`. A line is NaN until bar `length - 1 + shift`, so with the defaults
+the jaw starts at bar 20, the teeth at bar 12 and the lips at bar 7. Feed it `hl2`
+to reproduce the standard indicator.
 #### <a id="pr"></a>Williams %R
 ```javascript
 var data = [2, 1, 3, 1, 2];
@@ -909,9 +914,13 @@ var jawshift = 8;
 var teethshift = 5;
 var lipshift = 3;
 ta.gator(data, jawlength, teethlength, liplength, jawshift, teethshift, lipshift);
-// output (array)
+// output (array), aligned to the input bars
 // [upper gator, lower gator]
 ```
+Built from the displaced lines `alligator` returns, so the output has one row per
+input bar (NaN until both lines of a pair are defined). TradingView's Gator
+Oscillator does not displace its lines: pass `jawshift = teethshift = lipshift = 0`
+to match it.
 #### <a id="mom_osc"></a>Chande Momentum Oscillator
 ```javascript
 var data = [1, 1.2, 1.3, 1.3, 1.2, 1.4];
