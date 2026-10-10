@@ -20,6 +20,18 @@ fx('dif');
 fx('er');
 fx('ar');
 fx('kelly');
+
+// A series with no losses (or no wins) is not degenerate: that side's weight is
+// zero, so only the other side's geometric mean contributes. It used to be NaN
+// here for `er` and `kelly`, because JS evaluates `1 ** Infinity` as NaN.
+test('er: one-sided series', () => {
+  close(ta.er(p['er__no_losses'].in[0]), p['er__no_losses'].out);
+  close(ta.er(p['er__no_wins'].in[0]), p['er__no_wins'].out);
+});
+
+test('kelly: an all-winning series bets everything', () => {
+  close(ta.kelly(p['kelly__no_losses'].in[0]), p['kelly__no_losses'].out);
+});
 fx('martingale');
 fx('antimartingale');
 fx('permutations');
