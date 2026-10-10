@@ -645,6 +645,64 @@ var require_alligator = __commonJS({
   }
 });
 
+// src/indicators/occ.js
+var require_occ = __commonJS({
+  "src/indicators/occ.js"(exports, module) {
+    var ta = require_registry();
+    function basis(kind, src, length) {
+      switch (kind) {
+        case "SMA":
+          return ta.sma(src, length);
+        case "EMA":
+          return ta.ema(src, length);
+        case "DEMA":
+          return ta.dema(src, length);
+        case "TEMA":
+          return ta.tema(src, length);
+        case "WMA":
+          return ta.wma(src, length);
+        case "SMMA":
+          return ta.smma(src, length);
+        case "HullMA":
+          return ta.hull(src, length);
+        case "TMA":
+          return ta.sma(ta.sma(src, length), length);
+        default:
+          throw new Error(
+            `occ: unknown basisType '${kind}'. Supported: SMA, EMA, DEMA, TEMA, WMA, SMMA, HullMA, TMA`
+          );
+      }
+    }
+    function displaced(series, n, delay) {
+      const line = new Array(n).fill(NaN);
+      const start = n - series.length + delay;
+      for (let i = Math.max(start, 0); i < Math.min(n, start + series.length); i++) {
+        line[i] = series[i - start];
+      }
+      return line;
+    }
+    function occ2(data, basisLen = 8, basisType = "SMMA", delay = 0) {
+      if (basisLen < 1) throw new Error("occ: basisLen must be >= 1");
+      if (delay < 0) throw new Error("occ: delay must be >= 0");
+      const n = data.length;
+      const opens = new Array(n);
+      const closes = new Array(n);
+      for (let i = 0; i < n; i++) {
+        opens[i] = data[i][0];
+        closes[i] = data[i][1];
+      }
+      const cb = displaced(basis(basisType, closes, basisLen), n, delay);
+      const ob = displaced(basis(basisType, opens, basisLen), n, delay);
+      const out = new Array(n);
+      for (let i = 0; i < n; i++) {
+        out[i] = Number.isNaN(cb[i]) || Number.isNaN(ob[i]) ? [NaN, NaN, NaN] : [cb[i], ob[i], cb[i] > ob[i] ? "long" : "short"];
+      }
+      return out;
+    }
+    module.exports = occ2;
+  }
+});
+
 // src/indicators/pr.js
 var require_pr = __commonJS({
   "src/indicators/pr.js"(exports, module) {
@@ -3435,6 +3493,7 @@ var require_index = __commonJS({
       fi: require_fi(),
       asi: require_asi(),
       alligator: require_alligator(),
+      occ: require_occ(),
       pr: require_pr(),
       stoch: require_stoch(),
       fib: require_fib(),
@@ -3609,6 +3668,7 @@ var bop = import_ta.default["bop"];
 var fi = import_ta.default["fi"];
 var asi = import_ta.default["asi"];
 var alligator = import_ta.default["alligator"];
+var occ = import_ta.default["occ"];
 var pr = import_ta.default["pr"];
 var stoch = import_ta.default["stoch"];
 var fib = import_ta.default["fib"];
@@ -3821,6 +3881,7 @@ export {
   normsinv,
   nvi,
   obv,
+  occ,
   pdi,
   pdm,
   percentile,

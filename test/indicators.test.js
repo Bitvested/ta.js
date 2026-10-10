@@ -16,6 +16,7 @@ fx('bop');
 fx('fi');
 fx('asi');
 fx('alligator');
+fx('occ');
 fx('pr');
 fx('stoch');
 fx('fib');

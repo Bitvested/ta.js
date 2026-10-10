@@ -103,6 +103,19 @@ declare namespace ta {
     teethShift?: number,
     lipShift?: number
   ): [number, number, number][];
+  /**
+   * Open Close Cross. Input rows: [open, close]. Output rows:
+   * [close basis, open basis, direction], one per input bar, NaN until both bases
+   * exist. `basisType` is one of SMA, EMA, DEMA, TEMA, WMA, SMMA, HullMA, TMA —
+   * the Pine's LSMA, VWMA, ALMA and SSMA are not available here. `delay` shifts
+   * both bases right, which is how the Pine's delayOffset avoids repainting.
+   */
+  function occ(
+    data: number[][],
+    basisLen?: number,
+    basisType?: 'SMA' | 'EMA' | 'DEMA' | 'TEMA' | 'WMA' | 'SMMA' | 'HullMA' | 'TMA',
+    delay?: number
+  ): (number | string)[][];
   function pr(data: number[], length?: number): number[];
   /** Input rows: [high, close, low]. Output rows: [%K, %D]. */
   function stoch(data: number[][], length?: number, smoothd?: number, smoothk?: number): [number, number][];

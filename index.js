@@ -33,6 +33,7 @@ Object.assign(registry, {
   fi:             require('./src/indicators/fi.js'),
   asi:            require('./src/indicators/asi.js'),
   alligator:      require('./src/indicators/alligator.js'),
+  occ:            require('./src/indicators/occ.js'),
   pr:             require('./src/indicators/pr.js'),
   stoch:          require('./src/indicators/stoch.js'),
   fib:            require('./src/indicators/fib.js'),

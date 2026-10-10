@@ -24,6 +24,9 @@ module.exports = {
   'asi': {in: [[[7, 6, 4], [9, 7, 5], [9, 8, 6]]], out: [0, -12.5]},
   'ao': {in: [[[6, 5], [8, 6], [7, 4], [6, 5], [7, 6], [9, 8]], 2, 5], out: [0.0, 0.9000000000000004]},
   'pr': {in: [[2, 1, 3, 1, 2], 4], out: [-100, -50]},
+  // reference: Open Close Cross, SMA(3) basis over [open, close]; every value is a
+  // rolling mean of that bar and the two before it, checkable by hand.
+  'occ': {in: [[[10,12],[11,13],[12,14],[13,15],[14,16],[15,17]], 3, 'SMA'], out: [[NaN,NaN,NaN],[NaN,NaN,NaN],[13,11,'long'],[14,12,'long'],[15,13,'long'],[16,14,'long']]},
   // reference: canonical TA-Lib stoch. Raw %K = 100*(C - rollingMin(L)) / (rollingMax(H) - rollingMin(L)).
   // Smoothed %K = SMA(rawK, smoothk); %D = SMA(smoothedK, smoothd). Output starts at i = length-1
   // (v1.x had an off-by-one that dropped the first valid bar). length=2, smoothk=smoothd=1 →
