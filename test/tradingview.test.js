@@ -52,6 +52,14 @@ function parseCsv(text) {
   return rows;
 }
 
+// TradingView writes an undefined plot as an empty cell in a CSV export and as
+// NaN in the Pine Logs panel, so both spellings mean "not defined here".
+function cellValue(text) {
+  const trimmed = text.trim();
+  if (!trimmed || trimmed.toLowerCase() === 'nan') return null;
+  return Number(trimmed);
+}
+
 function loadExport(t) {
   if (!fs.existsSync(FIXTURE)) {
     t.skip(`no TradingView export at ${FIXTURE} — see this file's comment`);
@@ -82,7 +90,9 @@ function loadExport(t) {
 test('tradingview: the export begins where the computation began', (t) => {
   const data = loadExport(t);
   if (!data) return;
-  const filled = data.plots[0].map((v, i) => (v ? i : -1)).filter((i) => i !== -1);
+  const filled = data.plots[0]
+    .map((v, i) => (cellValue(v) === null ? -1 : i))
+    .filter((i) => i !== -1);
   assert.ok(filled.length, 'the export has no Jaw column values at all');
   assert.equal(
     filled[0],
@@ -101,8 +111,8 @@ test('tradingview: jaw/teeth/lips match', (t) => {
   let compared = 0;
   ['jaw', 'teeth', 'lips'].forEach((name, col) => {
     data.plots[col].forEach((text, i) => {
-      if (!text) return;
-      const expected = Number(text);
+      const expected = cellValue(text);
+      if (expected === null) return;
       const actual = rows[i][col];
       assert.ok(
         !Number.isNaN(actual),
