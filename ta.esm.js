@@ -1028,45 +1028,78 @@ var require_mom = __commonJS({
 // src/indicators/halftrend.js
 var require_halftrend = __commonJS({
   "src/indicators/halftrend.js"(exports, module) {
-    var ta = require_registry();
     function halftrend2(data, atrlen, amplitude, deviation) {
-      var out = [], nexttrend = [0], trend = [0], up = [0], down = [0], direction = void 0;
-      for (var i = atrlen; i < data.length; i++) {
-        var pl = data.slice(i - atrlen, i), maxlow = pl[pl.length - 2][2], minhigh = pl[pl.length - 2][0], atr2 = ta.atr(pl, atrlen);
-        atr2 = atr2[atr2.length - 1] / 2;
-        var dev = deviation * atr2, highprice = Math.max.apply(null, pl.map((x) => x[0])), lowprice = Math.min.apply(null, pl.map((x) => x[2])), highma = ta.sma(pl.slice(pl.length - amplitude).map((x) => x[0]), amplitude), lowma = ta.sma(pl.slice(pl.length - amplitude).map((x) => x[2]), amplitude);
-        if (nexttrend[nexttrend.length - 1] == 1) {
+      const n = data.length;
+      if (n === 0) return [];
+      const high = new Array(n), close = new Array(n), low = new Array(n);
+      for (let i = 0; i < n; i++) {
+        high[i] = data[i][0];
+        close[i] = data[i][1];
+        low[i] = data[i][2];
+      }
+      const tr = new Array(n);
+      tr[0] = high[0] - low[0];
+      for (let i = 1; i < n; i++) {
+        tr[i] = Math.max(high[i] - low[i], Math.abs(high[i] - close[i - 1]), Math.abs(low[i] - close[i - 1]));
+      }
+      const atr2 = new Array(n).fill(NaN);
+      if (n >= atrlen) {
+        let prev = 0;
+        for (let i = 0; i < atrlen; i++) prev += tr[i];
+        prev /= atrlen;
+        atr2[atrlen - 1] = prev / 2;
+        for (let i = atrlen; i < n; i++) {
+          prev = (prev * (atrlen - 1) + tr[i]) / atrlen;
+          atr2[i] = prev / 2;
+        }
+      }
+      let trend = 0, nexttrend = 0, prevtrend = -1;
+      let maxlow = low[0], minhigh = high[0];
+      let up = NaN, down = NaN;
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const dev = deviation * atr2[i];
+        const start = Math.max(0, i - amplitude + 1);
+        let highprice = -Infinity, lowprice = Infinity, hsum = 0, lsum = 0;
+        for (let k = start; k <= i; k++) {
+          if (high[k] > highprice) highprice = high[k];
+          if (low[k] < lowprice) lowprice = low[k];
+          hsum += high[k];
+          lsum += low[k];
+        }
+        const highma = i >= amplitude - 1 ? hsum / amplitude : NaN;
+        const lowma = i >= amplitude - 1 ? lsum / amplitude : NaN;
+        if (nexttrend === 1) {
           maxlow = Math.max(lowprice, maxlow);
-          if (highma[0] < maxlow && pl[pl.length - 1][1] < pl[pl.length - 2][2]) {
-            trend.push(1);
-            nexttrend.push(0);
-            minhigh = pl[pl.length - 2][0];
+          if (highma < maxlow && close[i] < (i > 0 ? low[i - 1] : low[i])) {
+            trend = 1;
+            nexttrend = 0;
+            minhigh = highprice;
           }
         } else {
           minhigh = Math.min(highprice, minhigh);
-          if (lowma[0] > minhigh && pl[pl.length - 1][1] < pl[pl.length - 2][0]) {
-            trend.push(0);
-            nexttrend.push(1);
+          if (lowma > minhigh && close[i] > (i > 0 ? high[i - 1] : high[i])) {
+            trend = 0;
+            nexttrend = 1;
             maxlow = lowprice;
           }
         }
-        if (trend[trend.length - 1] == 0) {
-          if (!isNaN(trend[trend.length - 2]) && trend[trend.length - 2] != 0) {
-            up.push(isNaN(down[down.length - 2]) ? down[down.length - 1] : down[down.length - 2]);
-          } else {
-            up.push(isNaN(up[up.length - 2]) ? maxlow : Math.max(up[up.length - 2], maxlow));
-          }
-          direction = "long";
+        let line, atrHigh, atrLow;
+        if (trend === 0) {
+          if (prevtrend !== -1 && prevtrend !== 0) up = down;
+          else up = Number.isNaN(up) ? maxlow : Math.max(maxlow, up);
+          line = up;
+          atrHigh = up + dev;
+          atrLow = up - dev;
         } else {
-          if (!isNaN(trend[trend.length - 2]) && trend[trend.length - 2] != 1) {
-            down.push(isNaN(up[up.length - 2]) ? up[up.length - 1] : up[up.length - 2]);
-          } else {
-            down.push(isNaN(down[down.length - 2]) ? minhigh : Math.min(minhigh, down[down.length - 2]));
-          }
-          direction = "short";
+          if (prevtrend !== -1 && prevtrend !== 1) down = up;
+          else down = Number.isNaN(down) ? minhigh : Math.min(minhigh, down);
+          line = down;
+          atrHigh = down + dev;
+          atrLow = down - dev;
         }
-        var atrHigh = direction === "long" ? up[up.length - 1] + dev : down[down.length - 1] + dev, atrLow = direction === "long" ? up[up.length - 1] - dev : down[down.length - 1] - dev;
-        out.push([atrHigh, trend[trend.length - 1] == 0 ? up[up.length - 1] : down[down.length - 1], atrLow, direction]);
+        out.push([atrHigh, line, atrLow, trend === 0 ? "long" : "short"]);
+        prevtrend = trend;
       }
       return out;
     }

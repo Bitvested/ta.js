@@ -613,7 +613,8 @@ var amplitude = 3;
 var deviation = 2;
 ta.halftrend(data, atrlen, amplitude, deviation);
 // output (array)
-// [[high, halftrend, low, signal]]
+// [atrHigh, halftrend, atrLow, signal] — one row per input bar; the channel is
+// NaN until the ATR window is full (bar atrlen - 1)
 ```
 #### <a id="zigzag"></a>ZigZag
 ```javascript
