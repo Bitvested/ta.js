@@ -1,6 +1,6 @@
 {
   "name": "ta.js",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Technical analysis library for JavaScript and Node.js — 153 stock, crypto and forex indicators (SMA, RSI, MACD, Bollinger Bands, ATR, ADX, SuperTrend). Zero dependencies, CommonJS + ESM + browser bundles.",
   "main": "index.js",
   "types": "index.d.ts",
