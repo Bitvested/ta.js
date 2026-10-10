@@ -89,6 +89,11 @@ declare namespace ta {
   function fi(data: number[][], length?: number): number[];
   /** Input rows: [high, close, low]. */
   function asi(data: number[][]): number[];
+  /**
+   * Input is a single price series — pass `hl2` to reproduce the standard
+   * indicator. Output rows: [jaw, teeth, lips], one per input bar, each line
+   * displaced right by its own shift (NaN until that line's first bar).
+   */
   function alligator(
     data: number[],
     jawLength?: number,
@@ -97,7 +102,7 @@ declare namespace ta {
     jawShift?: number,
     teethShift?: number,
     lipShift?: number
-  ): number[];
+  ): [number, number, number][];
   function pr(data: number[], length?: number): number[];
   /** Input rows: [high, close, low]. Output rows: [%K, %D]. */
   function stoch(data: number[][], length?: number, smoothd?: number, smoothk?: number): [number, number][];
@@ -214,7 +219,11 @@ declare namespace ta {
   function vortex(data: number[][], length?: number): [number, number][];
   /** Input rows: [high, close, low]. Output rows: [%K, %D, %J]. */
   function kdj(data: number[][], length?: number, smoothK?: number, smoothD?: number): [number, number, number][];
-  /** Output rows: [upper gator, lower gator]. */
+  /**
+   * Output rows: [upper gator, lower gator], one per input bar, NaN where
+   * either line of a pair is undefined. Pass zero shifts to match TradingView's
+   * Gator Oscillator, which does not displace its lines.
+   */
   function gator(
     data: number[],
     jawLength?: number,
