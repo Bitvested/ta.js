@@ -2638,7 +2638,9 @@ var require_er = __commonJS({
       var win = wins.length / data.length, loss = losses.length / data.length;
       for (var i in losses) lp *= losses[i];
       for (var i in wins) wp *= wins[i];
-      return ((wp ** (1 / wins.length) - 1) * 100 * win + (lp ** (1 / losses.length) - 1) * 100 * loss) / 100;
+      var winTerm = wins.length ? (wp ** (1 / wins.length) - 1) * 100 * win : 0;
+      var lossTerm = losses.length ? (lp ** (1 / losses.length) - 1) * 100 * loss : 0;
+      return (winTerm + lossTerm) / 100;
     }
     module.exports = er2;
   }
