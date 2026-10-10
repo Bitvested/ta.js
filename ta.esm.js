@@ -284,16 +284,24 @@ var require_hwma = __commonJS({
 // src/moving-averages/kama.js
 var require_kama = __commonJS({
   "src/moving-averages/kama.js"(exports, module) {
-    var ta = require_registry();
-    function kama2(data, len1 = 10, len2 = 2, len3 = 30) {
-      for (var i = len1 + 1, ka = ta.sma(data, len1), ka = [ka[ka.length - 1]]; i < data.length; i++) {
-        var vola = 0, change = Math.abs(data[i] - data[i - len1]);
-        for (var a = 1; a < len1; a++) vola += Math.abs(data[i - a] - data[i - a - 1]);
-        var sc = (change / vola * (2 / (len2 + 1) - 2 / (len3 + 1) + 2 / (len3 + 1))) ** 2;
-        ka.push(ka[ka.length - 1] + sc * (data[i] - ka[ka.length - 1]));
+    var kama2 = (data, len1 = 10, len2 = 2, len3 = 30) => {
+      const n = data.length;
+      if (n < len1) return [];
+      let vola = 0;
+      for (let i = 1; i < len1; i++) vola += Math.abs(data[i] - data[i - 1]);
+      const fast = 2 / (len2 + 1), slow = 2 / (len3 + 1);
+      let ka = data[len1 - 1];
+      const out = [ka];
+      for (let i = len1; i < n; i++) {
+        vola += Math.abs(data[i] - data[i - 1]);
+        if (i > len1) vola -= Math.abs(data[i - len1] - data[i - len1 - 1]);
+        const er2 = vola === 0 ? 1 : Math.abs(data[i] - data[i - len1]) / vola;
+        const sc = er2 * (fast - slow) + slow;
+        ka += sc * sc * (data[i] - ka);
+        out.push(ka);
       }
-      return ka;
-    }
+      return out;
+    };
     module.exports = kama2;
   }
 });

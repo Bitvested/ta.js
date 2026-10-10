@@ -282,7 +282,7 @@ var length2 = 4; // default = 2
 var length3 = 8; // default = 30
 ta.kama(data, length1, length2, length3);
 // output (array)
-// [8, 8.64, 8.57, 8.57]
+// [7, 7.049, 7.361, 7.333, 7.415]
 ```
 #### <a id="cwma"></a>Custom Weighted Moving Average
 ```javascript

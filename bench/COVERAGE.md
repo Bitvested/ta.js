@@ -30,7 +30,7 @@ Each row is a ta.js export with comparison adapters. ✓ marks the libs whose AP
 | `wma` | moving-averages | ✓ | ✓ | ✓ | ✓ | debut.LWMA is semantically equivalent. |
 | `smma` | moving-averages | ✓ | ✓ | ✓ | ✓ | ti.WEMA / ts.WSMA / debut.SMMA / tulind.wilders all compute Wilder smoothing. |
 | `hull` | moving-averages | — | — | — | ✓ | tulind.hma. |
-| `kama` | moving-averages | — | — | — | ✓ | Param convention diverges; expect Δ. |
+| `kama` | moving-averages | — | — | — | ✓ | Matches tulind exactly (same seed); ta.js takes fast/slow periods as extra args. |
 | `vwma` | moving-averages | — | — | — | ✓ |  |
 | `dema` | moving-averages | — | ✓ | — | ✓ |  |
 | `tema` | moving-averages | — | — | — | ✓ |  |
