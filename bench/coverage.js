@@ -30,7 +30,7 @@ module.exports = [
   { name: 'hull',  category: 'moving-averages', status: 'cross-lib',
     libs: ['tulind'], notes: 'tulind.hma.' },
   { name: 'kama',  category: 'moving-averages', status: 'cross-lib',
-    libs: ['tulind'], notes: 'Param convention diverges; expect Δ.' },
+    libs: ['tulind'], notes: 'Matches tulind exactly (same seed); ta.js takes fast/slow periods as extra args.' },
   { name: 'vwma',  category: 'moving-averages', status: 'cross-lib',
     libs: ['tulind'] },
   { name: 'pwma',  category: 'moving-averages', status: 'solo' },
