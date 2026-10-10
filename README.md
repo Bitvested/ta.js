@@ -1,8 +1,18 @@
-# Technical Analysis (ta.js)
+# ta.js — Technical Analysis Indicators for JavaScript & Node.js
 
-[![npm version](https://badge.fury.io/js/ta.js.svg)](https://www.npmjs.com/package/ta.js) [![Downloads](https://img.shields.io/npm/dm/ta.js.svg)](https://www.npmjs.com/package/ta.js) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm version](https://badge.fury.io/js/ta.js.svg)](https://www.npmjs.com/package/ta.js) [![Downloads](https://img.shields.io/npm/dm/ta.js.svg)](https://www.npmjs.com/package/ta.js) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Stars](https://img.shields.io/github/stars/Bitvested/ta.js.svg)](https://github.com/Bitvested/ta.js/stargazers)
 
-A powerful, lightweight JavaScript library for Technical Analysis and financial market data calculations.
+**153 technical indicators for stock, crypto and forex markets** — SMA, EMA, RSI, MACD, Bollinger Bands, ATR, ADX, SuperTrend, Ichimoku, Stochastic, VWAP and more. A zero-dependency technical analysis library for JavaScript and Node.js, shipped as CommonJS, ES modules and a browser bundle.
+
+## Contents
+
+*   [Install](#install)
+*   [Usage](#usage)
+*   [Performance](#performance)
+*   [Why ta.js?](#why-ta-js)
+*   [Examples](#examples)
+*   [Contributing](#contributing)
+*   [License](#license)
 
 ---
 
@@ -98,6 +108,23 @@ npm run bench:md   # regenerates BENCHMARKS.md + bench/results.json
 ```
 
 Quote ratios, not absolute ops/sec, when comparing across machines.
+
+## Why ta.js?
+
+153 functions in one package — moving averages, oscillators, bands, volume indicators, chart types (Heikin Ashi, Renko), market statistics and position-sizing maths (Kelly criterion, Monte Carlo, K-means). No runtime dependencies and no native build step, so it installs and bundles anywhere.
+
+How the JavaScript options compare:
+
+|  | ta.js | `technicalindicators` | `trading-signals` | `@debut/indicators` | `tulind` |
+| --- | --- | --- | --- | --- | --- |
+| Runtime dependencies | **0** | 1 | 0 | 0 | 4 |
+| Latest release | 2.0.0 (2026-04) | 3.1.0 (2020-03) | 8.3.0 (2026-08) | 2.0.1 (2026-05) | 0.8.20 (2021-08) |
+| TypeScript definitions | no | yes | yes | yes | no |
+| Native addon required | no | no | no | no | yes (C++) |
+
+Head-to-head at 100,000 bars, ta.js wins 66 of 67 benchmark cases — see [Performance](#performance) for the headline numbers and [BENCHMARKS.md](https://github.com/Bitvested/ta.js/blob/main/BENCHMARKS.md) for the full per-case tables.
+
+Typical uses: backtesting engines, trading bots and signal generation, quantitative research, and charting front-ends in Node.js or the browser.
 
 ## Examples
 
